@@ -18,54 +18,74 @@ class GameScene: SKScene {
     private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
     
+    var dragPositionStart:CGPoint?
+    var dragPositionTarget:CGPoint?
+    var cameraScale: CGFloat = 1.0
+    
     override func sceneDidLoad() {
         
         self.lastUpdateTime = 0
         
-        // Get label node from scene and store it for use later
-        self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
-        if let label = self.label {
-            label.alpha = 0.0
-            label.run(SKAction.fadeIn(withDuration: 2.0))
-        }
+        /*
+         // Get label node from scene and store it for use later
+         self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
+         if let label = self.label {
+         label.alpha = 0.0
+         label.run(SKAction.fadeIn(withDuration: 2.0))
+         }
+         
+         
+         // Create shape node to use during mouse interaction
+         let w = (self.size.width + self.size.height) * 0.05
+         self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
+         
+         if let spinnyNode = self.spinnyNode {
+         spinnyNode.lineWidth = 2.5
+         
+         spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 1)))
+         spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
+         SKAction.fadeOut(withDuration: 0.5),
+         SKAction.removeFromParent()]))
+         }*/
         
-        // Create shape node to use during mouse interaction
-        let w = (self.size.width + self.size.height) * 0.05
-        self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
+        let map = HexMap(width: 30, height: 20)
+        map.showMap(skScene: self)
         
-        if let spinnyNode = self.spinnyNode {
-            spinnyNode.lineWidth = 2.5
-            
-            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 1)))
-            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-                                              SKAction.fadeOut(withDuration: 0.5),
-                                              SKAction.removeFromParent()]))
-        }
+        let camera = SKCameraNode()
+        self.addChild(camera)
+        self.camera = camera
+        self.camera?.position = map.middleOfMapInWorldSpace()
+        self.camera?.zPosition = 5
+        self.camera?.setScale(cameraScale)
+        
     }
+    
+    // drag map around
+    
     
     
     func touchDown(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.green
-            self.addChild(n)
-        }
+        dragPositionStart = pos
     }
     
     func touchMoved(toPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.blue
-            self.addChild(n)
-        }
+        dragPositionTarget = pos
     }
     
     func touchUp(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.red
-            self.addChild(n)
+        dragPositionTarget = nil
+        dragPositionStart = nil
+    }
+    
+    func setZoom(delta zoomDelta: CGFloat) {
+        var newZoom = (self.camera?.xScale ?? 1) + zoomDelta
+        if newZoom < 1 {
+            newZoom = 1
+        } else if newZoom > 4 {
+            newZoom = 4
         }
+        cameraScale = newZoom
+        print("cameraScale: \(cameraScale)")
     }
     
     override func mouseDown(with event: NSEvent) {
@@ -78,6 +98,11 @@ class GameScene: SKScene {
     
     override func mouseUp(with event: NSEvent) {
         self.touchUp(atPoint: event.location(in: self))
+    }
+    
+    override func scrollWheel(with event: NSEvent) {
+        print("scrollWheel \(event.scrollingDeltaY * 0.1)")
+        self.setZoom(delta: event.scrollingDeltaY * 0.1)
     }
     
     override func keyDown(with event: NSEvent) {
@@ -94,11 +119,19 @@ class GameScene: SKScene {
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
-        
-        // Initialize _lastUpdateTime if it has not already been
-        if (self.lastUpdateTime == 0) {
-            self.lastUpdateTime = currentTime
+        if let dragStart = dragPositionStart, let dragTarget = dragPositionTarget {
+            let movement = CGPoint(x: dragStart.x - dragTarget.x, y: dragStart.y - dragTarget.y)
+            
+            let currentPosition = camera?.position ?? CGPoint.zero
+            camera?.position = CGPoint(x: currentPosition.x + movement.x, y: currentPosition.y + movement.y)
+            
+            // Initialize _lastUpdateTime if it has not already been
+            if (self.lastUpdateTime == 0) {
+                self.lastUpdateTime = currentTime
+            }
         }
+        
+        camera?.setScale(cameraScale)
         
         // Calculate time since last update
         let dt = currentTime - self.lastUpdateTime

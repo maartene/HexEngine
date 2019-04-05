@@ -15,6 +15,8 @@
 		DE13AD112257DF5800136AFE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE13AD102257DF5800136AFE /* Assets.xcassets */; };
 		DE13AD142257DF5800136AFE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE13AD122257DF5800136AFE /* Main.storyboard */; };
 		DE13AD202257DF5800136AFE /* Hex_EngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE13AD1F2257DF5800136AFE /* Hex_EngineTests.swift */; };
+		DE13AD2C2257DFBF00136AFE /* SKView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE13AD2B2257DFBF00136AFE /* SKView+Extension.swift */; };
+		DE6BE6272257E0F20027380C /* HexMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6BE6262257E0F20027380C /* HexMap.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,6 +43,8 @@
 		DE13AD1B2257DF5800136AFE /* Hex EngineTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Hex EngineTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE13AD1F2257DF5800136AFE /* Hex_EngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hex_EngineTests.swift; sourceTree = "<group>"; };
 		DE13AD212257DF5800136AFE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DE13AD2B2257DFBF00136AFE /* SKView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SKView+Extension.swift"; sourceTree = "<group>"; };
+		DE6BE6262257E0F20027380C /* HexMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMap.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +86,7 @@
 		DE13AD052257DF5600136AFE /* Hex Engine */ = {
 			isa = PBXGroup;
 			children = (
+				DE13AD2A2257DF9B00136AFE /* SKExtensions */,
 				DE13AD062257DF5600136AFE /* AppDelegate.swift */,
 				DE13AD082257DF5600136AFE /* GameScene.sks */,
 				DE13AD0A2257DF5600136AFE /* Actions.sks */,
@@ -91,6 +96,7 @@
 				DE13AD122257DF5800136AFE /* Main.storyboard */,
 				DE13AD152257DF5800136AFE /* Info.plist */,
 				DE13AD162257DF5800136AFE /* Hex_Engine.entitlements */,
+				DE6BE6262257E0F20027380C /* HexMap.swift */,
 			);
 			path = "Hex Engine";
 			sourceTree = "<group>";
@@ -102,6 +108,14 @@
 				DE13AD212257DF5800136AFE /* Info.plist */,
 			);
 			path = "Hex EngineTests";
+			sourceTree = "<group>";
+		};
+		DE13AD2A2257DF9B00136AFE /* SKExtensions */ = {
+			isa = PBXGroup;
+			children = (
+				DE13AD2B2257DFBF00136AFE /* SKView+Extension.swift */,
+			);
+			path = SKExtensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -208,6 +222,8 @@
 			files = (
 				DE13AD0F2257DF5600136AFE /* ViewController.swift in Sources */,
 				DE13AD0D2257DF5600136AFE /* GameScene.swift in Sources */,
+				DE13AD2C2257DFBF00136AFE /* SKView+Extension.swift in Sources */,
+				DE6BE6272257E0F20027380C /* HexMap.swift in Sources */,
 				DE13AD072257DF5600136AFE /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
