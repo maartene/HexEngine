@@ -82,6 +82,7 @@
 		DE13AD052257DF5600136AFE /* Hex Engine */ = {
 			isa = PBXGroup;
 			children = (
+				DE6FEBB92257EA9000F1E495 /* Model */,
 				DE13AD2A2257DF9B00136AFE /* SKExtensions */,
 				DE13AD062257DF5600136AFE /* AppDelegate.swift */,
 				DE13AD0C2257DF5600136AFE /* GameScene.swift */,
@@ -90,7 +91,6 @@
 				DE13AD122257DF5800136AFE /* Main.storyboard */,
 				DE13AD152257DF5800136AFE /* Info.plist */,
 				DE13AD162257DF5800136AFE /* Hex_Engine.entitlements */,
-				DE6BE6262257E0F20027380C /* HexMap.swift */,
 			);
 			path = "Hex Engine";
 			sourceTree = "<group>";
@@ -110,6 +110,14 @@
 				DE13AD2B2257DFBF00136AFE /* SKView+Extension.swift */,
 			);
 			path = SKExtensions;
+			sourceTree = "<group>";
+		};
+		DE6FEBB92257EA9000F1E495 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				DE6BE6262257E0F20027380C /* HexMap.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
