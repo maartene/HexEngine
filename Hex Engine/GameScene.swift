@@ -85,7 +85,7 @@ class GameScene: SKScene {
             newZoom = 4
         }
         cameraScale = newZoom
-        print("cameraScale: \(cameraScale)")
+        //print("cameraScale: \(cameraScale)")
     }
     
     override func mouseDown(with event: NSEvent) {
@@ -101,7 +101,7 @@ class GameScene: SKScene {
     }
     
     override func scrollWheel(with event: NSEvent) {
-        print("scrollWheel \(event.scrollingDeltaY * 0.1)")
+        //print("scrollWheel \(event.scrollingDeltaY * 0.1)")
         self.setZoom(delta: event.scrollingDeltaY * 0.1)
     }
     
