@@ -8,6 +8,7 @@
 
 import Foundation
 import SpriteKit
+import GameplayKit
 
 class HexMap {
     
@@ -26,33 +27,52 @@ class HexMap {
     let width: Int
     let height: Int
     
-    private var tiles: [Tile]
+    private var tiles = [AxialCoord: Tile]()
     
     init(width: Int, height: Int) {
         self.width = width;
         self.height = height;
         
-        tiles = [Tile].init(repeating: .void, count: width * height)
+        
+        let halfR = height / 2
+        let halfQ = (width / 2)
+        
+        for r in -halfR ... halfR {
+            
+            for q in (-halfQ - roundToZero(Double(r) / 2.0)) ... (halfQ - roundToZero(Double(r) / 2.0)) {
+                    self[q, r] = Tile(rawValue: Int.random(in: 1...5))!
+            }
+        }
+    }
+    
+    private func roundToZero(_ value: Double) -> Int {
+        if value >= 0 {
+            return Int(value)
+        } else {
+            let intValue = Int(value)
+            let difference = value - Double(intValue)
+            if difference == 0 {
+                return intValue
+            } else {
+                return intValue - 1
+            }
+        }
     }
     
     func indexIsValid(q: Int, r: Int) -> Bool {
-        return q >= 0 && q < width && r >= 0 && r < height
+        return tiles[AxialCoord(q: q, r: r)] != nil
     }
     
     subscript(q: Int, r: Int) -> Tile {
         get {
             if indexIsValid(q: q, r: r) {
-                return tiles[(r * width) + q]
+                return tiles[AxialCoord(q: q, r: r)] ?? .void
             } else {
                 return .void
             }
         }
         set {
-            if indexIsValid(q: q, r: r) {
-                tiles[(r * width) + q] = newValue
-            } else {
-                // out of bounds, do nothing
-            }
+            tiles[AxialCoord(q: q, r: r)] = newValue
         }
     }
     
@@ -74,6 +94,10 @@ class HexMap {
         set {
             self[tile.q, tile.r] = newValue
         }
+    }
+    
+    func getTileCoordinates() -> [AxialCoord] {
+        return Array<AxialCoord>(tiles.keys)
     }
     
     // Neighbours
@@ -226,7 +250,7 @@ struct CubeCoord: Equatable, Hashable {
     }
 }
 
-struct AxialCoord: Equatable {
+struct AxialCoord: Equatable, Hashable {
     let q, r: Int
     
     static func +(lhs: AxialCoord, rhs: AxialCoord) -> AxialCoord {

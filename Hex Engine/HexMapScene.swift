@@ -9,7 +9,7 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
+class HexMapScene: SKScene {
     
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
@@ -21,6 +21,9 @@ class GameScene: SKScene {
     var dragPositionStart:CGPoint?
     var dragPositionTarget:CGPoint?
     var cameraScale: CGFloat = 1.0
+    
+    var hexMapController: HexMapController!
+    var map: HexMap!
     
     override func sceneDidLoad() {
         
@@ -48,15 +51,15 @@ class GameScene: SKScene {
          SKAction.removeFromParent()]))
          }*/
         
-        let map = HexMap(width: 30, height: 20)
+        map = WorldFactory.CreateWorld(width: 20, height: 10)
         
-        let hmc = HexMapController(skScene: self, tileWidth: 120.0, tileHeight: 140.0)
-        hmc.showMap(map: map)
+        hexMapController = HexMapController(skScene: self, tileWidth: 120.0, tileHeight: 140.0)
+        hexMapController.showMap(map: map)
         
         let camera = SKCameraNode()
         self.addChild(camera)
         self.camera = camera
-        self.camera?.position = hmc.middleOfMapInWorldSpace(map: map)
+        self.camera?.position = hexMapController.middleOfMapInWorldSpace(map: map)
         self.camera?.zPosition = 5
         self.camera?.setScale(cameraScale)
         
@@ -72,11 +75,14 @@ class GameScene: SKScene {
     
     func touchMoved(toPoint pos : CGPoint) {
         dragPositionTarget = pos
+
     }
     
     func touchUp(atPoint pos : CGPoint) {
         dragPositionTarget = nil
         dragPositionStart = nil
+        
+        hexMapController.tilesAtPosition(pos: pos)
     }
     
     func setZoom(delta zoomDelta: CGFloat) {

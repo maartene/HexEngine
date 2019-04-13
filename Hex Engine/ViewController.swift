@@ -18,7 +18,7 @@ class ViewController: NSViewController {
         super.viewDidLoad()
         
         
-        let scene = GameScene(size: CGSize(width: skView.bounds.width, height: skView.bounds.height))
+        let scene = HexMapScene(size: CGSize(width: skView.bounds.width, height: skView.bounds.height))
         scene.scaleMode = .aspectFill
         
         // Present the scene
