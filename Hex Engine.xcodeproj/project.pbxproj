@@ -14,7 +14,10 @@
 		DE13AD142257DF5800136AFE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE13AD122257DF5800136AFE /* Main.storyboard */; };
 		DE13AD202257DF5800136AFE /* Hex_EngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE13AD1F2257DF5800136AFE /* Hex_EngineTests.swift */; };
 		DE13AD2C2257DFBF00136AFE /* SKView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE13AD2B2257DFBF00136AFE /* SKView+Extension.swift */; };
+		DE538AE5225DED11007104A9 /* HexMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE538AE4225DED11007104A9 /* HexMapTests.swift */; };
 		DE6BE6272257E0F20027380C /* HexMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6BE6262257E0F20027380C /* HexMap.swift */; };
+		DEFFE28122587EDE00D9AE5A /* HexMapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFFE28022587EDE00D9AE5A /* HexMapController.swift */; };
+		DEFFE2832258B5C400D9AE5A /* CGPoint+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFFE2822258B5C400D9AE5A /* CGPoint+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,7 +43,10 @@
 		DE13AD1F2257DF5800136AFE /* Hex_EngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hex_EngineTests.swift; sourceTree = "<group>"; };
 		DE13AD212257DF5800136AFE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DE13AD2B2257DFBF00136AFE /* SKView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SKView+Extension.swift"; sourceTree = "<group>"; };
+		DE538AE4225DED11007104A9 /* HexMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMapTests.swift; sourceTree = "<group>"; };
 		DE6BE6262257E0F20027380C /* HexMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMap.swift; sourceTree = "<group>"; };
+		DEFFE28022587EDE00D9AE5A /* HexMapController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMapController.swift; sourceTree = "<group>"; };
+		DEFFE2822258B5C400D9AE5A /* CGPoint+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGPoint+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +88,7 @@
 		DE13AD052257DF5600136AFE /* Hex Engine */ = {
 			isa = PBXGroup;
 			children = (
+				DEFFE27F22587EB700D9AE5A /* Controllers */,
 				DE6FEBB92257EA9000F1E495 /* Model */,
 				DE13AD2A2257DF9B00136AFE /* SKExtensions */,
 				DE13AD062257DF5600136AFE /* AppDelegate.swift */,
@@ -100,6 +107,7 @@
 			children = (
 				DE13AD1F2257DF5800136AFE /* Hex_EngineTests.swift */,
 				DE13AD212257DF5800136AFE /* Info.plist */,
+				DE538AE4225DED11007104A9 /* HexMapTests.swift */,
 			);
 			path = "Hex EngineTests";
 			sourceTree = "<group>";
@@ -108,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				DE13AD2B2257DFBF00136AFE /* SKView+Extension.swift */,
+				DEFFE2822258B5C400D9AE5A /* CGPoint+Extension.swift */,
 			);
 			path = SKExtensions;
 			sourceTree = "<group>";
@@ -118,6 +127,14 @@
 				DE6BE6262257E0F20027380C /* HexMap.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		DEFFE27F22587EB700D9AE5A /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				DEFFE28022587EDE00D9AE5A /* HexMapController.swift */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -224,6 +241,8 @@
 				DE13AD0D2257DF5600136AFE /* GameScene.swift in Sources */,
 				DE13AD2C2257DFBF00136AFE /* SKView+Extension.swift in Sources */,
 				DE6BE6272257E0F20027380C /* HexMap.swift in Sources */,
+				DEFFE2832258B5C400D9AE5A /* CGPoint+Extension.swift in Sources */,
+				DEFFE28122587EDE00D9AE5A /* HexMapController.swift in Sources */,
 				DE13AD072257DF5600136AFE /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -232,6 +251,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE538AE5225DED11007104A9 /* HexMapTests.swift in Sources */,
 				DE13AD202257DF5800136AFE /* Hex_EngineTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

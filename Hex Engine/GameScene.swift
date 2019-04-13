@@ -49,12 +49,14 @@ class GameScene: SKScene {
          }*/
         
         let map = HexMap(width: 30, height: 20)
-        map.showMap(skScene: self)
+        
+        let hmc = HexMapController(skScene: self, tileWidth: 120.0, tileHeight: 140.0)
+        hmc.showMap(map: map)
         
         let camera = SKCameraNode()
         self.addChild(camera)
         self.camera = camera
-        self.camera?.position = map.middleOfMapInWorldSpace()
+        self.camera?.position = hmc.middleOfMapInWorldSpace(map: map)
         self.camera?.zPosition = 5
         self.camera?.setScale(cameraScale)
         
@@ -120,10 +122,10 @@ class GameScene: SKScene {
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         if let dragStart = dragPositionStart, let dragTarget = dragPositionTarget {
-            let movement = CGPoint(x: dragStart.x - dragTarget.x, y: dragStart.y - dragTarget.y)
+            let movement = dragStart - dragTarget
             
             let currentPosition = camera?.position ?? CGPoint.zero
-            camera?.position = CGPoint(x: currentPosition.x + movement.x, y: currentPosition.y + movement.y)
+            camera?.position = currentPosition + movement
             
             // Initialize _lastUpdateTime if it has not already been
             if (self.lastUpdateTime == 0) {
