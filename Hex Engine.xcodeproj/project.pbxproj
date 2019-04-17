@@ -17,6 +17,8 @@
 		DE538AE5225DED11007104A9 /* HexMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE538AE4225DED11007104A9 /* HexMapTests.swift */; };
 		DE6BE6272257E0F20027380C /* HexMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6BE6262257E0F20027380C /* HexMap.swift */; };
 		DEB0A9A1226218AB005770B2 /* WorldFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0A9A0226218AB005770B2 /* WorldFactory.swift */; };
+		DECCAD8422665E7C002D820E /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECCAD8322665E7C002D820E /* Double+Extension.swift */; };
+		DECCAD862266650C002D820E /* HexMapRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECCAD852266650C002D820E /* HexMapRules.swift */; };
 		DEFFE28122587EDE00D9AE5A /* HexMapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFFE28022587EDE00D9AE5A /* HexMapController.swift */; };
 		DEFFE2832258B5C400D9AE5A /* CGPoint+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFFE2822258B5C400D9AE5A /* CGPoint+Extension.swift */; };
 /* End PBXBuildFile section */
@@ -47,6 +49,8 @@
 		DE538AE4225DED11007104A9 /* HexMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMapTests.swift; sourceTree = "<group>"; };
 		DE6BE6262257E0F20027380C /* HexMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMap.swift; sourceTree = "<group>"; };
 		DEB0A9A0226218AB005770B2 /* WorldFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldFactory.swift; sourceTree = "<group>"; };
+		DECCAD8322665E7C002D820E /* Double+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extension.swift"; sourceTree = "<group>"; };
+		DECCAD852266650C002D820E /* HexMapRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMapRules.swift; sourceTree = "<group>"; };
 		DEFFE28022587EDE00D9AE5A /* HexMapController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMapController.swift; sourceTree = "<group>"; };
 		DEFFE2822258B5C400D9AE5A /* CGPoint+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGPoint+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -119,6 +123,7 @@
 			children = (
 				DE13AD2B2257DFBF00136AFE /* SKView+Extension.swift */,
 				DEFFE2822258B5C400D9AE5A /* CGPoint+Extension.swift */,
+				DECCAD8322665E7C002D820E /* Double+Extension.swift */,
 			);
 			path = SKExtensions;
 			sourceTree = "<group>";
@@ -128,6 +133,7 @@
 			children = (
 				DE6BE6262257E0F20027380C /* HexMap.swift */,
 				DEB0A9A0226218AB005770B2 /* WorldFactory.swift */,
+				DECCAD852266650C002D820E /* HexMapRules.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -242,9 +248,11 @@
 			files = (
 				DE13AD0F2257DF5600136AFE /* ViewController.swift in Sources */,
 				DE13AD0D2257DF5600136AFE /* HexMapScene.swift in Sources */,
+				DECCAD8422665E7C002D820E /* Double+Extension.swift in Sources */,
 				DE13AD2C2257DFBF00136AFE /* SKView+Extension.swift in Sources */,
 				DE6BE6272257E0F20027380C /* HexMap.swift in Sources */,
 				DEFFE2832258B5C400D9AE5A /* CGPoint+Extension.swift in Sources */,
+				DECCAD862266650C002D820E /* HexMapRules.swift in Sources */,
 				DEB0A9A1226218AB005770B2 /* WorldFactory.swift in Sources */,
 				DEFFE28122587EDE00D9AE5A /* HexMapController.swift in Sources */,
 				DE13AD072257DF5600136AFE /* AppDelegate.swift in Sources */,

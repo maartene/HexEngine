@@ -71,12 +71,82 @@ class HexMapTests: XCTestCase {
         assert(diagonals.contains(diagonal2))
     }
     
+    func testTileDidChangeHandler() {
+        let tile = AxialCoord(q: 0, r: 0)
+        
+        let hexMap = HexMap(width: 10, height: 10)
+        
+        hexMap[tile] = .Grass
+        assert(hexMap[tile] == .Grass)
+        
+        hexMap.tileDidChangedEventHandlers.append(tileDidChangeHandler)
+        
+        hexMap[tile] = .Forest
+        assert(hexMap[tile] == .Forest)
+    }
+    
+    func tileDidChangeHandler(tile: AxialCoord, oldValue: Tile?, newValue: Tile) {
+        print("Tile \(tile) changed value from \(oldValue ?? Tile.void) to \(newValue)")
+    }
+    
+    func testPathfinding() {
+        
+        let hexMap = WorldFactory.CreateWorld(width: 30, height: 20)
+        
+        // find two passable tiles
+        var tile1: AxialCoord?
+        var i = 0
+        let tileCoords = hexMap.getTileCoordinates()
+        while tile1 == nil && i < tileCoords.count {
+            if hexMap[tileCoords[i]].blocksMovement == false {
+                tile1 = tileCoords[i]
+            }
+            i += 1
+        }
+        
+        var tile2: AxialCoord?
+        i = tileCoords.count - 1
+        while tile2 == nil && i >= 0 {
+            if hexMap[tileCoords[i]].blocksMovement == false {
+                tile2 = tileCoords[i]
+            }
+            i -= 1
+        }
+        
+        if let tile1 = tile1, let tile2 = tile2 {
+            assert(tile1 != tile2)
+            
+            hexMap.rebuildPathFindingGraph()
+            
+            if let path = hexMap.findPathFrom(tile1, to: tile2) {
+                path.forEach {
+                    print ("Coord: \($0) Terrain: \(hexMap[$0])")
+                }                
+                assert(path.count > 0)
+            } else {
+                print("path returned is nil - no valid path found")
+                assert(false)
+            }
+        } else {
+            print("tile1 and/or tile2 is nil: tile1: \(String(describing: tile1)) tile2: \(String(describing: tile2))")
+            assert(false)
+        }
+        
+        
+        
+        
+    }
     
 
-    func testPerformanceExample() {
+    func testHexMapRebuildPathfindingGraphPerformance() {
         // This is an example of a performance test case.
+        let hexMap = WorldFactory.CreateWorld(width: 200, height: 100)
+        var pass = 1
         self.measure {
             // Put the code you want to measure the time of here.
+            hexMap.rebuildPathFindingGraph()
+            print("testHexMapRebuildPathfindingGraphPerformance pass: \(pass) complete.")
+            pass += 1
         }
     }
 
