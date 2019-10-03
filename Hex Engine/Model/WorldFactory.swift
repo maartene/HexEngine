@@ -12,7 +12,7 @@ import GameplayKit
 struct WorldFactory {
     
     static func CreateWorld(width: Int, height: Int) -> HexMap {
-        let hexMap = HexMap(width: width, height: height)
+        var hexMap = HexMap(width: width, height: height)
         
         let perlinSource = GKPerlinNoiseSource(frequency: 0.2, octaveCount: 5, persistence: 0.7, lacunarity: 1.75, seed: 123)
         

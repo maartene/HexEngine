@@ -19,6 +19,9 @@
 		DEB0A9A1226218AB005770B2 /* WorldFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0A9A0226218AB005770B2 /* WorldFactory.swift */; };
 		DECCAD8422665E7C002D820E /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECCAD8322665E7C002D820E /* Double+Extension.swift */; };
 		DECCAD862266650C002D820E /* HexMapRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECCAD852266650C002D820E /* HexMapRules.swift */; };
+		DEF58EFF22874CCD0020B473 /* Unit.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF58EFE22874CCD0020B473 /* Unit.swift */; };
+		DEF58F0222874D7C0020B473 /* World.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF58F0122874D7C0020B473 /* World.swift */; };
+		DEF58F0422874FA50020B473 /* UnitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF58F0322874FA50020B473 /* UnitController.swift */; };
 		DEFFE28122587EDE00D9AE5A /* HexMapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFFE28022587EDE00D9AE5A /* HexMapController.swift */; };
 		DEFFE2832258B5C400D9AE5A /* CGPoint+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFFE2822258B5C400D9AE5A /* CGPoint+Extension.swift */; };
 /* End PBXBuildFile section */
@@ -51,6 +54,9 @@
 		DEB0A9A0226218AB005770B2 /* WorldFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldFactory.swift; sourceTree = "<group>"; };
 		DECCAD8322665E7C002D820E /* Double+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extension.swift"; sourceTree = "<group>"; };
 		DECCAD852266650C002D820E /* HexMapRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMapRules.swift; sourceTree = "<group>"; };
+		DEF58EFE22874CCD0020B473 /* Unit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Unit.swift; sourceTree = "<group>"; };
+		DEF58F0122874D7C0020B473 /* World.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = World.swift; sourceTree = "<group>"; };
+		DEF58F0322874FA50020B473 /* UnitController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitController.swift; sourceTree = "<group>"; };
 		DEFFE28022587EDE00D9AE5A /* HexMapController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMapController.swift; sourceTree = "<group>"; };
 		DEFFE2822258B5C400D9AE5A /* CGPoint+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGPoint+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -134,6 +140,8 @@
 				DE6BE6262257E0F20027380C /* HexMap.swift */,
 				DEB0A9A0226218AB005770B2 /* WorldFactory.swift */,
 				DECCAD852266650C002D820E /* HexMapRules.swift */,
+				DEF58EFE22874CCD0020B473 /* Unit.swift */,
+				DEF58F0122874D7C0020B473 /* World.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -142,6 +150,7 @@
 			isa = PBXGroup;
 			children = (
 				DEFFE28022587EDE00D9AE5A /* HexMapController.swift */,
+				DEF58F0322874FA50020B473 /* UnitController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -252,10 +261,13 @@
 				DE13AD2C2257DFBF00136AFE /* SKView+Extension.swift in Sources */,
 				DE6BE6272257E0F20027380C /* HexMap.swift in Sources */,
 				DEFFE2832258B5C400D9AE5A /* CGPoint+Extension.swift in Sources */,
+				DEF58F0222874D7C0020B473 /* World.swift in Sources */,
+				DEF58EFF22874CCD0020B473 /* Unit.swift in Sources */,
 				DECCAD862266650C002D820E /* HexMapRules.swift in Sources */,
 				DEB0A9A1226218AB005770B2 /* WorldFactory.swift in Sources */,
 				DEFFE28122587EDE00D9AE5A /* HexMapController.swift in Sources */,
 				DE13AD072257DF5600136AFE /* AppDelegate.swift in Sources */,
+				DEF58F0422874FA50020B473 /* UnitController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

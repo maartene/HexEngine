@@ -6,10 +6,13 @@
 //  Copyright © 2019 thedreamweb. All rights reserved.
 //
 
+import AppKit
 import SpriteKit
 import GameplayKit
 
 class HexMapScene: SKScene {
+    
+    static let MAX_ZOOM: CGFloat = 8.0
     
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
@@ -23,107 +26,109 @@ class HexMapScene: SKScene {
     var cameraScale: CGFloat = 1.0
     
     var hexMapController: HexMapController!
-    var map: HexMap!
     
     override func sceneDidLoad() {
         
         self.lastUpdateTime = 0
         
-        /*
-         // Get label node from scene and store it for use later
-         self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
-         if let label = self.label {
-         label.alpha = 0.0
-         label.run(SKAction.fadeIn(withDuration: 2.0))
-         }
-         
-         
-         // Create shape node to use during mouse interaction
-         let w = (self.size.width + self.size.height) * 0.05
-         self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
-         
-         if let spinnyNode = self.spinnyNode {
-         spinnyNode.lineWidth = 2.5
-         
-         spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 1)))
-         spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-         SKAction.fadeOut(withDuration: 0.5),
-         SKAction.removeFromParent()]))
-         }*/
+        let world = World(width: 84, height: 54, hexMapFactory: WorldFactory.CreateWorld)
+    
+        hexMapController = HexMapController(scene: self, world: world, tileWidth: 120.0, tileHeight: 140.0, tileYOffsetFactor: 0.74)
         
-        map = WorldFactory.CreateWorld(width: 20, height: 10)
-        
-        hexMapController = HexMapController(skScene: self, tileWidth: 120.0, tileHeight: 140.0)
-        hexMapController.showMap(map: map)
+        hexMapController.showMap()
         
         let camera = SKCameraNode()
         self.addChild(camera)
         self.camera = camera
-        self.camera?.position = hexMapController.middleOfMapInWorldSpace(map: map)
+        self.camera?.position = hexMapController.middleOfMapInWorldSpace()
         self.camera?.zPosition = 5
         self.camera?.setScale(cameraScale)
+    }
+    
+    override func didMove(to view: SKView) {
+        let panGestureRecognizer = NSPanGestureRecognizer(target: self, action: #selector(panHandler))
+        view.addGestureRecognizer(panGestureRecognizer)
         
+        let clickGestureRecognizer = NSClickGestureRecognizer(target: self, action: #selector(clickHandler))
+        view.addGestureRecognizer(clickGestureRecognizer)
     }
     
     // drag map around
-    
-    
-    
-    func touchDown(atPoint pos : CGPoint) {
-        dragPositionStart = pos
-    }
-    
-    func touchMoved(toPoint pos : CGPoint) {
-        dragPositionTarget = pos
-
-    }
-    
-    func touchUp(atPoint pos : CGPoint) {
-        dragPositionTarget = nil
-        dragPositionStart = nil
+    @objc
+    func panHandler(_ gestureRecognize: NSPanGestureRecognizer) {
+        guard let view = self.view else {
+            return
+        }
         
-        hexMapController.tilesAtPosition(pos: pos)
+        // get the position within the view where the gesture event happened.
+        let p = gestureRecognize.location(in: view)
+        
+        // convert the position within the view to position within the scene
+        let scenePoint = view.convert(p, to: self)
+        
+        switch gestureRecognize.state {
+        case .began:
+            dragPositionStart = scenePoint
+        case .changed:
+            dragPositionTarget = scenePoint
+        case .ended:
+            // make the block dynamic again, so it's affected by gravity and other forces.
+            dragPositionTarget = nil
+            dragPositionStart = nil
+        default:
+            print("unknown state: \(gestureRecognize.state)")
+        }
+    }
+    
+    @objc
+    func clickHandler(_ gestureRecognize: NSClickGestureRecognizer) {
+        guard let view = self.view else {
+            return
+        }
+        
+        // * let's see what was clicked *
+        let p = gestureRecognize.location(in: view)
+        
+        let scenePoint = view.convert(p, to: self)
+        
+        let node: SKNode?
+        if self.nodes(at: scenePoint).count > 1 {
+            var distance = Double.infinity
+            var closestNode: SKNode?
+            for tryNode in self.nodes(at: scenePoint) {
+                let xDistance = tryNode.position.x - scenePoint.x
+                let yDistance = tryNode.position.y - scenePoint.y
+                let tryDistance = Double(xDistance * xDistance + yDistance * yDistance)
+                if tryDistance < distance {
+                    distance = tryDistance
+                    closestNode = tryNode
+                }
+            }
+            node = closestNode
+        } else {
+            node = self.nodes(at: scenePoint).first
+        }
+        
+        if let node = node as? SKSpriteNode {
+            hexMapController.clickedNode(node)
+        }
     }
     
     func setZoom(delta zoomDelta: CGFloat) {
         var newZoom = (self.camera?.xScale ?? 1) + zoomDelta
         if newZoom < 1 {
             newZoom = 1
-        } else if newZoom > 4 {
-            newZoom = 4
+        } else if newZoom > HexMapScene.MAX_ZOOM {
+            newZoom = HexMapScene.MAX_ZOOM
         }
         cameraScale = newZoom
         //print("cameraScale: \(cameraScale)")
-    }
-    
-    override func mouseDown(with event: NSEvent) {
-        self.touchDown(atPoint: event.location(in: self))
-    }
-    
-    override func mouseDragged(with event: NSEvent) {
-        self.touchMoved(toPoint: event.location(in: self))
-    }
-    
-    override func mouseUp(with event: NSEvent) {
-        self.touchUp(atPoint: event.location(in: self))
     }
     
     override func scrollWheel(with event: NSEvent) {
         //print("scrollWheel \(event.scrollingDeltaY * 0.1)")
         self.setZoom(delta: event.scrollingDeltaY * 0.1)
     }
-    
-    override func keyDown(with event: NSEvent) {
-        switch event.keyCode {
-        case 0x31:
-            if let label = self.label {
-                label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
-            }
-        default:
-            print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
-        }
-    }
-    
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
@@ -141,13 +146,13 @@ class HexMapScene: SKScene {
         
         camera?.setScale(cameraScale)
         
-        // Calculate time since last update
+        /*// Calculate time since last update
         let dt = currentTime - self.lastUpdateTime
         
         // Update entities
         for entity in self.entities {
             entity.update(deltaTime: dt)
-        }
+        } */
         
         self.lastUpdateTime = currentTime
     }

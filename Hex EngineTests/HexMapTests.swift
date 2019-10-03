@@ -139,8 +139,9 @@ class HexMapTests: XCTestCase {
     
 
     func testHexMapRebuildPathfindingGraphPerformance() {
-        // This is an example of a performance test case.
-        let hexMap = WorldFactory.CreateWorld(width: 200, height: 100)
+        // Rebuilding the pathfinding graph is notoriously expensive
+        // This tests how long it takes to rebuild the pathfinding graph for a Civ VI HUGE map (106x66 tiles)
+        let hexMap = WorldFactory.CreateWorld(width: 106, height: 66)
         var pass = 1
         self.measure {
             // Put the code you want to measure the time of here.

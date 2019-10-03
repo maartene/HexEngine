@@ -10,7 +10,7 @@ import Foundation
 import SpriteKit
 import GameplayKit
 
-class HexMap {
+struct HexMap {
     
     private static let cubeDirections = [
         CubeCoord(x: +1, y: -1, z: 0), CubeCoord(x: +1, y: 0, z: -1), CubeCoord(x: 0, y: +1, z: -1),
@@ -226,7 +226,7 @@ class HexMap {
     
     // we use this function to rebuild the pathfinding graph. this is required for instance
     // when terrain changes. 
-    func rebuildPathFindingGraph() {
+    mutating func rebuildPathFindingGraph() {
         // start by clearing out the old pathfinding data
         pathfindingGraph.nodes?.forEach {
             $0.removeConnections(to: $0.connectedNodes, bidirectional: false)
@@ -320,6 +320,12 @@ struct AxialCoord: Equatable, Hashable {
     
     static func +(lhs: AxialCoord, rhs: AxialCoord) -> AxialCoord {
         return AxialCoord(q: lhs.q + rhs.q, r: lhs.r + rhs.r)
+    }
+    
+    static var zero: AxialCoord {
+        get {
+            return AxialCoord(q: 0, r: 0)
+        }
     }
     
     func toCube() -> CubeCoord {

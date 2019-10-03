@@ -13,28 +13,40 @@ protocol HexMapSceneDelegate {
     
 }
 
-class HexMapController {
+struct HexMapController {
+    
+    let world: World
 
     let scene: SKScene
     let tileWidth: Double
     let tileHeight: Double
+    let tileYOffsetFactor: Double
     
     var tileSKSpriteNodeMap = [AxialCoord: SKSpriteNode]()
     
     var selectedTiles = [SKSpriteNode]()
     
-    init(skScene: SKScene, tileWidth: Double, tileHeight: Double) {
-        self.scene = skScene
-        self.tileHeight = tileHeight
+    var unitController: UnitController
+    
+    init(scene: SKScene, world: World, tileWidth: Double, tileHeight: Double, tileYOffsetFactor: Double) {
+        self.scene = scene
+        self.world = world
         self.tileWidth = tileWidth
+        self.tileHeight = tileHeight
+        self.tileYOffsetFactor = tileYOffsetFactor
+        unitController = UnitController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
     }
-
-    func hexToPixel(_ hex: AxialCoord) -> CGPoint {
+    
+    static func hexToPixel(_ hex: AxialCoord, tileWidth: Double, tileHeight: Double, tileYOffsetFactor: Double) -> CGPoint {
         //let x = tileWidth * (sqrt(2.0) * Double(hex.q) + sqrt(2)/2.0 * Double(hex.r))
         //let y = tileHeight * (3.0 / 2 * Double(hex.r))
         let x = tileWidth * (0.5 * Double(hex.r) + Double(hex.q))
-        let y = tileHeight * Double(hex.r) * 0.75
+        let y = tileHeight * Double(hex.r) * tileYOffsetFactor
         return CGPoint(x: x, y: y)
+    }
+    
+    func hexToPixel(_ hex: AxialCoord) -> CGPoint {
+        return Self.hexToPixel(hex, tileWidth: self.tileWidth, tileHeight: self.tileHeight, tileYOffsetFactor: self.tileYOffsetFactor)
     }
     
     /*func pixelToHex(_ point: CGPoint) -> AxialCoord {
@@ -51,14 +63,14 @@ class HexMapController {
         return cubeCoord.toAxial()
     }*/
     
-    func showMap(map: HexMap) {
-        for coord in map.getTileCoordinates() {
+    mutating func showMap() {
+        for coord in world.hexMap.getTileCoordinates() {
             let q = coord.q
             let r = coord.r
             
-            if map[q,r] != .void {
+            if world.hexMap[q,r] != .void {
                 let spriteName: String
-                switch map[q,r] {
+                switch world.hexMap[q,r] {
                 case .Forest:
                     spriteName = "grass_13"
                 case .Grass:
@@ -82,25 +94,43 @@ class HexMapController {
                 tile.colorBlendFactor = 1.0
                 
                 // add x/y/z coordinates to tile as text
+                /*
                 let label = SKLabelNode(text: "\(q),\(r)")
                 label.zPosition = tile.zPosition + 1
                 tile.addChild(label)
+                 */
                 
                 tileSKSpriteNodeMap[AxialCoord(q: q, r: r)] = tile
                 
                 scene.addChild(tile)
             }
-            
-            
-                
         }
     }
     
-    func middleOfMapInWorldSpace(map: HexMap) -> CGPoint {
+    func middleOfMapInWorldSpace() -> CGPoint {
         return hexToPixel(AxialCoord(q: 0, r: 0))
     }
     
-    func tilesAtPosition(pos: CGPoint) {
+    func clickedNode(_ node: SKSpriteNode) {
+        // first, determine what kind of node this is.
+        // is it a unit?
+        if unitController.unitSpriteMap.values.contains(node) {
+            
+            print("Clicked unit node: node")
+            node.color = SKColor.blue
+        } else if tileSKSpriteNodeMap.values.contains(node) {
+            if let q = node.userData?["q"] as? Int, let r = node.userData?["r"] as? Int {
+                print("Clicked tile at coord \(q), \(r)", node)
+                // highlight tile
+                node.color = SKColor.red
+            }
+        }
+        
+        
+        
+    }
+    
+    func clickAtPosition(pos: CGPoint, map: HexMap) {
         let node: SKNode?
         if scene.nodes(at: pos).count > 1 {
             var distance = Double.infinity
@@ -118,25 +148,5 @@ class HexMapController {
         } else {
             node = scene.nodes(at: pos).first
         }
-        
-        if let node = node as? SKSpriteNode, let q = node.userData?["q"] as? Int, let r = node.userData?["r"] as? Int {
-            selectedTiles.forEach {
-                $0.color = SKColor.white
-            }
-            
-            
-            node.color = SKColor.red
-            selectedTiles.append(node)
-            let coord = AxialCoord(q: q, r: r)
-            
-            for dir in 0 ..< 6 {
-                let neighbourCoord = HexMap.axialNeighbourCoord(tile: coord, directionIndex: dir)
-                if let neighbourNode = tileSKSpriteNodeMap[neighbourCoord] {
-                    neighbourNode.color = SKColor.green
-                    selectedTiles.append(neighbourNode)
-                }
-            }
-        }
     }
-    
 }
