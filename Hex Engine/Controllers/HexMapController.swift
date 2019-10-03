@@ -24,7 +24,7 @@ struct HexMapController {
     
     var tileSKSpriteNodeMap = [AxialCoord: SKSpriteNode]()
     
-    var selectedTiles = [SKSpriteNode]()
+    var selectedTile: AxialCoord?
     
     var unitController: UnitController
     
@@ -35,6 +35,10 @@ struct HexMapController {
         self.tileHeight = tileHeight
         self.tileYOffsetFactor = tileYOffsetFactor
         unitController = UnitController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
+        
+        world.allUnits.forEach { unit in
+            Unit.onUnitCreate?(unit)
+        }
     }
     
     static func hexToPixel(_ hex: AxialCoord, tileWidth: Double, tileHeight: Double, tileYOffsetFactor: Double) -> CGPoint {
@@ -111,18 +115,26 @@ struct HexMapController {
         return hexToPixel(AxialCoord(q: 0, r: 0))
     }
     
-    func clickedNode(_ node: SKSpriteNode) {
+    mutating func clickedNode(_ node: SKSpriteNode) {
+        print("clickedNode: \(node)")
         // first, determine what kind of node this is.
         // is it a unit?
         if unitController.unitSpriteMap.values.contains(node) {
             
-            print("Clicked unit node: node")
-            node.color = SKColor.blue
+            print("Clicked unit node: \(node)")
+            // get unit for the node
+            if let unitID = unitController.getUnitForNode(node) {
+                if let unit = try? world.getUnitWithID(unitID) {
+                    unitController.selectUnit(unit)
+                    print("clicked unit: \(unit)")
+                }
+            }
+            
         } else if tileSKSpriteNodeMap.values.contains(node) {
             if let q = node.userData?["q"] as? Int, let r = node.userData?["r"] as? Int {
                 print("Clicked tile at coord \(q), \(r)", node)
                 // highlight tile
-                node.color = SKColor.red
+                selectTile(AxialCoord(q: q, r: r))
             }
         }
         
@@ -147,6 +159,26 @@ struct HexMapController {
             node = closestNode
         } else {
             node = scene.nodes(at: pos).first
+        }
+    }
+    
+    mutating func selectTile(_ tile: AxialCoord) {
+        if let previousTile = selectedTile {
+            if let previousSprite = tileSKSpriteNodeMap[previousTile] {
+                previousSprite.removeAllChildren()
+                selectedTile = nil
+            }
+        }
+        
+        if let sprite = tileSKSpriteNodeMap[tile] {
+            let radius = max(sprite.size.width, sprite.size.height) / 2.0
+            let circle = SKShapeNode(circleOfRadius: radius)
+            circle.zPosition = sprite.zPosition + 0.1
+            circle.strokeColor = SKColor.white
+            circle.lineWidth = 2.0
+            circle.glowWidth = 4.0
+            sprite.addChild(circle)
+            selectedTile = tile
         }
     }
 }

@@ -14,12 +14,10 @@ class HexMapScene: SKScene {
     
     static let MAX_ZOOM: CGFloat = 8.0
     
-    var entities = [GKEntity]()
-    var graphs = [String : GKGraph]()
+    //var entities = [GKEntity]()
+    //var graphs = [String : GKGraph]()
     
-    private var lastUpdateTime : TimeInterval = 0
-    private var label : SKLabelNode?
-    private var spinnyNode : SKShapeNode?
+    // private var lastUpdateTime : TimeInterval = 0
     
     var dragPositionStart:CGPoint?
     var dragPositionTarget:CGPoint?
@@ -29,7 +27,7 @@ class HexMapScene: SKScene {
     
     override func sceneDidLoad() {
         
-        self.lastUpdateTime = 0
+        //self.lastUpdateTime = 0
         
         let world = World(width: 84, height: 54, hexMapFactory: WorldFactory.CreateWorld)
     
@@ -139,9 +137,9 @@ class HexMapScene: SKScene {
             camera?.position = currentPosition + movement
             
             // Initialize _lastUpdateTime if it has not already been
-            if (self.lastUpdateTime == 0) {
-                self.lastUpdateTime = currentTime
-            }
+//            if (self.lastUpdateTime == 0) {
+//                self.lastUpdateTime = currentTime
+//            }
         }
         
         camera?.setScale(cameraScale)
@@ -154,6 +152,6 @@ class HexMapScene: SKScene {
             entity.update(deltaTime: dt)
         } */
         
-        self.lastUpdateTime = currentTime
+//        self.lastUpdateTime = currentTime
     }
 }
