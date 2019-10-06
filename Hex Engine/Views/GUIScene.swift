@@ -21,32 +21,32 @@ struct GUI {
 
 final class GUIScene: SKScene {
     var tileInfoLabel: LabelPanel
-    var unitInfoLabel: LabelPanel
+    var unitInfoWindow: UnitInfoWindow
     
     var viewController: ViewController?
     
-    var nextTurnButton: SKButton
+    var nextTurnButton: Button
     
     override init(size: CGSize) {
         tileInfoLabel = LabelPanel(text: "A lot of text, but multiline doesn't work.")
         tileInfoLabel.position = CGPoint(x: GUI.PADDING, y: GUI.PADDING)
 
-        unitInfoLabel = LabelPanel(text: "Some info about a unit.")
-        unitInfoLabel.position = CGPoint(x: GUI.PADDING, y: size.height - 200)
-        let button = SKButton(imageNamed: "blue_button06")
-        button.isUserInteractionEnabled = true
-        unitInfoLabel.addChild(button)
+        unitInfoWindow = UnitInfoWindow()
+        let unitInfoWindowSize = unitInfoWindow.calculateAccumulatedFrame()
+        unitInfoWindow.position = CGPoint(x: GUI.PADDING, y: size.height - unitInfoWindowSize.height - GUI.PADDING)
+        unitInfoWindow.isHidden = true
         
-        nextTurnButton = SKButton(imageNamed: "blue_button06")
-        nextTurnButton.size = CGSize(width: 200, height: 200)
-        nextTurnButton.position = CGPoint(x: size.width, y: size.height) - CGPoint(x: nextTurnButton.size.width / 2.0, y:nextTurnButton.size.height)
+        nextTurnButton = Button(text: "Next turn")
+        nextTurnButton.setFontSize(to: 24.0)
+        let nextTurnButtonSize = nextTurnButton.calculateAccumulatedFrame()
+        nextTurnButton.position = CGPoint(x: size.width, y: 0) + CGPoint(x: -nextTurnButtonSize.width, y: 0) + CGPoint(x: -GUI.PADDING, y: GUI.PADDING)
         
         super.init(size: size)
         
         backgroundColor = SKColor.clear
         addChild(tileInfoLabel)
-        addChild(unitInfoLabel)
         addChild(nextTurnButton)
+        addChild(unitInfoWindow)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -68,24 +68,14 @@ final class GUIScene: SKScene {
         }
         
         scene.hexMapController.unitController.unitBecameSelected = { unit in
-            self.unitInfoLabel.isHidden = false
-            self.unitInfoLabel.text =
-            """
-            Unit: \(unit.name) - (id: \(unit.id))
-            Position: \(unit.position)
-            Movement left: \(unit.movement)
-            """
+            self.unitInfoWindow.unitToShow = unit
             
-            if let button = (self.unitInfoLabel.children.compactMap { child in
-                child as? SKButton
-            }.first) {
-                print("Setting button action.")
-                button.clickAction = { scene.hexMapController.uiState = .selectTile }
-            }
+            let button = self.unitInfoWindow.moveButton
+            button.clickAction = { scene.hexMapController.uiState = .selectTile }
         }
         
         scene.hexMapController.unitController.unitBecameDeselected = { unitID in
-            self.unitInfoLabel.isHidden = true
+            self.unitInfoWindow.unitToShow = nil
         }
         
         nextTurnButton.clickAction = {
@@ -95,7 +85,7 @@ final class GUIScene: SKScene {
     
     func isOverButton(point: CGPoint) -> Bool {
         for node in nodes(at: point) {
-            if let _ = node as? SKButton {
+            if let _ = node as? Button {
                 return true
             }
         }
@@ -104,7 +94,7 @@ final class GUIScene: SKScene {
     
     func clickButton(at point: CGPoint) {
         let buttons = nodes(at: point).compactMap { node in
-            node as? SKButton
+            node as? Button
         }
         
         if buttons.count == 0 {

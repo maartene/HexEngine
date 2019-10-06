@@ -9,7 +9,7 @@
 import Foundation
 import SpriteKit
 
-class SKButton: SKSpriteNode {
+class Button: LabelPanel {
     
     var clickAction: (() -> Void)?
     

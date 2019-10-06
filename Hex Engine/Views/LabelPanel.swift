@@ -9,7 +9,7 @@
 import Foundation
 import SpriteKit
 
-final class LabelPanel: SKNode {
+class LabelPanel: SKNode {
     let labelNode: SKLabelNode
     var backgroundNode: SKShapeNode
     
@@ -17,17 +17,7 @@ final class LabelPanel: SKNode {
     var text = "" {
         didSet {
             labelNode.text = text
-            let backgroundColor = backgroundNode.fillColor
-            
-            labelNode.removeAllChildren()
-            
-            backgroundNode = SKShapeNode(rect: CGRect(x: 0, y: 0, width: labelNode.frame.width + 2 * GUI.MARGIN, height: labelNode.frame.height + 2 * GUI.MARGIN), cornerRadius: GUI.CORNER_RADIUS)
-            
-            backgroundNode.position = CGPoint(x: -GUI.MARGIN, y: -GUI.MARGIN)
-            backgroundNode.fillColor = backgroundColor
-            backgroundNode.zPosition = -0.05
-            
-            labelNode.addChild(backgroundNode)
+            recreateBackground()
         }
     }
     
@@ -57,9 +47,27 @@ final class LabelPanel: SKNode {
         self.addChild(labelNode)
     }
     
-    
+    func setFontSize(to size: CGFloat) {
+        labelNode.fontSize = size
+        
+        recreateBackground()
+    }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func recreateBackground() {
+        let backgroundColor = backgroundNode.fillColor
+        
+        labelNode.removeAllChildren()
+        
+        backgroundNode = SKShapeNode(rect: CGRect(x: 0, y: 0, width: labelNode.frame.width + 2 * GUI.MARGIN, height: labelNode.frame.height + 2 * GUI.MARGIN), cornerRadius: GUI.CORNER_RADIUS)
+        
+        backgroundNode.position = CGPoint(x: -GUI.MARGIN, y: -GUI.MARGIN)
+        backgroundNode.fillColor = backgroundColor
+        backgroundNode.zPosition = -0.05
+        
+        labelNode.addChild(backgroundNode)
     }
 }
