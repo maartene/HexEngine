@@ -14,11 +14,6 @@ class HexMapScene: SKScene {
     
     static let MAX_ZOOM: CGFloat = 8.0
     
-    //var entities = [GKEntity]()
-    //var graphs = [String : GKGraph]()
-    
-    // private var lastUpdateTime : TimeInterval = 0
-    
     var dragPositionStart:CGPoint?
     var dragPositionTarget:CGPoint?
     var cameraScale: CGFloat = 1.0

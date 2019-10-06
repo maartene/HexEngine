@@ -9,11 +9,7 @@
 import Foundation
 import SpriteKit
 
-protocol HexMapSceneDelegate {
-    
-}
-
-struct HexMapController {
+class HexMapController {
     
     let world: World
 
@@ -24,7 +20,20 @@ struct HexMapController {
     
     var tileSKSpriteNodeMap = [AxialCoord: SKSpriteNode]()
     
-    var selectedTile: AxialCoord?
+    var tileBecameSelected: ((AxialCoord, Tile) -> Void)?
+    
+    var selectedTile: AxialCoord? {
+        didSet {
+            if let oldSelectedTile = oldValue {
+                tileBecameDeSelected(tile: oldSelectedTile)
+            }
+            if let newSelectedTile = selectedTile {
+                let tile = world.hexMap[newSelectedTile.q, newSelectedTile.r]
+                tileBecameSelected?(newSelectedTile, tile)
+                //tileBecameSelected(tile: newSelectedTile)
+            }
+        }
+    }
     
     var unitController: UnitController
     
@@ -67,7 +76,7 @@ struct HexMapController {
         return cubeCoord.toAxial()
     }*/
     
-    mutating func showMap() {
+    func showMap() {
         for coord in world.hexMap.getTileCoordinates() {
             let q = coord.q
             let r = coord.r
@@ -115,7 +124,7 @@ struct HexMapController {
         return hexToPixel(AxialCoord(q: 0, r: 0))
     }
     
-    mutating func clickedNode(_ node: SKSpriteNode) {
+    func clickedNode(_ node: SKSpriteNode) {
         print("clickedNode: \(node)")
         // first, determine what kind of node this is.
         // is it a unit?
@@ -126,6 +135,7 @@ struct HexMapController {
             if let unitID = unitController.getUnitForNode(node) {
                 if let unit = try? world.getUnitWithID(unitID) {
                     unitController.selectUnit(unit)
+                    deselectTile()
                     print("clicked unit: \(unit)")
                 }
             }
@@ -133,43 +143,23 @@ struct HexMapController {
         } else if tileSKSpriteNodeMap.values.contains(node) {
             if let q = node.userData?["q"] as? Int, let r = node.userData?["r"] as? Int {
                 print("Clicked tile at coord \(q), \(r)", node)
-                // highlight tile
+                deselectTile()
                 selectTile(AxialCoord(q: q, r: r))
+                unitController.deselectUnit()
             }
-        }
-        
-        
-        
-    }
-    
-    func clickAtPosition(pos: CGPoint, map: HexMap) {
-        let node: SKNode?
-        if scene.nodes(at: pos).count > 1 {
-            var distance = Double.infinity
-            var closestNode: SKNode?
-            for tryNode in scene.nodes(at: pos) {
-                let xDistance = tryNode.position.x - pos.x
-                let yDistance = tryNode.position.y - pos.y
-                let tryDistance = Double(xDistance * xDistance + yDistance * yDistance)
-                if tryDistance < distance {
-                    distance = tryDistance
-                    closestNode = tryNode
-                }
-            }
-            node = closestNode
-        } else {
-            node = scene.nodes(at: pos).first
         }
     }
     
-    mutating func selectTile(_ tile: AxialCoord) {
+    func deselectTile() {
         if let previousTile = selectedTile {
             if let previousSprite = tileSKSpriteNodeMap[previousTile] {
                 previousSprite.removeAllChildren()
                 selectedTile = nil
             }
         }
-        
+    }
+    
+    func selectTile(_ tile: AxialCoord) {
         if let sprite = tileSKSpriteNodeMap[tile] {
             let radius = max(sprite.size.width, sprite.size.height) / 2.0
             let circle = SKShapeNode(circleOfRadius: radius)
@@ -180,5 +170,9 @@ struct HexMapController {
             sprite.addChild(circle)
             selectedTile = tile
         }
+    }
+    
+    func tileBecameDeSelected(tile: AxialCoord) {
+        print("\(tile) was deselected.")
     }
 }

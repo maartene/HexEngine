@@ -315,7 +315,11 @@ struct CubeCoord: Equatable, Hashable {
     }
 }
 
-struct AxialCoord: Equatable, Hashable {
+struct AxialCoord: Equatable, Hashable, CustomStringConvertible {
+    var description: String {
+        return "(q: \(q),r: \(r))"
+    }
+    
     let q, r: Int
     
     static func +(lhs: AxialCoord, rhs: AxialCoord) -> AxialCoord {

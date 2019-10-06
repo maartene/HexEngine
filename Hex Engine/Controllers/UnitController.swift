@@ -19,6 +19,9 @@ class UnitController {
     
     var selectedUnit: Int?
     
+    var unitBecameSelected: ((Unit) -> Void)?
+    var unitBecameDeselected: ((Int) -> Void)?
+    
     init(with scene: SKScene, tileWidth: Double, tileHeight: Double, tileYOffsetFactor: Double) {
         self.scene = scene
         self.tileWidth = tileWidth
@@ -69,12 +72,8 @@ class UnitController {
     }
     
     func selectUnit(_ unit: Unit) {
-        if let selectedUnitID = selectedUnit {
-            if let previousSelectedUnit = unitSpriteMap[selectedUnitID] {
-                previousSelectedUnit.removeAllChildren()
-                selectedUnit = nil
-            }
-        }
+        deselectUnit()
+        
         if let sprite = unitSpriteMap[unit.id] {
             let radius = max(sprite.size.width, sprite.size.height) / 2.0
             let circle = SKShapeNode(circleOfRadius: radius)
@@ -82,7 +81,20 @@ class UnitController {
             circle.lineWidth = 2.0
             circle.glowWidth = 4.0
             sprite.addChild(circle)
-            selectedUnit = unit.id
+        }
+        
+        selectedUnit = unit.id
+        unitBecameSelected?(unit)
+        
+    }
+    
+    func deselectUnit() {
+        if let selectedUnitID = selectedUnit {
+            unitBecameDeselected?(selectedUnitID)
+            if let previousSelectedUnit = unitSpriteMap[selectedUnitID] {
+                previousSelectedUnit.removeAllChildren()
+                selectedUnit = nil
+            }
         }
     }
 }
