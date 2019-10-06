@@ -359,7 +359,7 @@ enum Tile: Int {
         case .Sand:
             return 1.0
         case .Forest:
-            return 1.5
+            return 2
         default:
             return -1
         }

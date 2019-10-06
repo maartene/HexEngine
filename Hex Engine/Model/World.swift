@@ -44,4 +44,24 @@ struct World {
     var allUnits: [Unit] {
         return units
     }
+    
+    mutating func nextTurn() {
+        print("next turn!")
+        for (index, unit) in units.enumerated() {
+            units[index] = unit.step(hexMap: hexMap)
+        }
+    }
+    
+    mutating func setPath(for unitID: Int, path: [AxialCoord]) {
+        guard let unitIndex = (units.firstIndex { unit in
+            unit.id == unitID
+        }) else {
+            print("unit with index \(unitID) not found.")
+            return
+        }
+        
+        var unit = units[unitIndex]
+        unit.path = path
+        units[unitIndex] = unit
+    }
 }

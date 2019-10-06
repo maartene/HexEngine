@@ -9,7 +9,7 @@
 import Foundation
 import SpriteKit
 
-class UnitController {
+final class UnitController {
     let scene: SKScene
     let tileWidth: Double
     let tileHeight: Double
@@ -93,7 +93,7 @@ class UnitController {
             unitBecameDeselected?(selectedUnitID)
             if let previousSelectedUnit = unitSpriteMap[selectedUnitID] {
                 previousSelectedUnit.removeAllChildren()
-                selectedUnit = nil
+                //selectedUnit = nil
             }
         }
     }

@@ -11,64 +11,111 @@ import SpriteKit
 import GameplayKit
 
 class ViewController: NSViewController {
-
-    static let PADDING: CGFloat = 4.0
     
     @IBOutlet var skView: SKView!
     
+    var hexMapScene: HexMapScene!
+    var guiView: SKView!
+    var guiScene: GUIScene!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        hexMapScene = HexMapScene(size: CGSize(width: skView.bounds.width, height: skView.bounds.height))
+        hexMapScene.scaleMode = .aspectFill
         
-        
-        let scene = HexMapScene(size: CGSize(width: skView.bounds.width, height: skView.bounds.height))
-        scene.scaleMode = .aspectFill
-        
-        let guiView = SKView(frame: skView.frame)
+        guiView = SKView(frame: skView.frame)
         guiView.allowsTransparency = true
-        let guiScene = SKScene(size: skView.frame.size)
-        guiScene.backgroundColor = SKColor.clear
+        guiScene = GUIScene(size: skView.frame.size)
+        guiScene.viewController = self
+        guiScene.connectToScene(scene: hexMapScene)
         guiView.presentScene(guiScene)
-        
-        let tileInfoLabel = LabelPanel(text: "A lot of text, but multiline doesn't work.")
-        tileInfoLabel.position = CGPoint(x: Self.PADDING, y: Self.PADDING)
-        guiScene.addChild(tileInfoLabel)
-        scene.hexMapController.tileBecameSelected = { coord, tile in
-            tileInfoLabel.text =
-            """
-            Tile: \(coord) - \(tile)
-            Movement cost: \(tile.costToEnter)
-            """
-        }
-        
-        let unitInfoLabel = LabelPanel(text: "Some info about a unit.")
-        unitInfoLabel.position = CGPoint(x: Self.PADDING, y: skView.frame.height - 200)
-        guiScene.addChild(unitInfoLabel)
-        scene.hexMapController.unitController.unitBecameSelected = { unit in
-            unitInfoLabel.isHidden = false
-            unitInfoLabel.text =
-            """
-            Unit: \(unit.name) - (id: \(unit.id))
-            Position: \(unit.position)
-            Movement left: \(unit.movement)
-            """
-        }
-        
-        scene.hexMapController.unitController.unitBecameDeselected = { unitID in
-            unitInfoLabel.isHidden = true
-        }
-        
         skView.addSubview(guiView)
-        
-        //scene.becomeFirstResponder()
         
         // Present the scene
         skView.allowsTransparency = true
-        skView.presentScene(scene)
+        skView.presentScene(hexMapScene)
         
         skView.ignoresSiblingOrder = true
         
         skView.showsFPS = true
         skView.showsNodeCount = true
+        
+        
+        // Gesture recognizers
+        let panGestureRecognizer = NSPanGestureRecognizer(target: self, action: #selector(panHandler))
+        view.addGestureRecognizer(panGestureRecognizer)
+        
+        let clickGestureRecognizer = NSClickGestureRecognizer(target: self, action: #selector(clickHandler))
+        view.addGestureRecognizer(clickGestureRecognizer)
+        
+        let zoomGestureRecognizer = NSMagnificationGestureRecognizer(target: self, action: #selector(zoomHandler))
+        view.addGestureRecognizer(zoomGestureRecognizer)
+    }
+    
+    // recognize gestures
+    // drag map around
+    @objc
+    func panHandler(_ gestureRecognize: NSPanGestureRecognizer) {
+        // get the position within the view where the gesture event happened.
+        let p = gestureRecognize.location(in: skView)
+        
+        // convert the position within the view to position within the scene
+        let scenePoint = skView.convert(p, to: hexMapScene)
+        
+        switch gestureRecognize.state {
+        case .began:
+            hexMapScene.dragPositionStart = scenePoint
+        case .changed:
+            hexMapScene.dragPositionTarget = scenePoint
+        case .ended:
+            // make the block dynamic again, so it's affected by gravity and other forces.
+            hexMapScene.dragPositionTarget = nil
+            hexMapScene.dragPositionStart = nil
+        default:
+            print("unknown state: \(gestureRecognize.state)")
+        }
+    }
+    
+    @objc
+    func clickHandler(_ gestureRecognize: NSClickGestureRecognizer) {
+        // * let's see what was clicked *
+        let point = gestureRecognize.location(in: skView)
+
+        // first, check whether this point is over a node in the gui scene
+        let guiScenePoint = guiView.convert(point, to: guiScene)
+        if guiScene.isOverButton(point: guiScenePoint) {
+            guiScene.clickButton(at: guiScenePoint)
+        } else {
+        
+            let scenePoint = skView.convert(point, to: hexMapScene)
+            
+            let node: SKNode?
+            if hexMapScene.nodes(at: scenePoint).count > 1 {
+                var distance = Double.infinity
+                var closestNode: SKNode?
+                for tryNode in hexMapScene.nodes(at: scenePoint) {
+                    let xDistance = tryNode.position.x - scenePoint.x
+                    let yDistance = tryNode.position.y - scenePoint.y
+                    let tryDistance = Double(xDistance * xDistance + yDistance * yDistance)
+                    if tryDistance < distance {
+                        distance = tryDistance
+                        closestNode = tryNode
+                    }
+                }
+                node = closestNode
+            } else {
+                node = hexMapScene.nodes(at: scenePoint).first
+            }
+            
+            if let node = node as? SKSpriteNode {
+                hexMapScene.hexMapController.clickedNode(node)
+            }
+        }
+    }
+    
+    @objc
+    func zoomHandler(_ gestureRecognize: NSMagnificationGestureRecognizer) {
+        hexMapScene.setZoom(delta: gestureRecognize.magnification * 0.5)
     }
 }
 

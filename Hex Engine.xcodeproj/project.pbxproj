@@ -16,6 +16,8 @@
 		DE13AD2C2257DFBF00136AFE /* SKView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE13AD2B2257DFBF00136AFE /* SKView+Extension.swift */; };
 		DE538AE5225DED11007104A9 /* HexMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE538AE4225DED11007104A9 /* HexMapTests.swift */; };
 		DE6BE6272257E0F20027380C /* HexMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6BE6262257E0F20027380C /* HexMap.swift */; };
+		DE746A372349EA85006B4AE8 /* GUIScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE746A362349EA85006B4AE8 /* GUIScene.swift */; };
+		DE746A392349F53B006B4AE8 /* SKButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE746A382349F53B006B4AE8 /* SKButton.swift */; };
 		DEA62F702348C2E1004BCF8B /* LabelPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA62F6F2348C2E1004BCF8B /* LabelPanel.swift */; };
 		DEA62F722349D71F004BCF8B /* TileInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA62F712349D71F004BCF8B /* TileInfoView.swift */; };
 		DEB0A9A1226218AB005770B2 /* WorldFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0A9A0226218AB005770B2 /* WorldFactory.swift */; };
@@ -53,6 +55,8 @@
 		DE13AD2B2257DFBF00136AFE /* SKView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SKView+Extension.swift"; sourceTree = "<group>"; };
 		DE538AE4225DED11007104A9 /* HexMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMapTests.swift; sourceTree = "<group>"; };
 		DE6BE6262257E0F20027380C /* HexMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMap.swift; sourceTree = "<group>"; };
+		DE746A362349EA85006B4AE8 /* GUIScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GUIScene.swift; sourceTree = "<group>"; };
+		DE746A382349F53B006B4AE8 /* SKButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKButton.swift; sourceTree = "<group>"; };
 		DEA62F6F2348C2E1004BCF8B /* LabelPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelPanel.swift; sourceTree = "<group>"; };
 		DEA62F712349D71F004BCF8B /* TileInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileInfoView.swift; sourceTree = "<group>"; };
 		DEB0A9A0226218AB005770B2 /* WorldFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldFactory.swift; sourceTree = "<group>"; };
@@ -156,6 +160,8 @@
 			children = (
 				DEA62F6F2348C2E1004BCF8B /* LabelPanel.swift */,
 				DEA62F712349D71F004BCF8B /* TileInfoView.swift */,
+				DE746A362349EA85006B4AE8 /* GUIScene.swift */,
+				DE746A382349F53B006B4AE8 /* SKButton.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -278,6 +284,8 @@
 				DEFFE2832258B5C400D9AE5A /* CGPoint+Extension.swift in Sources */,
 				DEF58F0222874D7C0020B473 /* World.swift in Sources */,
 				DEF58EFF22874CCD0020B473 /* Unit.swift in Sources */,
+				DE746A372349EA85006B4AE8 /* GUIScene.swift in Sources */,
+				DE746A392349F53B006B4AE8 /* SKButton.swift in Sources */,
 				DECCAD862266650C002D820E /* HexMapRules.swift in Sources */,
 				DEA62F722349D71F004BCF8B /* TileInfoView.swift in Sources */,
 				DEB0A9A1226218AB005770B2 /* WorldFactory.swift in Sources */,

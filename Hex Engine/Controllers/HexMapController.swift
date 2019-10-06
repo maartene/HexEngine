@@ -9,9 +9,14 @@
 import Foundation
 import SpriteKit
 
+enum UI_State {
+    case map
+    case selectTile
+}
+
 class HexMapController {
     
-    let world: World
+    var world: World
 
     let scene: SKScene
     let tileWidth: Double
@@ -21,6 +26,9 @@ class HexMapController {
     var tileSKSpriteNodeMap = [AxialCoord: SKSpriteNode]()
     
     var tileBecameSelected: ((AxialCoord, Tile) -> Void)?
+    var tileBecameDeselected: ((AxialCoord) -> Void)?
+    
+    var uiState = UI_State.map
     
     var selectedTile: AxialCoord? {
         didSet {
@@ -148,6 +156,21 @@ class HexMapController {
                 unitController.deselectUnit()
             }
         }
+        
+        if uiState == .selectTile {
+            if let unitID = unitController.selectedUnit, let tile = selectedTile {
+                if let unit = try? world.getUnitWithID(unitID) {
+                    world.hexMap.rebuildPathFindingGraph()
+                    if let path = world.hexMap.findPathFrom(unit.position, to: tile) {
+                        world.setPath(for: unitID, path: path)
+                        print("Calculate path: \(path)")
+                    } else {
+                        print("No valid path from \(unit.position) to \(tile).")
+                    }
+                }
+            }
+            uiState = .map
+        }
     }
     
     func deselectTile() {
@@ -155,6 +178,7 @@ class HexMapController {
             if let previousSprite = tileSKSpriteNodeMap[previousTile] {
                 previousSprite.removeAllChildren()
                 selectedTile = nil
+                tileBecameDeselected?(previousTile)
             }
         }
     }

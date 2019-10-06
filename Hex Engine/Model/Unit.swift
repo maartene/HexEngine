@@ -13,6 +13,7 @@ struct Unit {
     let name: String
     var movement: Int
     var position: AxialCoord
+    var path = [AxialCoord]()
     
     static var onUnitCreate: ((Unit) -> Void)?
     static var onUnitChanged: ((Unit) -> Void)?
@@ -30,5 +31,29 @@ struct Unit {
     mutating func move(to position: AxialCoord) {
         self.position = position
         Self.onUnitChanged?(self)
+    }
+    
+    func step(hexMap: HexMap) -> Unit {
+        print("step for unit \(self)")
+        
+        var unit = self
+        var movementLeft = Double(unit.movement)
+        
+        while movementLeft > 0 && unit.path.count > 0 {
+            if unit.path.first! == position {
+                unit.path.remove(at: 0)
+            }
+            if unit.path.count > 0 {
+                let nextStep = unit.path.removeFirst()
+                let tile = hexMap[nextStep]
+                if tile.blocksMovement {
+                    movementLeft = 0
+                } else {
+                    movementLeft -= tile.costToEnter
+                }
+                unit.move(to: nextStep)
+            }
+        }
+        return unit
     }
 }
