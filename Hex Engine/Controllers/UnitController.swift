@@ -22,6 +22,14 @@ final class UnitController {
     var unitBecameSelected: ((Unit) -> Void)?
     var unitBecameDeselected: ((Int) -> Void)?
     
+    var pathIndicator: SKShapeNode? {
+        didSet {
+            if pathIndicator == nil, let oldValue = oldValue {
+                scene.removeChildren(in: [oldValue])
+            }
+        }
+    }
+    
     init(with scene: SKScene, tileWidth: Double, tileHeight: Double, tileYOffsetFactor: Double) {
         self.scene = scene
         self.tileWidth = tileWidth
@@ -81,6 +89,12 @@ final class UnitController {
             circle.lineWidth = 2.0
             circle.glowWidth = 4.0
             sprite.addChild(circle)
+            
+            if unit.path.count > 0 {
+                drawPath(for: unit)
+            } else {
+                pathIndicator = nil
+            }
         }
         
         selectedUnit = unit.id
@@ -89,6 +103,8 @@ final class UnitController {
     }
     
     func deselectUnit() {
+        pathIndicator = nil
+        
         if let selectedUnitID = selectedUnit {
             unitBecameDeselected?(selectedUnitID)
             if let previousSelectedUnit = unitSpriteMap[selectedUnitID] {
@@ -96,5 +112,16 @@ final class UnitController {
                 //selectedUnit = nil
             }
         }
+    }
+    
+    func drawPath(for unit: Unit) {
+        var points = unit.path.map { coord in
+            HexMapController.hexToPixel(coord, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
+        }
+        pathIndicator = SKShapeNode(points: &points, count: points.count)
+        pathIndicator?.lineWidth = 4.0
+        pathIndicator?.zPosition = 1
+        pathIndicator?.strokeColor = SKColor.blue
+        scene.addChild(pathIndicator!)
     }
 }

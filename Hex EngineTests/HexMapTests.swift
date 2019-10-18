@@ -74,7 +74,7 @@ class HexMapTests: XCTestCase {
     func testTileDidChangeHandler() {
         let tile = AxialCoord(q: 0, r: 0)
         
-        let hexMap = HexMap(width: 10, height: 10)
+        var hexMap = HexMap(width: 10, height: 10)
         
         hexMap[tile] = .Grass
         assert(hexMap[tile] == .Grass)
@@ -91,7 +91,7 @@ class HexMapTests: XCTestCase {
     
     func testPathfinding() {
         
-        let hexMap = WorldFactory.CreateWorld(width: 30, height: 20)
+        var hexMap = WorldFactory.CreateWorld(width: 30, height: 20)
         
         // find two passable tiles
         var tile1: AxialCoord?
@@ -141,7 +141,7 @@ class HexMapTests: XCTestCase {
     func testHexMapRebuildPathfindingGraphPerformance() {
         // Rebuilding the pathfinding graph is notoriously expensive
         // This tests how long it takes to rebuild the pathfinding graph for a Civ VI HUGE map (106x66 tiles)
-        let hexMap = WorldFactory.CreateWorld(width: 106, height: 66)
+        var hexMap = WorldFactory.CreateWorld(width: 106, height: 66)
         var pass = 1
         self.measure {
             // Put the code you want to measure the time of here.

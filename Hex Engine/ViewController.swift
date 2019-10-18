@@ -26,7 +26,7 @@ class ViewController: NSViewController {
         guiView = SKView(frame: skView.frame)
         guiView.allowsTransparency = true
         guiScene = GUIScene(size: skView.frame.size)
-        guiScene.viewController = self
+//        guiScene.viewController = self
         guiScene.connectToScene(scene: hexMapScene)
         guiView.presentScene(guiScene)
         skView.addSubview(guiView)
@@ -50,6 +50,8 @@ class ViewController: NSViewController {
         
         let zoomGestureRecognizer = NSMagnificationGestureRecognizer(target: self, action: #selector(zoomHandler))
         view.addGestureRecognizer(zoomGestureRecognizer)
+        
+        view.becomeFirstResponder()
     }
     
     // recognize gestures
@@ -86,28 +88,7 @@ class ViewController: NSViewController {
         if guiScene.isOverButton(point: guiScenePoint) {
             guiScene.clickButton(at: guiScenePoint)
         } else {
-        
-            let scenePoint = skView.convert(point, to: hexMapScene)
-            
-            let node: SKNode?
-            if hexMapScene.nodes(at: scenePoint).count > 1 {
-                var distance = Double.infinity
-                var closestNode: SKNode?
-                for tryNode in hexMapScene.nodes(at: scenePoint) {
-                    let xDistance = tryNode.position.x - scenePoint.x
-                    let yDistance = tryNode.position.y - scenePoint.y
-                    let tryDistance = Double(xDistance * xDistance + yDistance * yDistance)
-                    if tryDistance < distance {
-                        distance = tryDistance
-                        closestNode = tryNode
-                    }
-                }
-                node = closestNode
-            } else {
-                node = hexMapScene.nodes(at: scenePoint).first
-            }
-            
-            if let node = node as? SKSpriteNode {
+            if let node = hexMapScene.screenPointToNode(point) {
                 hexMapScene.hexMapController.clickedNode(node)
             }
         }
@@ -116,6 +97,11 @@ class ViewController: NSViewController {
     @objc
     func zoomHandler(_ gestureRecognize: NSMagnificationGestureRecognizer) {
         hexMapScene.setZoom(delta: gestureRecognize.magnification * 0.5)
+    }
+    
+    // note: this is macOS only! And it does not use a Gesture Recognizer, but assumes that ViewController is first responder. 
+    override func scrollWheel(with event: NSEvent) {
+        hexMapScene.setZoom(delta: event.scrollingDeltaY * 0.1)
     }
 }
 

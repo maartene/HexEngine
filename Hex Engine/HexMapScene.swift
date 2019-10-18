@@ -36,6 +36,38 @@ class HexMapScene: SKScene {
         self.camera?.setScale(cameraScale)
     }
     
+    func screenPointToNode(_ point: CGPoint) -> SKSpriteNode? {
+        guard let view = view else {
+            return nil
+        }
+        
+        let scenePoint = view.convert(point, to: self)
+        
+        let nodesToCheck = nodes(at: scenePoint).compactMap { node in
+            node as? SKSpriteNode
+        }
+        
+        let node: SKSpriteNode?
+        if nodesToCheck.count > 1 {
+            var distance = Double.infinity
+            var closestNode: SKSpriteNode?
+            for tryNode in nodesToCheck {
+                let xDistance = tryNode.position.x - scenePoint.x
+                let yDistance = tryNode.position.y - scenePoint.y
+                let tryDistance = Double(xDistance * xDistance + yDistance * yDistance)
+                if tryDistance < distance {
+                    distance = tryDistance
+                    closestNode = tryNode
+                }
+            }
+            node = closestNode
+        } else {
+            node = nodesToCheck.first
+        }
+        
+        return node
+    }
+    
     func setZoom(delta zoomDelta: CGFloat) {
         var newZoom = (self.camera?.xScale ?? 1) + zoomDelta
         if newZoom < 1 {
@@ -55,11 +87,14 @@ class HexMapScene: SKScene {
             camera?.position = currentPosition + movement
         }
         
+        // Allow the hexMapController to provide information based on the mouse location.
+        // Note: NSEvent.mouseLocation is in screen coordinates, as in *the entire screen*. By substracting the location of the game window (if it exists) we get the actual screen coordinates within the view (gesture recognizers perform this transformation automatically, so it is not necessary there.
+        let mousePosition = NSEvent.mouseLocation - (view?.window?.frame.origin ?? CGPoint.zero)
+        if let node = screenPointToNode(mousePosition) {
+            //print("mouse over node: \(node)")
+            hexMapController.mouseOverNode(node)
+        }
+        
         camera?.setScale(cameraScale)
-    }
-    
-    override func scrollWheel(with event: NSEvent) {
-        print("scrollwheel")
-        setZoom(delta: event.scrollingDeltaY * 0.1)
     }
 }

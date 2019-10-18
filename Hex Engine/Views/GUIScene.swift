@@ -23,7 +23,7 @@ final class GUIScene: SKScene {
     var tileInfoLabel: LabelPanel
     var unitInfoWindow: UnitInfoWindow
     
-    var viewController: ViewController?
+//    var viewController: ViewController?
     
     var nextTurnButton: Button
     
@@ -71,7 +71,10 @@ final class GUIScene: SKScene {
             self.unitInfoWindow.unitToShow = unit
             
             let button = self.unitInfoWindow.moveButton
-            button.clickAction = { scene.hexMapController.uiState = .selectTile }
+            button.clickAction = {
+                scene.hexMapController.uiState = .selectTile
+                button.changeBackgroundColor(to: SKColor.red)
+            }
         }
         
         scene.hexMapController.unitController.unitBecameDeselected = { unitID in

@@ -12,8 +12,7 @@ import SpriteKit
 class LabelPanel: SKNode {
     let labelNode: SKLabelNode
     var backgroundNode: SKShapeNode
-    
-    
+
     var text = "" {
         didSet {
             labelNode.text = text
@@ -57,7 +56,7 @@ class LabelPanel: SKNode {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func recreateBackground() {
+    private func recreateBackground() {
         let backgroundColor = backgroundNode.fillColor
         
         labelNode.removeAllChildren()
@@ -69,5 +68,15 @@ class LabelPanel: SKNode {
         backgroundNode.zPosition = -0.05
         
         labelNode.addChild(backgroundNode)
+    }
+    
+    func changeBackgroundColor(to color: SKColor) {
+        backgroundNode.fillColor = color
+        recreateBackground()
+    }
+    
+    // Reset the background color to the GUI default value
+    func resetBackgroundColor() {
+        changeBackgroundColor(to: GUI.BACKGROUND_COLOR)
     }
 }

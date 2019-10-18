@@ -19,9 +19,9 @@ class HexMapController {
     var world: World
 
     let scene: SKScene
-    let tileWidth: Double
-    let tileHeight: Double
-    let tileYOffsetFactor: Double
+    let tileWidth: Double           // in points
+    let tileHeight: Double          // in points
+    let tileYOffsetFactor: Double   // what fraction of tileHeight are rows offset in the Y value, in points
     
     var tileSKSpriteNodeMap = [AxialCoord: SKSpriteNode]()
     
@@ -38,10 +38,12 @@ class HexMapController {
             if let newSelectedTile = selectedTile {
                 let tile = world.hexMap[newSelectedTile.q, newSelectedTile.r]
                 tileBecameSelected?(newSelectedTile, tile)
-                //tileBecameSelected(tile: newSelectedTile)
             }
         }
     }
+    
+    // the highlighter is a simple shape that follow the mouse around and gives an visual feedback about what can be clicked/tapped.
+    var highlighter: SKShapeNode
     
     var unitController: UnitController
     
@@ -52,10 +54,16 @@ class HexMapController {
         self.tileHeight = tileHeight
         self.tileYOffsetFactor = tileYOffsetFactor
         unitController = UnitController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
+        highlighter = SKShapeNode(circleOfRadius: CGFloat(tileWidth / 2.0))
+        highlighter.lineWidth = 2
         
         world.allUnits.forEach { unit in
             Unit.onUnitCreate?(unit)
         }
+        
+        
+        highlighter.zPosition = 0.1
+        self.scene.addChild(highlighter)
     }
     
     static func hexToPixel(_ hex: AxialCoord, tileWidth: Double, tileHeight: Double, tileYOffsetFactor: Double) -> CGPoint {
@@ -148,7 +156,8 @@ class HexMapController {
                 }
             }
             
-        } else if tileSKSpriteNodeMap.values.contains(node) {
+        } // is it a tile?
+        else if tileSKSpriteNodeMap.values.contains(node) {
             if let q = node.userData?["q"] as? Int, let r = node.userData?["r"] as? Int {
                 print("Clicked tile at coord \(q), \(r)", node)
                 deselectTile()
@@ -157,6 +166,7 @@ class HexMapController {
             }
         }
         
+        // if we are in a state where we need to select a tile, calculate the path.
         if uiState == .selectTile {
             if let unitID = unitController.selectedUnit, let tile = selectedTile {
                 if let unit = try? world.getUnitWithID(unitID) {
@@ -170,6 +180,16 @@ class HexMapController {
                 }
             }
             uiState = .map
+        }
+    }
+    
+    func mouseOverNode(_ node: SKSpriteNode) {
+        highlighter.position = node.position
+        switch uiState {
+        case .map:
+            highlighter.strokeColor = SKColor.gray
+        case .selectTile:
+            highlighter.strokeColor = SKColor.red
         }
     }
     

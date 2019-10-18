@@ -23,7 +23,7 @@ class UnitInfoWindow: SKNode {
                 """
 
                 moveButton.position = CGPoint(x: 0, y: buttonY())
-                
+                moveButton.resetBackgroundColor()
             } else {
                 isHidden = true
             }
@@ -51,7 +51,7 @@ class UnitInfoWindow: SKNode {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func buttonY() -> CGFloat {
+    private func buttonY() -> CGFloat {
         let frame = unitInfoLabel.calculateAccumulatedFrame()
         return frame.height - GUI.MARGIN
     }
