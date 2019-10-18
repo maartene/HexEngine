@@ -1,3 +1,5 @@
+![Swift 5.1](http://img.shields.io/badge/swift-5.1-orange.svg) ![MIT License](http://img.shields.io/badge/license-MIT-brightgreen.svg)
+
 # HexEngine
 A Hex tile engine that uses SpriteKit and is written in Swift.
 
