@@ -150,5 +150,4 @@ class HexMapTests: XCTestCase {
             pass += 1
         }
     }
-
 }

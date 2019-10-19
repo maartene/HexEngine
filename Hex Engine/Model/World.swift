@@ -12,10 +12,17 @@ enum IDArrayError: Error {
     case indexOutOfBounds
 }
 
+// this is a stub
+struct City {
+    let name: String
+    let position: AxialCoord
+}
+
 struct World {
     
     var hexMap: HexMap
     private var units = [Unit]()
+    private var cities = [City]()
     
     init(width: Int, height: Int, hexMapFactory: (Int, Int) -> HexMap) {
         self.hexMap = hexMapFactory(width, height)
@@ -63,5 +70,29 @@ struct World {
         var unit = units[unitIndex]
         unit.path = path
         units[unitIndex] = unit
+    }
+    
+    func executeCommand(_ command: Command) -> World {
+        do {
+            return try command.execute(in: self)
+        } catch {
+            print("An error of type '\(error)' occored. Returning world unchanged.")
+            return self
+        }
+    }
+    
+    func getCityAt(_ coord: AxialCoord) -> City? {
+        return cities.filter { city in
+            city.position == coord
+        }.first
+    }
+    
+    mutating func addCity(_ city: City) {
+        guard getCityAt(city.position) == nil else {
+            print("There is already a city at location: \(city.position).")
+            return
+        }
+        
+        cities.append(city)
     }
 }
