@@ -16,9 +16,11 @@ enum BuildCityCommandErrors: Error {
 struct BuildCityCommand: Command {
     let title = "Dig rabbit hole"
     
-    let owner: Commander
+    let ownerID: Int
     
     func execute(in world: World) throws -> World {
+        let owner = try world.getUnitWithID(ownerID)
+        
         guard world.getCityAt(owner.position) == nil else {
             throw BuildCityCommandErrors.tileAlreadyOccupied
         }
@@ -29,12 +31,16 @@ struct BuildCityCommand: Command {
         }
         
         var changedWorld = world
-        let city = City(name: "New city \(Int.random(in: 0...100))", position: owner.position)
+        let city = City(id: 1, name: "New city \(Int.random(in: 0...100))", position: owner.position)
         changedWorld.addCity(city)
         return changedWorld
     }
     
     func canExecute(in world: World) -> Bool {
+        guard let owner = try? world.getUnitWithID(ownerID) else {
+            return false
+        }
+        
         guard world.getCityAt(owner.position) == nil else {
             return false
         }

@@ -46,6 +46,7 @@ class HexMapController {
     var highlighter: SKShapeNode
     
     var unitController: UnitController
+    var cityController: CityController
     
     init(scene: SKScene, world: World, tileWidth: Double, tileHeight: Double, tileYOffsetFactor: Double) {
         self.scene = scene
@@ -54,6 +55,7 @@ class HexMapController {
         self.tileHeight = tileHeight
         self.tileYOffsetFactor = tileYOffsetFactor
         unitController = UnitController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
+        cityController = CityController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
         highlighter = SKShapeNode(circleOfRadius: CGFloat(tileWidth / 2.0))
         highlighter.lineWidth = 2
         
@@ -61,6 +63,9 @@ class HexMapController {
             Unit.onUnitCreate?(unit)
         }
         
+        world.allCities.forEach { city in
+            City.onCityCreate?(city)
+        }
         
         highlighter.zPosition = 0.1
         self.scene.addChild(highlighter)

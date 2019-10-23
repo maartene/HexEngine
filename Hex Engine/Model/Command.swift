@@ -19,7 +19,7 @@ enum CommandErrors: Error {
 
 protocol Command {
     var title: String { get }
-    var owner: Commander { get}
+    var ownerID: Int { get}
     
     func execute(in world: World) throws -> World
     func canExecute(in world: World) -> Bool
@@ -31,11 +31,15 @@ extension Command {
             throw CommandErrors.cannotExecute
         }
         
-        print("Executing command: \(title) by owner: \(owner).")
+        print("Executing command: \(title) by owner with ID: \(ownerID).")
         return world
     }
     
     func canExecute(in world: World) -> Bool {
         return true
     }
+}
+
+protocol BuildCommand: Command {
+    var productionRemaining: Double { get set }
 }
