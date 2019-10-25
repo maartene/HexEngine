@@ -15,74 +15,79 @@ enum IDArrayError: Error {
 struct World {
     
     var hexMap: HexMap
-    private var units = [Unit]()
-    private var cities = [City]()
+    private var units = [UUID: Unit]()
+    private var cities = [UUID: City]()
     
     init(width: Int, height: Int, hexMapFactory: (Int, Int) -> HexMap) {
         self.hexMap = hexMapFactory(width, height)
         
-        units.append(Unit(id: 0, name: "Rabbit", movement: 2, startPosition: AxialCoord(q: 1, r: 2)))
+        // TESTING only: add a rabbit to the map
+        let unit = Unit(name: "Rabbit", movement: 2, startPosition: AxialCoord(q: 1, r: 2))
+        units[unit.id] = unit
         
-        let city = City(id: 0, name: "New City", position: AxialCoord(q: 1, r: 1))
-        cities.append(city)
+        // TESTING only: add a city with a fixed command
+        var city = City(name: "New City", position: AxialCoord(q: 1, r: 1))
+        let buildCommand = city.possibleCommands[0]
+        city.buildQueue.append(buildCommand)
+        cities[city.id] = city
     }
     
     func getUnitsOnTile(_ tile: AxialCoord) -> [Unit] {
-        return units.filter { unit in
+        return units.values.filter { unit in
             unit.position.q == tile.q && unit.position.r == tile.r
         }
     }
     
-    func getUnitWithID(_ id: Int) throws -> Unit {
-        let result = units.first { unit in
-            unit.id == id
-        }
-        if result == nil {
-            throw IDArrayError.indexOutOfBounds
+    func getUnitWithID(_ id: UUID) throws -> Unit {
+        if let unit = units[id] {
+            return unit
         } else {
-            return result!
+            throw IDArrayError.indexOutOfBounds
         }
-        
     }
     
-    func getCityWithID(_ id: Int) throws -> City {
-        let result = cities.first { city in
-            city.id == id
-        }
-        if result == nil {
-            throw IDArrayError.indexOutOfBounds
+    func getCityWithID(_ id: UUID) throws -> City {
+        if let city = cities[id] {
+            return city
         } else {
-            return result!
+            throw IDArrayError.indexOutOfBounds
         }
-        
     }
     
     var allUnits: [Unit] {
-        return units
+        return Array(units.values)
     }
     
     var allCities: [City] {
-        return cities
+        return Array(cities.values)
     }
     
-    mutating func nextTurn() {
+    func nextTurn() -> World {
         print("next turn!")
-        for (index, unit) in units.enumerated() {
-            units[index] = unit.step(hexMap: hexMap)
+        var newWorld = self
+        for unit in units.values {
+            newWorld.units[unit.id] = unit.step(hexMap: hexMap)
         }
+    
+        for city in cities.values {
+            do {
+                newWorld = try city.build(in: newWorld, production: 5)
+            } catch {
+                print(error)
+            }
+        }
+        
+        return newWorld
     }
     
-    mutating func setPath(for unitID: Int, path: [AxialCoord]) {
-        guard let unitIndex = (units.firstIndex { unit in
-            unit.id == unitID
-        }) else {
-            print("unit with index \(unitID) not found.")
+    mutating func setPath(for unitID: UUID, path: [AxialCoord]) {
+        guard var unit = units[unitID] else {
+            print("unit with id \(unitID) not found.")
             return
         }
         
-        var unit = units[unitIndex]
         unit.path = path
-        units[unitIndex] = unit
+        units[unit.id] = unit
     }
     
     func executeCommand(_ command: Command) -> World {
@@ -95,13 +100,13 @@ struct World {
     }
     
     func getCityAt(_ coord: AxialCoord) -> City? {
-        return cities.filter { city in
+        return cities.values.filter { city in
             city.position == coord
         }.first
     }
     
     mutating func addCity(_ city: City) {
-        guard cities.contains(where: { $0.id == city.id }) == false else {
+        guard cities[city.id] == nil else {
             print("ID \(city.id) for city already in use.")
             return
         }
@@ -111,19 +116,19 @@ struct World {
             return
         }
         
-        cities.append(city)
+        cities[city.id] = city
     }
     
     mutating func addUnit(_ unit: Unit) {
-        guard units.contains(where: { $0.id == unit.id }) == false else {
+        guard units[unit.id] == nil else {
             print("ID \(unit.id) for unit already in use.")
             return
         }
-        units.append(unit)
+        units[unit.id] = unit
     }
     
     mutating func replaceBuilder(_ newBuilder: Builder) {
-        guard let index = cities.firstIndex(where: { city in city.id == newBuilder.id } ) else {
+        guard let city = cities[newBuilder.id] else {
             print("Unknown city \(newBuilder)")
             return
         }
@@ -133,15 +138,15 @@ struct World {
             return
         }
         
-        cities[index] = builder
+        cities[city.id] = builder
     }
     
     mutating func replace(_ city: City) {
-        guard let index = cities.firstIndex(where: { $0.id == city.id }) else {
+        guard cities[city.id] != nil else {
             print("Could not replace city with id \(city.id), because it does not exist in the world.")
             return
         }
         
-        cities[index] = city
+        cities[city.id] = city
     }
 }

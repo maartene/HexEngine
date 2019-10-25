@@ -34,15 +34,15 @@ class CommandTests: XCTestCase {
     func testCommandTest() {
         struct TestCommand: Command {
             var title = "Test Command"
-            var ownerID: Int
+            var ownerID: UUID
         }
         
         struct TestCommander: Commander {
-            var id: Int
+            var id: UUID
             var position: AxialCoord
         }
         
-        let commander = TestCommander(id: 14, position: AxialCoord(q: 23, r: 12))
+        let commander = TestCommander(id: UUID(), position: AxialCoord(q: 23, r: 12))
         let command = TestCommand(ownerID: commander.id)
         let world = World(width: 100, height: 100, hexMapFactory: WorldFactory.CreateWorld(width:height:))
         XCTAssertNotNil(world.executeCommand(command))
@@ -51,7 +51,7 @@ class CommandTests: XCTestCase {
     func testMutatingCommandTest() {
         struct TestCommand: Command {
             var title = "Mutating Command"
-            var ownerID: Int
+            var ownerID: UUID
             
             func execute(in world: World) throws -> World {
                 var changedWorld = world
@@ -64,11 +64,11 @@ class CommandTests: XCTestCase {
         }
         
         struct TestCommander: Commander {
-            var id: Int
+            var id: UUID
             var position: AxialCoord
         }
         
-        let commander = TestCommander(id: 14, position: AxialCoord(q: 23, r: 12))
+        let commander = TestCommander(id: UUID(), position: AxialCoord(q: 23, r: 12))
         let command = TestCommand(ownerID: commander.id)
         let world = World(width: 100, height: 100, hexMapFactory: WorldFactory.CreateWorld(width:height:))
         XCTAssertNotEqual(world.hexMap[0,0], world.executeCommand(command).hexMap[0,0])
@@ -77,7 +77,7 @@ class CommandTests: XCTestCase {
     // FIXME: this fails because the new commander is never integrated into the world.
     func testAddCityCommand() {
         //Int, name: String, movement: Int = 2, startPosition: AxialCoord = AxialCoord.zero) {
-        let commander = Unit(id: 14, name: "Rabbit", startPosition: AxialCoord(q: 23, r: 12))
+        let commander = Unit(name: "Rabbit", startPosition: AxialCoord(q: 23, r: 12))
         var world = World(width: 30, height: 30, hexMapFactory: WorldFactory.CreateWorld(width:height:))
         world.addUnit(commander)
         world.hexMap[commander.position] = .Grass
@@ -93,7 +93,7 @@ class CommandTests: XCTestCase {
     func testBuilderCommand() {
         var world = World(width: 30, height: 30, hexMapFactory: WorldFactory.CreateWorld(width:height:))
         let coord = AxialCoord(q: 23, r: 12)
-        let newCity = City(id: 2, name: "Test city", position: coord)
+        let newCity = City(name: "Test city", position: coord)
         world.addCity(newCity)
         
         guard var city = world.getCityAt(coord) else {
@@ -113,5 +113,41 @@ class CommandTests: XCTestCase {
         world.replace(city)
         
         XCTAssertGreaterThan(world.getCityAt(coord)?.buildQueue.count ?? 0, 0)
+    }
+    
+    func testCreateUnitTest() {
+        var world = World(width: 30, height: 30, hexMapFactory: WorldFactory.CreateWorld(width:height:))
+        let coord = AxialCoord(q: 23, r: 12)
+        let newCity = City(name: "Test city", position: coord)
+        world.addCity(newCity)
+        
+        guard var city = world.getCityAt(coord) else {
+            XCTAssert(false)
+            return
+        }
+        
+        let command = city.possibleCommands[0]
+        
+        // note: this is a new city.
+        city.buildQueue.append(command)
+        print(city)
+        XCTAssertGreaterThan(city.buildQueue.count, 0)
+        print("City at \(coord): \(world.getCityAt(coord)?.name ?? "no city here"). build queue there: \(world.getCityAt(coord)?.buildQueue)")
+        
+        // now to get this city in the world again.
+        world.replace(city)
+        
+        XCTAssertGreaterThan(world.getCityAt(coord)?.buildQueue.count ?? 0, 0)
+        
+        // there should no bunny on the coordinates of the city
+        XCTAssertEqual(world.getUnitsOnTile(coord).count, 0)
+        
+        world = world.nextTurn()
+        world = world.nextTurn()
+        
+        // there should now be a bunny on coordinates of the city
+        XCTAssertEqual(world.getUnitsOnTile(coord).count, 1)
+        
+        //let uuid = UUID()
     }
 }

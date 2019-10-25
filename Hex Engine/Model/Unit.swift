@@ -9,7 +9,7 @@
 import Foundation
 
 struct Unit {
-    let id: Int
+    let id: UUID = UUID()
     let name: String
     var movement: Int
     var position: AxialCoord
@@ -18,8 +18,7 @@ struct Unit {
     static var onUnitCreate: ((Unit) -> Void)?
     static var onUnitChanged: ((Unit) -> Void)?
     
-    init(id: Int, name: String, movement: Int = 2, startPosition: AxialCoord = AxialCoord.zero) {
-        self.id = id
+    init(name: String, movement: Int = 2, startPosition: AxialCoord = AxialCoord.zero) {
         self.name = name
         self.movement = movement
         self.position = startPosition

@@ -9,7 +9,7 @@
 import Foundation
 
 protocol Commander {
-    var id: Int { get }
+    var id: UUID { get }
     var position: AxialCoord { get set }
 }
 
@@ -19,7 +19,7 @@ enum CommandErrors: Error {
 
 protocol Command {
     var title: String { get }
-    var ownerID: Int { get}
+    var ownerID: UUID { get}
     
     func execute(in world: World) throws -> World
     func canExecute(in world: World) -> Bool

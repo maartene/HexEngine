@@ -13,7 +13,7 @@ struct City: Builder {
     
     var buildQueue = [BuildCommand]()
     
-    var id: Int
+    let id = UUID()
     
     var position: AxialCoord
     
@@ -21,8 +21,7 @@ struct City: Builder {
     
     static var onCityCreate: ((City) -> Void)?
     
-    init(id: Int, name: String, position: AxialCoord) {
-        self.id = id
+    init(name: String, position: AxialCoord) {
         self.name = name
         self.position = position
         possibleCommands.append(BuildRabbitCommand(ownerID: self.id))

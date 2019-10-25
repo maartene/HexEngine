@@ -13,5 +13,14 @@ struct BuildRabbitCommand: BuildCommand {
     
     var title = "Breed Rabbit"
     
-    var ownerID: Int
+    var ownerID: UUID
+    
+    func execute(in world: World) throws -> World {
+        let owner = try world.getCityWithID(ownerID)
+        let newUnit = Unit(name: "Rabbit", movement: 2, startPosition: owner.position)
+        
+        var newWorld = world
+        newWorld.addUnit(newUnit)
+        return newWorld
+    }
 }

@@ -82,7 +82,7 @@ final class GUIScene: SKScene {
         }
         
         nextTurnButton.clickAction = {
-            scene.hexMapController.world.nextTurn()
+            scene.hexMapController.world = scene.hexMapController.world.nextTurn()
         }
     }
     

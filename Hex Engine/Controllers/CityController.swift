@@ -15,7 +15,7 @@ final class CityController {
     let tileHeight: Double
     let tileYOffsetFactor: Double
 
-    var citySpriteMap = [Int: SKSpriteNode]()
+    var citySpriteMap = [UUID: SKSpriteNode]()
 
     init(with scene: SKScene, tileWidth: Double, tileHeight: Double, tileYOffsetFactor: Double) {
         self.scene = scene

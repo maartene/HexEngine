@@ -16,7 +16,7 @@ enum BuildCityCommandErrors: Error {
 struct BuildCityCommand: Command {
     let title = "Dig rabbit hole"
     
-    let ownerID: Int
+    let ownerID: UUID
     
     func execute(in world: World) throws -> World {
         let owner = try world.getUnitWithID(ownerID)
@@ -31,7 +31,7 @@ struct BuildCityCommand: Command {
         }
         
         var changedWorld = world
-        let city = City(id: 1, name: "New city \(Int.random(in: 0...100))", position: owner.position)
+        let city = City(name: "New city \(Int.random(in: 0...100))", position: owner.position)
         changedWorld.addCity(city)
         return changedWorld
     }

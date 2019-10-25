@@ -15,12 +15,12 @@ final class UnitController {
     let tileHeight: Double
     let tileYOffsetFactor: Double
     
-    var unitSpriteMap = [Int: SKSpriteNode]()
+    var unitSpriteMap = [UUID: SKSpriteNode]()
     
-    var selectedUnit: Int?
+    var selectedUnit: UUID?
     
     var unitBecameSelected: ((Unit) -> Void)?
-    var unitBecameDeselected: ((Int) -> Void)?
+    var unitBecameDeselected: ((UUID) -> Void)?
     
     var pathIndicator: SKShapeNode? {
         didSet {
@@ -70,7 +70,7 @@ final class UnitController {
         sprite.position = HexMapController.hexToPixel(unit.position, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
     }
     
-    func getUnitForNode(_ node: SKSpriteNode) -> Int? {
+    func getUnitForNode(_ node: SKSpriteNode) -> UUID? {
         for pair in unitSpriteMap.enumerated() {
             if pair.element.value == node {
                 return pair.element.key
