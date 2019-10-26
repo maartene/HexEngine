@@ -18,11 +18,13 @@ struct World {
     private var units = [UUID: Unit]()
     private var cities = [UUID: City]()
     
+    var onUnitRemoved: ((Unit) -> Void)?
+    
     init(width: Int, height: Int, hexMapFactory: (Int, Int) -> HexMap) {
         self.hexMap = hexMapFactory(width, height)
         
         // TESTING only: add a rabbit to the map
-        let unit = Unit(name: "Rabbit", movement: 2, startPosition: AxialCoord(q: 1, r: 2))
+        let unit = Unit.Rabbit(startPosition: AxialCoord(q: 1, r: 2))
         units[unit.id] = unit
         
         // TESTING only: add a city with a fixed command
@@ -125,6 +127,11 @@ struct World {
             return
         }
         units[unit.id] = unit
+    }
+    
+    mutating func removeUnit(_ unit: Unit) {
+        print("Removing unit \(units.removeValue(forKey: unit.id).debugDescription)")
+        onUnitRemoved?(unit)
     }
     
     mutating func replaceBuilder(_ newBuilder: Builder) {

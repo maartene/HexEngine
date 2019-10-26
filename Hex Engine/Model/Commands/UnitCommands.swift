@@ -33,6 +33,10 @@ struct BuildCityCommand: Command {
         var changedWorld = world
         let city = City(name: "New city \(Int.random(in: 0...100))", position: owner.position)
         changedWorld.addCity(city)
+        
+        // remove unit from world
+        changedWorld.removeUnit(owner)
+        
         return changedWorld
     }
     

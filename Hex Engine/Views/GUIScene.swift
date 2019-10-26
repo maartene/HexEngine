@@ -81,6 +81,8 @@ final class GUIScene: SKScene {
             self.unitInfoWindow.unitToShow = nil
         }
         
+        self.unitInfoWindow.hexMapController = scene.hexMapController
+        
         nextTurnButton.clickAction = {
             scene.hexMapController.world = scene.hexMapController.world.nextTurn()
         }

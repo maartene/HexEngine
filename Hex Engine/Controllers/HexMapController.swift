@@ -55,6 +55,7 @@ class HexMapController {
         self.tileHeight = tileHeight
         self.tileYOffsetFactor = tileYOffsetFactor
         unitController = UnitController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
+        self.world.onUnitRemoved = unitController.onUnitRemoved
         cityController = CityController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
         highlighter = SKShapeNode(circleOfRadius: CGFloat(tileWidth / 2.0))
         highlighter.lineWidth = 2

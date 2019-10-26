@@ -74,7 +74,6 @@ class CommandTests: XCTestCase {
         XCTAssertNotEqual(world.hexMap[0,0], world.executeCommand(command).hexMap[0,0])
     }
     
-    // FIXME: this fails because the new commander is never integrated into the world.
     func testAddCityCommand() {
         //Int, name: String, movement: Int = 2, startPosition: AxialCoord = AxialCoord.zero) {
         let commander = Unit(name: "Rabbit", startPosition: AxialCoord(q: 23, r: 12))

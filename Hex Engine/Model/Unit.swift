@@ -9,12 +9,12 @@
 import Foundation
 
 struct Unit {
-    let id: UUID = UUID()
+    let id = UUID()
     let name: String
     var movement: Int
     var position: AxialCoord
     var path = [AxialCoord]()
-    
+    var possibleCommands = [Command]()
     static var onUnitCreate: ((Unit) -> Void)?
     static var onUnitChanged: ((Unit) -> Void)?
     
@@ -22,7 +22,6 @@ struct Unit {
         self.name = name
         self.movement = movement
         self.position = startPosition
-        
         
         Self.onUnitCreate?(self)
     }
@@ -54,5 +53,11 @@ struct Unit {
             }
         }
         return unit
+    }
+    
+    static func Rabbit(startPosition: AxialCoord) -> Unit {
+        var newRabbit = Unit(name: "Rabbit", movement: 2, startPosition: startPosition)
+        newRabbit.possibleCommands = [BuildCityCommand(ownerID: newRabbit.id)]
+        return newRabbit
     }
 }

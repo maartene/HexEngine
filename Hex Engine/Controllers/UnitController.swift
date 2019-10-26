@@ -70,6 +70,13 @@ final class UnitController {
         sprite.position = HexMapController.hexToPixel(unit.position, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
     }
     
+    func onUnitRemoved(unit: Unit) {
+        // find the sprite for the unit
+        if let sprite = unitSpriteMap.removeValue(forKey: unit.id) {
+            scene.removeChildren(in: [sprite])
+        }
+    }
+    
     func getUnitForNode(_ node: SKSpriteNode) -> UUID? {
         for pair in unitSpriteMap.enumerated() {
             if pair.element.value == node {

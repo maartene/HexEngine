@@ -17,7 +17,7 @@ struct BuildRabbitCommand: BuildCommand {
     
     func execute(in world: World) throws -> World {
         let owner = try world.getCityWithID(ownerID)
-        let newUnit = Unit(name: "Rabbit", movement: 2, startPosition: owner.position)
+        let newUnit = Unit.Rabbit(startPosition: owner.position)
         
         var newWorld = world
         newWorld.addUnit(newUnit)
