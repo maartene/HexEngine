@@ -8,15 +8,18 @@
 
 import Foundation
 import SpriteKit
+import SwiftUI
 
-final class CityController {
+final class CityController: ObservableObject {
     let scene: SKScene
     let tileWidth: Double
     let tileHeight: Double
     let tileYOffsetFactor: Double
 
     var citySpriteMap = [UUID: SKSpriteNode]()
-
+    
+    @Published var selectedCity: UUID?
+    
     init(with scene: SKScene, tileWidth: Double, tileHeight: Double, tileYOffsetFactor: Double) {
         self.scene = scene
         self.tileWidth = tileWidth
@@ -46,11 +49,22 @@ final class CityController {
         
         citySpriteMap[city.id] = sprite
         
-        let cityLabel = LabelPanel(text: city.name)
-        cityLabel.position = -sprite.midPointOfFrame - cityLabel.midPointOfFrame
+        let cityLabel = SKLabelNode(text: city.name)
+        cityLabel.position = cityLabel.position - CGPoint(x: 0, y: sprite.midPointOfFrame.y + cityLabel.midPointOfFrame.y)
+        cityLabel.fontName = "American Typewriter"
+        cityLabel.fontSize = 16
         //let cityLabelFrame = cityLabel.calculateAccumulatedFrame()
         //cityLabel.position = CGPoint(x: -cityLabelFrame.width / 2.0, y: -sprite.size.height / 2.0 - cityLabelFrame.height / 2.0)
         sprite.addChild(cityLabel)
         scene.addChild(sprite)
+    }
+    
+    func getCityForNode(_ node: SKSpriteNode) -> UUID? {
+        for pair in citySpriteMap.enumerated() {
+            if pair.element.value == node {
+                return pair.element.key
+            }
+        }
+        return nil
     }
 }

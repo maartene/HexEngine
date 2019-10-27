@@ -9,6 +9,7 @@
 import Cocoa
 import SpriteKit
 import GameplayKit
+import SwiftUI
 
 class ViewController: NSViewController {
     
@@ -16,20 +17,21 @@ class ViewController: NSViewController {
     
     var hexMapScene: HexMapScene!
     var guiView: SKView!
-    var guiScene: GUIScene!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         hexMapScene = HexMapScene(size: CGSize(width: skView.bounds.width, height: skView.bounds.height))
         hexMapScene.scaleMode = .aspectFill
         
-        guiView = SKView(frame: skView.frame)
-        guiView.allowsTransparency = true
-        guiScene = GUIScene(size: skView.frame.size)
+        //guiView = SKView(frame: skView.frame)
+        //guiView.allowsTransparency = true
+        //guiScene = GUIScene(size: skView.frame.size)
 //        guiScene.viewController = self
-        guiScene.connectToScene(scene: hexMapScene)
-        guiView.presentScene(guiScene)
-        skView.addSubview(guiView)
+        //guiScene.connectToScene(scene: hexMapScene)
+        //guiView.presentScene(guiScene)
+        //skView.addSubview(guiView)
+        
+        // BUG: this creates a new world
         
         // Present the scene
         skView.allowsTransparency = true
@@ -40,18 +42,19 @@ class ViewController: NSViewController {
         skView.showsFPS = true
         skView.showsNodeCount = true
         
+        hexMapScene.hexMapController.setupUI()
         
         // Gesture recognizers
         let panGestureRecognizer = NSPanGestureRecognizer(target: self, action: #selector(panHandler))
         view.addGestureRecognizer(panGestureRecognizer)
         
-        let clickGestureRecognizer = NSClickGestureRecognizer(target: self, action: #selector(clickHandler))
-        view.addGestureRecognizer(clickGestureRecognizer)
+        /*let clickGestureRecognizer = NSClickGestureRecognizer(target: self, action: #selector(clickHandler))
+        view.addGestureRecognizer(clickGestureRecognizer)*/
         
         let zoomGestureRecognizer = NSMagnificationGestureRecognizer(target: self, action: #selector(zoomHandler))
         view.addGestureRecognizer(zoomGestureRecognizer)
         
-        view.becomeFirstResponder()
+        //view.becomeFirstResponder()
     }
     
     // recognize gestures
@@ -82,16 +85,17 @@ class ViewController: NSViewController {
     func clickHandler(_ gestureRecognize: NSClickGestureRecognizer) {
         // * let's see what was clicked *
         let point = gestureRecognize.location(in: skView)
-
+        
+        print("click at \(point)")
         // first, check whether this point is over a node in the gui scene
-        let guiScenePoint = guiView.convert(point, to: guiScene)
+        /*let guiScenePoint = guiView.convert(point, to: guiScene)
         if guiScene.isOverButton(point: guiScenePoint) {
             guiScene.clickButton(at: guiScenePoint)
         } else {
             if let node = hexMapScene.screenPointToNode(point) {
                 hexMapScene.hexMapController.clickedNode(node)
             }
-        }
+        }*/
     }
     
     @objc
@@ -99,7 +103,7 @@ class ViewController: NSViewController {
         hexMapScene.setZoom(delta: gestureRecognize.magnification * 0.5)
     }
     
-    // note: this is macOS only! And it does not use a Gesture Recognizer, but assumes that ViewController is first responder. 
+    // note: this is macOS only! And it does not use a Gesture Recognizer, but assumes that ViewController is first responder.
     override func scrollWheel(with event: NSEvent) {
         hexMapScene.setZoom(delta: event.scrollingDeltaY * 0.1)
     }

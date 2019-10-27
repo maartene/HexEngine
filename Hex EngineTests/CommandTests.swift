@@ -141,8 +141,8 @@ class CommandTests: XCTestCase {
         // there should no bunny on the coordinates of the city
         XCTAssertEqual(world.getUnitsOnTile(coord).count, 0)
         
-        world = world.nextTurn()
-        world = world.nextTurn()
+        world.nextTurn()
+        world.nextTurn()
         
         // there should now be a bunny on coordinates of the city
         XCTAssertEqual(world.getUnitsOnTile(coord).count, 1)

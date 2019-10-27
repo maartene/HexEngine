@@ -7,15 +7,17 @@
 //
 
 import Foundation
+import Combine
+import SwiftUI
 
 enum IDArrayError: Error {
     case indexOutOfBounds
 }
 
-struct World {
-    
+class World: ObservableObject {
     var hexMap: HexMap
-    private var units = [UUID: Unit]()
+    
+    @Published var units = [UUID: Unit]()
     private var cities = [UUID: City]()
     
     var onUnitRemoved: ((Unit) -> Void)?
@@ -64,25 +66,22 @@ struct World {
         return Array(cities.values)
     }
     
-    func nextTurn() -> World {
+    func nextTurn() {
         print("next turn!")
-        var newWorld = self
         for unit in units.values {
-            newWorld.units[unit.id] = unit.step(hexMap: hexMap)
+            units[unit.id] = unit.step(hexMap: hexMap)
         }
     
         for city in cities.values {
             do {
-                newWorld = try city.build(in: newWorld, production: 5)
+                try city.build(in: self, production: 5)
             } catch {
                 print(error)
             }
         }
-        
-        return newWorld
     }
     
-    mutating func setPath(for unitID: UUID, path: [AxialCoord]) {
+    func setPath(for unitID: UUID, path: [AxialCoord]) {
         guard var unit = units[unitID] else {
             print("unit with id \(unitID) not found.")
             return
@@ -92,12 +91,11 @@ struct World {
         units[unit.id] = unit
     }
     
-    func executeCommand(_ command: Command) -> World {
+    func executeCommand(_ command: Command) {
         do {
-            return try command.execute(in: self)
+            try command.execute(in: self)
         } catch {
             print("An error of type '\(error)' occored. Returning world unchanged.")
-            return self
         }
     }
     
@@ -107,7 +105,7 @@ struct World {
         }.first
     }
     
-    mutating func addCity(_ city: City) {
+    func addCity(_ city: City) {
         guard cities[city.id] == nil else {
             print("ID \(city.id) for city already in use.")
             return
@@ -121,7 +119,7 @@ struct World {
         cities[city.id] = city
     }
     
-    mutating func addUnit(_ unit: Unit) {
+    func addUnit(_ unit: Unit) {
         guard units[unit.id] == nil else {
             print("ID \(unit.id) for unit already in use.")
             return
@@ -129,12 +127,12 @@ struct World {
         units[unit.id] = unit
     }
     
-    mutating func removeUnit(_ unit: Unit) {
+    func removeUnit(_ unit: Unit) {
         print("Removing unit \(units.removeValue(forKey: unit.id).debugDescription)")
         onUnitRemoved?(unit)
     }
     
-    mutating func replaceBuilder(_ newBuilder: Builder) {
+    func replaceBuilder(_ newBuilder: Builder) {
         guard let city = cities[newBuilder.id] else {
             print("Unknown city \(newBuilder)")
             return
@@ -148,7 +146,7 @@ struct World {
         cities[city.id] = builder
     }
     
-    mutating func replace(_ city: City) {
+    func replace(_ city: City) {
         guard cities[city.id] != nil else {
             print("Could not replace city with id \(city.id), because it does not exist in the world.")
             return

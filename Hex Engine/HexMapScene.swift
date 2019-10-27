@@ -43,6 +43,10 @@ class HexMapScene: SKScene {
         
         let scenePoint = view.convert(point, to: self)
         
+        return scenePointToNode(scenePoint)
+    }
+    
+    func scenePointToNode(_ scenePoint: CGPoint) -> SKSpriteNode? {
         let nodesToCheck = nodes(at: scenePoint).compactMap { node in
             node as? SKSpriteNode
         }
@@ -96,5 +100,15 @@ class HexMapScene: SKScene {
         }
         
         camera?.setScale(cameraScale)
+    }
+    
+    override func mouseUp(with event: NSEvent) {
+        //print("mouseUp \(event)")
+        
+        let point = event.location(in: self)
+        //let scenePoint = view!.convert(point, to: self)
+        if let node = scenePointToNode(point) {
+            hexMapController.clickedNode(node)
+        }
     }
 }

@@ -364,6 +364,23 @@ enum Tile: Int {
             return -1
         }
     }
+    
+    var stringValue: String {
+        switch self {
+        case .void:
+            return "Void"
+        case .Water:
+            return "Water"
+        case .Sand:
+            return "Sand"
+        case .Grass:
+            return "Grass"
+        case .Forest:
+            return "Forest"
+        case .Mountain:
+            return "Mountain"
+        }
+    }
 }
 
 class HexGraphNode: GKGraphNode {

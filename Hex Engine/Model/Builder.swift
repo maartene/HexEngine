@@ -13,6 +13,7 @@ protocol Builder: Commander {
     var buildQueue: [BuildCommand] { get set }
     
     func build(in world: World, production: Double) throws -> World
+    func addToBuildQueue(_ command: BuildCommand) -> Builder
 }
 
 extension Builder {
@@ -39,5 +40,11 @@ extension Builder {
         newBuilder.buildQueue = newBuildQueue
         newWorld.replaceBuilder(newBuilder)
         return newWorld
+    }
+    
+    func addToBuildQueue(_ command: BuildCommand) -> Builder {
+        var newBuilder = self
+        newBuilder.buildQueue.append(command)
+        return newBuilder
     }
 }

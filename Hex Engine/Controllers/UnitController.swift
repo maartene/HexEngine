@@ -8,8 +8,9 @@
 
 import Foundation
 import SpriteKit
+import Combine
 
-final class UnitController {
+final class UnitController: ObservableObject {
     let scene: SKScene
     let tileWidth: Double
     let tileHeight: Double
@@ -17,7 +18,7 @@ final class UnitController {
     
     var unitSpriteMap = [UUID: SKSpriteNode]()
     
-    var selectedUnit: UUID?
+    @Published var selectedUnit: UUID?
     
     var unitBecameSelected: ((Unit) -> Void)?
     var unitBecameDeselected: ((UUID) -> Void)?
@@ -109,14 +110,14 @@ final class UnitController {
         
     }
     
-    func deselectUnit() {
+    func deselectUnit(uiState: UI_State = .map) {
         pathIndicator = nil
         
         if let selectedUnitID = selectedUnit {
             unitBecameDeselected?(selectedUnitID)
             if let previousSelectedUnit = unitSpriteMap[selectedUnitID] {
                 previousSelectedUnit.removeAllChildren()
-                //selectedUnit = nil
+                //if uiState == .map { selectedUnit = nil }
             }
         }
     }

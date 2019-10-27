@@ -8,15 +8,17 @@
 
 import Foundation
 import SpriteKit
+import SwiftUI
 
 enum UI_State {
     case map
     case selectTile
 }
 
-class HexMapController {
+class HexMapController: ObservableObject {
+    static var instance: HexMapController!
     
-    var world: World
+    @State var world: World
 
     let scene: SKScene
     let tileWidth: Double           // in points
@@ -28,9 +30,9 @@ class HexMapController {
     var tileBecameSelected: ((AxialCoord, Tile) -> Void)?
     var tileBecameDeselected: ((AxialCoord) -> Void)?
     
-    var uiState = UI_State.map
+    @Published var uiState = UI_State.map
     
-    var selectedTile: AxialCoord? {
+    @Published var selectedTile: AxialCoord? {
         didSet {
             if let oldSelectedTile = oldValue {
                 tileBecameDeSelected(tile: oldSelectedTile)
@@ -55,9 +57,13 @@ class HexMapController {
         self.tileHeight = tileHeight
         self.tileYOffsetFactor = tileYOffsetFactor
         unitController = UnitController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
-        self.world.onUnitRemoved = unitController.onUnitRemoved
-        cityController = CityController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
+        
         highlighter = SKShapeNode(circleOfRadius: CGFloat(tileWidth / 2.0))
+        cityController = CityController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
+        
+        self.world.onUnitRemoved = unitController.onUnitRemoved
+        
+        
         highlighter.lineWidth = 2
         
         world.allUnits.forEach { unit in
@@ -70,6 +76,19 @@ class HexMapController {
         
         highlighter.zPosition = 0.1
         self.scene.addChild(highlighter)
+        Self.instance = self
+    }
+    
+    func setupUI() {
+        let gui = SwiftUIGUI(world: world, unitController: unitController, hexMapController: self).zIndex(4)
+        let guiView = NSHostingView(rootView: gui)
+        print(scene.view!.frame)
+        //guiView.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
+    
+        guiView.frame = scene.view!.frame
+        
+        //guiView.becomeFirstResponder()
+        scene.view!.addSubview(guiView)
     }
     
     static func hexToPixel(_ hex: AxialCoord, tileWidth: Double, tileHeight: Double, tileYOffsetFactor: Double) -> CGPoint {
@@ -149,8 +168,15 @@ class HexMapController {
     func clickedNode(_ node: SKSpriteNode) {
         print("clickedNode: \(node)")
         // first, determine what kind of node this is.
-        // is it a unit?
-        if unitController.unitSpriteMap.values.contains(node) {
+        if cityController.citySpriteMap.values.contains(node) {
+            print("Clicked city node: \(node)")
+            if let cityID = cityController.getCityForNode(node) {
+                if let city = try? world.getCityWithID(cityID) {
+                    cityController.selectedCity = cityID
+                }
+            }
+        } // is it a unit?
+        else if unitController.unitSpriteMap.values.contains(node) {
             
             print("Clicked unit node: \(node)")
             // get unit for the node

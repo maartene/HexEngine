@@ -18,21 +18,21 @@
 		DE67A8702360536200A858D0 /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE67A86F2360536200A858D0 /* City.swift */; };
 		DE67A87223605CC400A858D0 /* SKNode+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE67A87123605CC400A858D0 /* SKNode+Extension.swift */; };
 		DE6BE6272257E0F20027380C /* HexMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6BE6262257E0F20027380C /* HexMap.swift */; };
-		DE746A372349EA85006B4AE8 /* GUIScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE746A362349EA85006B4AE8 /* GUIScene.swift */; };
-		DE746A392349F53B006B4AE8 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE746A382349F53B006B4AE8 /* Button.swift */; };
 		DE75E35F235A3D0A0018F1F9 /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE75E35D235A376B0018F1F9 /* Command.swift */; };
 		DE75E362235A450F0018F1F9 /* UnitCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE75E361235A450F0018F1F9 /* UnitCommands.swift */; };
 		DE75E384235B41490018F1F9 /* WorldTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE75E383235B41490018F1F9 /* WorldTests.swift */; };
 		DE75E386235B416F0018F1F9 /* CommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE75E385235B416F0018F1F9 /* CommandTests.swift */; };
-		DEA62F702348C2E1004BCF8B /* LabelPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA62F6F2348C2E1004BCF8B /* LabelPanel.swift */; };
-		DEA62F722349D71F004BCF8B /* UnitInfoWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA62F712349D71F004BCF8B /* UnitInfoWindow.swift */; };
 		DEB0A9A1226218AB005770B2 /* WorldFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0A9A0226218AB005770B2 /* WorldFactory.swift */; };
 		DECCAD8422665E7C002D820E /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECCAD8322665E7C002D820E /* Double+Extension.swift */; };
 		DEE591FD235CB4D9007686D8 /* CityCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE591FC235CB4D9007686D8 /* CityCommands.swift */; };
 		DEE591FF235D71C1007686D8 /* Builder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE591FE235D71C1007686D8 /* Builder.swift */; };
+		DEF487362364B48F001E47A5 /* SwiftUIGUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF487352364B48F001E47A5 /* SwiftUIGUI.swift */; };
 		DEF58EFF22874CCD0020B473 /* Unit.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF58EFE22874CCD0020B473 /* Unit.swift */; };
 		DEF58F0222874D7C0020B473 /* World.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF58F0122874D7C0020B473 /* World.swift */; };
 		DEF58F0422874FA50020B473 /* UnitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF58F0322874FA50020B473 /* UnitController.swift */; };
+		DEF661EA2365E67100EDF9BB /* UnitInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF661E92365E67100EDF9BB /* UnitInfoView.swift */; };
+		DEF661EC2365E69700EDF9BB /* CityInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF661EB2365E69700EDF9BB /* CityInfoView.swift */; };
+		DEF661EE2365E6D400EDF9BB /* TileInfoLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF661ED2365E6D400EDF9BB /* TileInfoLabel.swift */; };
 		DEFFE28122587EDE00D9AE5A /* HexMapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFFE28022587EDE00D9AE5A /* HexMapController.swift */; };
 		DEFFE2832258B5C400D9AE5A /* CGPoint+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFFE2822258B5C400D9AE5A /* CGPoint+Extension.swift */; };
 /* End PBXBuildFile section */
@@ -64,21 +64,21 @@
 		DE67A86F2360536200A858D0 /* City.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
 		DE67A87123605CC400A858D0 /* SKNode+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SKNode+Extension.swift"; sourceTree = "<group>"; };
 		DE6BE6262257E0F20027380C /* HexMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMap.swift; sourceTree = "<group>"; };
-		DE746A362349EA85006B4AE8 /* GUIScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GUIScene.swift; sourceTree = "<group>"; };
-		DE746A382349F53B006B4AE8 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
 		DE75E35D235A376B0018F1F9 /* Command.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Command.swift; sourceTree = "<group>"; };
 		DE75E361235A450F0018F1F9 /* UnitCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitCommands.swift; sourceTree = "<group>"; };
 		DE75E383235B41490018F1F9 /* WorldTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldTests.swift; sourceTree = "<group>"; };
 		DE75E385235B416F0018F1F9 /* CommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandTests.swift; sourceTree = "<group>"; };
-		DEA62F6F2348C2E1004BCF8B /* LabelPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelPanel.swift; sourceTree = "<group>"; };
-		DEA62F712349D71F004BCF8B /* UnitInfoWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitInfoWindow.swift; sourceTree = "<group>"; };
 		DEB0A9A0226218AB005770B2 /* WorldFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldFactory.swift; sourceTree = "<group>"; };
 		DECCAD8322665E7C002D820E /* Double+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extension.swift"; sourceTree = "<group>"; };
 		DEE591FC235CB4D9007686D8 /* CityCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityCommands.swift; sourceTree = "<group>"; };
 		DEE591FE235D71C1007686D8 /* Builder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Builder.swift; sourceTree = "<group>"; };
+		DEF487352364B48F001E47A5 /* SwiftUIGUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIGUI.swift; sourceTree = "<group>"; };
 		DEF58EFE22874CCD0020B473 /* Unit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Unit.swift; sourceTree = "<group>"; };
 		DEF58F0122874D7C0020B473 /* World.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = World.swift; sourceTree = "<group>"; };
 		DEF58F0322874FA50020B473 /* UnitController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitController.swift; sourceTree = "<group>"; };
+		DEF661E92365E67100EDF9BB /* UnitInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitInfoView.swift; sourceTree = "<group>"; };
+		DEF661EB2365E69700EDF9BB /* CityInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityInfoView.swift; sourceTree = "<group>"; };
+		DEF661ED2365E6D400EDF9BB /* TileInfoLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileInfoLabel.swift; sourceTree = "<group>"; };
 		DEFFE28022587EDE00D9AE5A /* HexMapController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMapController.swift; sourceTree = "<group>"; };
 		DEFFE2822258B5C400D9AE5A /* CGPoint+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGPoint+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -186,10 +186,10 @@
 		DEA62F6E2348C2A7004BCF8B /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				DEA62F6F2348C2E1004BCF8B /* LabelPanel.swift */,
-				DEA62F712349D71F004BCF8B /* UnitInfoWindow.swift */,
-				DE746A362349EA85006B4AE8 /* GUIScene.swift */,
-				DE746A382349F53B006B4AE8 /* Button.swift */,
+				DEF487352364B48F001E47A5 /* SwiftUIGUI.swift */,
+				DEF661E92365E67100EDF9BB /* UnitInfoView.swift */,
+				DEF661EB2365E69700EDF9BB /* CityInfoView.swift */,
+				DEF661ED2365E6D400EDF9BB /* TileInfoLabel.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -308,8 +308,8 @@
 				DE13AD0D2257DF5600136AFE /* HexMapScene.swift in Sources */,
 				DEE591FF235D71C1007686D8 /* Builder.swift in Sources */,
 				DE67A87223605CC400A858D0 /* SKNode+Extension.swift in Sources */,
+				DEF661EA2365E67100EDF9BB /* UnitInfoView.swift in Sources */,
 				DECCAD8422665E7C002D820E /* Double+Extension.swift in Sources */,
-				DEA62F702348C2E1004BCF8B /* LabelPanel.swift in Sources */,
 				DE6BE6272257E0F20027380C /* HexMap.swift in Sources */,
 				DEFFE2832258B5C400D9AE5A /* CGPoint+Extension.swift in Sources */,
 				DEF58F0222874D7C0020B473 /* World.swift in Sources */,
@@ -318,10 +318,10 @@
 				DEF58EFF22874CCD0020B473 /* Unit.swift in Sources */,
 				DE75E362235A450F0018F1F9 /* UnitCommands.swift in Sources */,
 				DEE591FD235CB4D9007686D8 /* CityCommands.swift in Sources */,
-				DE746A372349EA85006B4AE8 /* GUIScene.swift in Sources */,
-				DE746A392349F53B006B4AE8 /* Button.swift in Sources */,
-				DEA62F722349D71F004BCF8B /* UnitInfoWindow.swift in Sources */,
+				DEF487362364B48F001E47A5 /* SwiftUIGUI.swift in Sources */,
 				DEB0A9A1226218AB005770B2 /* WorldFactory.swift in Sources */,
+				DEF661EE2365E6D400EDF9BB /* TileInfoLabel.swift in Sources */,
+				DEF661EC2365E69700EDF9BB /* CityInfoView.swift in Sources */,
 				DEFFE28122587EDE00D9AE5A /* HexMapController.swift in Sources */,
 				DE13AD072257DF5600136AFE /* AppDelegate.swift in Sources */,
 				DEF58F0422874FA50020B473 /* UnitController.swift in Sources */,
@@ -413,7 +413,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -468,7 +468,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
