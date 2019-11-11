@@ -8,19 +8,39 @@
 
 import Foundation
 
-struct BuildRabbitCommand: BuildCommand {    
+enum CityCommandErrors: Error {
+    case builderIsNotACityError
+}
+
+// Don't call this command directly, but execute it from a Queue command instead.
+struct BuildRabbitCommand: BuildCommand, Codable {    
     var productionRemaining = 10.0
     
     var title = "Breed Rabbit"
     
     var ownerID: UUID
     
-    func execute(in world: World) throws -> World {
+    func execute(in world: World) throws {
         let owner = try world.getCityWithID(ownerID)
         let newUnit = Unit.Rabbit(startPosition: owner.position)
         
-        var newWorld = world
-        newWorld.addUnit(newUnit)
-        return newWorld
+        world.addUnit(newUnit)
+        return
+    }
+}
+
+struct QueueBuildRabbitCommand: Command, Codable {
+    var title = "Breed Rabbit"
+    
+    var ownerID: UUID
+    
+    func execute(in world: World) throws {
+        let owner = try world.getCityWithID(ownerID)
+        guard let changedOwner = owner.addToBuildQueue(BuildRabbitCommand(ownerID: ownerID)) as? City else {
+            throw CityCommandErrors.builderIsNotACityError
+        }
+        
+        world.replace(changedOwner)
+        return
     }
 }

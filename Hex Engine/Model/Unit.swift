@@ -12,15 +12,19 @@ struct Unit {
     let id = UUID()
     let name: String
     var movement: Int
+    var movementLeft: Double
+    var visibility: Int
     var position: AxialCoord
     var path = [AxialCoord]()
     var possibleCommands = [Command]()
     static var onUnitCreate: ((Unit) -> Void)?
     static var onUnitChanged: ((Unit) -> Void)?
     
-    init(name: String, movement: Int = 2, startPosition: AxialCoord = AxialCoord.zero) {
+    init(name: String, movement: Int = 2, visibility: Int = 2, startPosition: AxialCoord = AxialCoord.zero) {
         self.name = name
         self.movement = movement
+        self.movementLeft = Double(movement)
+        self.visibility = visibility
         self.position = startPosition
         
         Self.onUnitCreate?(self)
@@ -35,24 +39,29 @@ struct Unit {
         print("step for unit \(self)")
         
         var unit = self
-        var movementLeft = Double(unit.movement)
+        unit.movementLeft = Double(unit.movement)
         
-        while movementLeft > 0 && unit.path.count > 0 {
-            if unit.path.first! == position {
-                unit.path.remove(at: 0)
+        unit.move(hexMap: hexMap)
+        
+        return unit
+    }
+    
+    mutating func move(hexMap: HexMap) {
+        while movementLeft > 0 && path.count > 0 {
+            if path.first! == position {
+                path.remove(at: 0)
             }
-            if unit.path.count > 0 {
-                let nextStep = unit.path.removeFirst()
+            if path.count > 0 {
+                let nextStep = path.removeFirst()
                 let tile = hexMap[nextStep]
                 if tile.blocksMovement {
                     movementLeft = 0
                 } else {
                     movementLeft -= tile.costToEnter
                 }
-                unit.move(to: nextStep)
+                move(to: nextStep)
             }
         }
-        return unit
     }
     
     static func Rabbit(startPosition: AxialCoord) -> Unit {

@@ -24,7 +24,7 @@ class HexMapController: ObservableObject {
     let tileWidth: Double           // in points
     let tileHeight: Double          // in points
     let tileYOffsetFactor: Double   // what fraction of tileHeight are rows offset in the Y value, in points
-    
+
     var tileSKSpriteNodeMap = [AxialCoord: SKSpriteNode]()
     
     var tileBecameSelected: ((AxialCoord, Tile) -> Void)?
@@ -62,7 +62,7 @@ class HexMapController: ObservableObject {
         cityController = CityController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
         
         self.world.onUnitRemoved = unitController.onUnitRemoved
-        
+        self.world.onVisibilityMapUpdated = showHideTiles
         
         highlighter.lineWidth = 2
         
@@ -79,16 +79,12 @@ class HexMapController: ObservableObject {
         Self.instance = self
     }
     
-    func setupUI() {
+    func setupUI(in view: SKView) -> some NSView {
         let gui = SwiftUIGUI(world: world, unitController: unitController, hexMapController: self).zIndex(4)
         let guiView = NSHostingView(rootView: gui)
-        print(scene.view!.frame)
-        //guiView.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
-    
         guiView.frame = scene.view!.frame
-        
-        //guiView.becomeFirstResponder()
-        scene.view!.addSubview(guiView)
+        view.addSubview(guiView)
+        return guiView
     }
     
     static func hexToPixel(_ hex: AxialCoord, tileWidth: Double, tileHeight: Double, tileYOffsetFactor: Double) -> CGPoint {
@@ -159,6 +155,8 @@ class HexMapController: ObservableObject {
                 scene.addChild(tile)
             }
         }
+        
+        showHideTiles()
     }
     
     func middleOfMapInWorldSpace() -> CGPoint {
@@ -171,7 +169,7 @@ class HexMapController: ObservableObject {
         if cityController.citySpriteMap.values.contains(node) {
             print("Clicked city node: \(node)")
             if let cityID = cityController.getCityForNode(node) {
-                if let city = try? world.getCityWithID(cityID) {
+                if (try? world.getCityWithID(cityID)) != nil {
                     cityController.selectedCity = cityID
                 }
             }
@@ -201,15 +199,8 @@ class HexMapController: ObservableObject {
         // if we are in a state where we need to select a tile, calculate the path.
         if uiState == .selectTile {
             if let unitID = unitController.selectedUnit, let tile = selectedTile {
-                if let unit = try? world.getUnitWithID(unitID) {
-                    world.hexMap.rebuildPathFindingGraph()
-                    if let path = world.hexMap.findPathFrom(unit.position, to: tile) {
-                        world.setPath(for: unitID, path: path)
-                        print("Calculate path: \(path)")
-                    } else {
-                        print("No valid path from \(unit.position) to \(tile).")
-                    }
-                }
+                let command = MoveUnitCommand(ownerID: unitID, targetPosition: tile)
+                world.executeCommand(command)
             }
             uiState = .map
         }
@@ -250,5 +241,28 @@ class HexMapController: ObservableObject {
     
     func tileBecameDeSelected(tile: AxialCoord) {
         print("\(tile) was deselected.")
+    }
+    
+    func showHideTiles() {
+        print("showHideTiles \(tileSKSpriteNodeMap.keys.count)")
+        for coord in tileSKSpriteNodeMap.keys {
+            guard let sprite = tileSKSpriteNodeMap[coord] else {
+                continue
+            }
+            
+            if world.visibilityMap[coord] ?? false {
+                sprite.alpha = 1
+                sprite.removeAllChildren()
+            } else if world.visitedMap[coord] ?? false {
+                sprite.alpha = 0.5
+                sprite.removeAllChildren()
+            } else {
+                if sprite.children.count == 0 {
+                    let child = SKSpriteNode(imageNamed: "unknown")
+                    sprite.addChild(child)
+                    child.zPosition = 0.01
+                }
+            }
+        }
     }
 }

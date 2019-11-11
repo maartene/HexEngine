@@ -44,7 +44,7 @@ struct UnitInfoView: View {
                         Text("""
                             Unit: \(unit!.name) (\(unit!.id))
                             Position: \(unit!.position.description)
-                            Movement left: \(unit!.movement)
+                            Movement: \(unit!.movementLeft)/\(unit!.movement)
                         """)
                     }.padding()
                     .background(Color.gray.opacity(0.5)).clipShape(RoundedRectangle(cornerRadius: 10))

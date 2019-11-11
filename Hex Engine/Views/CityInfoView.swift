@@ -52,13 +52,12 @@ struct CityInfoView: View {
     }
     
     func executeBuildCommand(number: Int, city: City?) {
-        guard var city = city else {
+        guard let city = city else {
             return
         }
         
         let command = city.possibleCommands[number]
-        city = city.addToBuildQueue(command) as! City
-        world.replace(city)
+        world.executeCommand(command)
     }
 }
 

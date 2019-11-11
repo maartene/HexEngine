@@ -16,22 +16,12 @@ class ViewController: NSViewController {
     @IBOutlet var skView: SKView!
     
     var hexMapScene: HexMapScene!
-    var guiView: SKView!
+    var guiView: NSView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         hexMapScene = HexMapScene(size: CGSize(width: skView.bounds.width, height: skView.bounds.height))
         hexMapScene.scaleMode = .aspectFill
-        
-        //guiView = SKView(frame: skView.frame)
-        //guiView.allowsTransparency = true
-        //guiScene = GUIScene(size: skView.frame.size)
-//        guiScene.viewController = self
-        //guiScene.connectToScene(scene: hexMapScene)
-        //guiView.presentScene(guiScene)
-        //skView.addSubview(guiView)
-        
-        // BUG: this creates a new world
         
         // Present the scene
         skView.allowsTransparency = true
@@ -42,7 +32,7 @@ class ViewController: NSViewController {
         skView.showsFPS = true
         skView.showsNodeCount = true
         
-        hexMapScene.hexMapController.setupUI()
+        guiView = hexMapScene.hexMapController.setupUI(in: skView)
         
         // Gesture recognizers
         let panGestureRecognizer = NSPanGestureRecognizer(target: self, action: #selector(panHandler))
@@ -53,8 +43,6 @@ class ViewController: NSViewController {
         
         let zoomGestureRecognizer = NSMagnificationGestureRecognizer(target: self, action: #selector(zoomHandler))
         view.addGestureRecognizer(zoomGestureRecognizer)
-        
-        //view.becomeFirstResponder()
     }
     
     // recognize gestures
@@ -106,6 +94,14 @@ class ViewController: NSViewController {
     // note: this is macOS only! And it does not use a Gesture Recognizer, but assumes that ViewController is first responder.
     override func scrollWheel(with event: NSEvent) {
         hexMapScene.setZoom(delta: event.scrollingDeltaY * 0.1)
+    }
+    
+    override func viewDidLayout() {
+        guard guiView != nil && skView != nil else {
+            return
+        }
+        
+        guiView.frame = skView.frame
     }
 }
 

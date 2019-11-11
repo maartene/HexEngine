@@ -13,12 +13,12 @@ enum BuildCityCommandErrors: Error {
     case tileOfWrongType
 }
 
-struct BuildCityCommand: Command {
+struct BuildCityCommand: Command, Codable {
     let title = "Dig rabbit hole"
     
     let ownerID: UUID
     
-    func execute(in world: World) throws -> World {
+    func execute(in world: World) throws {
         let owner = try world.getUnitWithID(ownerID)
         
         guard world.getCityAt(owner.position) == nil else {
@@ -30,14 +30,13 @@ struct BuildCityCommand: Command {
             throw BuildCityCommandErrors.tileOfWrongType
         }
         
-        var changedWorld = world
         let city = City(name: "New city \(Int.random(in: 0...100))", position: owner.position)
-        changedWorld.addCity(city)
+        world.addCity(city)
         
         // remove unit from world
-        changedWorld.removeUnit(owner)
+        world.removeUnit(owner)
         
-        return changedWorld
+        return
     }
     
     func canExecute(in world: World) -> Bool {
@@ -55,5 +54,27 @@ struct BuildCityCommand: Command {
         }
         
         return true
+    }
+}
+
+struct MoveUnitCommand: Command, Codable {
+    let title: String = "Move"
+    
+    var ownerID: UUID
+    
+    var targetPosition: AxialCoord
+    
+    func execute(in world: World) throws {
+        let owner = try world.getUnitWithID(ownerID)
+        
+        world.hexMap.rebuildPathFindingGraph()
+        
+        guard let path = world.hexMap.findPathFrom(owner.position, to: targetPosition) else {
+            print("No valid path from \(owner.position) to \(targetPosition).")
+            return
+        }
+        
+        print("Calculate path: \(path)")
+        world.setPath(for: ownerID, path: path, moveImmediately: true)
     }
 }

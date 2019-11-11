@@ -23,6 +23,8 @@
 		DE75E384235B41490018F1F9 /* WorldTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE75E383235B41490018F1F9 /* WorldTests.swift */; };
 		DE75E386235B416F0018F1F9 /* CommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE75E385235B416F0018F1F9 /* CommandTests.swift */; };
 		DEB0A9A1226218AB005770B2 /* WorldFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0A9A0226218AB005770B2 /* WorldFactory.swift */; };
+		DEB540FA236DAF9A00D03062 /* GameCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB540F9236DAF9A00D03062 /* GameCommands.swift */; };
+		DEB540FC236DC08E00D03062 /* CommandWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB540FB236DC08E00D03062 /* CommandWrapper.swift */; };
 		DECCAD8422665E7C002D820E /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECCAD8322665E7C002D820E /* Double+Extension.swift */; };
 		DEE591FD235CB4D9007686D8 /* CityCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE591FC235CB4D9007686D8 /* CityCommands.swift */; };
 		DEE591FF235D71C1007686D8 /* Builder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE591FE235D71C1007686D8 /* Builder.swift */; };
@@ -69,6 +71,8 @@
 		DE75E383235B41490018F1F9 /* WorldTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldTests.swift; sourceTree = "<group>"; };
 		DE75E385235B416F0018F1F9 /* CommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandTests.swift; sourceTree = "<group>"; };
 		DEB0A9A0226218AB005770B2 /* WorldFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldFactory.swift; sourceTree = "<group>"; };
+		DEB540F9236DAF9A00D03062 /* GameCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCommands.swift; sourceTree = "<group>"; };
+		DEB540FB236DC08E00D03062 /* CommandWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandWrapper.swift; sourceTree = "<group>"; };
 		DECCAD8322665E7C002D820E /* Double+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extension.swift"; sourceTree = "<group>"; };
 		DEE591FC235CB4D9007686D8 /* CityCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityCommands.swift; sourceTree = "<group>"; };
 		DEE591FE235D71C1007686D8 /* Builder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Builder.swift; sourceTree = "<group>"; };
@@ -163,12 +167,10 @@
 			isa = PBXGroup;
 			children = (
 				DE75E360235A44ED0018F1F9 /* Commands */,
-				DE75E35D235A376B0018F1F9 /* Command.swift */,
 				DE6BE6262257E0F20027380C /* HexMap.swift */,
 				DEB0A9A0226218AB005770B2 /* WorldFactory.swift */,
 				DEF58EFE22874CCD0020B473 /* Unit.swift */,
 				DEF58F0122874D7C0020B473 /* World.swift */,
-				DEE591FE235D71C1007686D8 /* Builder.swift */,
 				DE67A86F2360536200A858D0 /* City.swift */,
 			);
 			path = Model;
@@ -177,8 +179,12 @@
 		DE75E360235A44ED0018F1F9 /* Commands */ = {
 			isa = PBXGroup;
 			children = (
+				DEE591FE235D71C1007686D8 /* Builder.swift */,
+				DE75E35D235A376B0018F1F9 /* Command.swift */,
+				DEB540FB236DC08E00D03062 /* CommandWrapper.swift */,
 				DE75E361235A450F0018F1F9 /* UnitCommands.swift */,
 				DEE591FC235CB4D9007686D8 /* CityCommands.swift */,
+				DEB540F9236DAF9A00D03062 /* GameCommands.swift */,
 			);
 			path = Commands;
 			sourceTree = "<group>";
@@ -324,8 +330,10 @@
 				DEF661EC2365E69700EDF9BB /* CityInfoView.swift in Sources */,
 				DEFFE28122587EDE00D9AE5A /* HexMapController.swift in Sources */,
 				DE13AD072257DF5600136AFE /* AppDelegate.swift in Sources */,
+				DEB540FA236DAF9A00D03062 /* GameCommands.swift in Sources */,
 				DEF58F0422874FA50020B473 /* UnitController.swift in Sources */,
 				DE67A8702360536200A858D0 /* City.swift in Sources */,
+				DEB540FC236DC08E00D03062 /* CommandWrapper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

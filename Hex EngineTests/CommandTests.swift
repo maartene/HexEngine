@@ -53,13 +53,12 @@ class CommandTests: XCTestCase {
             var title = "Mutating Command"
             var ownerID: UUID
             
-            func execute(in world: World) throws -> World {
-                var changedWorld = world
+            func execute(in world: World) throws {
                 // flip a single tile from "enterable" to "blocks movement" or vice versa
                 print("Before: Tile at 0,0: \(world.hexMap[0,0])")
-                changedWorld.hexMap[0,0] = world.hexMap[0,0].blocksMovement ? Tile.Forest : Tile.Water
-                print("After: Tile at 0,0: \(changedWorld.hexMap[0,0])")
-                return changedWorld
+                world.hexMap[0,0] = world.hexMap[0,0].blocksMovement ? Tile.Forest : Tile.Water
+                print("After: Tile at 0,0: \(world.hexMap[0,0])")
+                return
             }
         }
         
@@ -71,26 +70,28 @@ class CommandTests: XCTestCase {
         let commander = TestCommander(id: UUID(), position: AxialCoord(q: 23, r: 12))
         let command = TestCommand(ownerID: commander.id)
         let world = World(width: 100, height: 100, hexMapFactory: WorldFactory.CreateWorld(width:height:))
-        XCTAssertNotEqual(world.hexMap[0,0], world.executeCommand(command).hexMap[0,0])
+        let oldTile = world.hexMap[0,0]
+        world.executeCommand(command)
+        XCTAssertNotEqual(oldTile, world.hexMap[0,0])
     }
     
     func testAddCityCommand() {
         //Int, name: String, movement: Int = 2, startPosition: AxialCoord = AxialCoord.zero) {
         let commander = Unit(name: "Rabbit", startPosition: AxialCoord(q: 23, r: 12))
-        var world = World(width: 30, height: 30, hexMapFactory: WorldFactory.CreateWorld(width:height:))
+        let world = World(width: 30, height: 30, hexMapFactory: WorldFactory.CreateWorld(width:height:))
         world.addUnit(commander)
         world.hexMap[commander.position] = .Grass
         
         let command = BuildCityCommand(ownerID: commander.id)
         XCTAssertNil(world.getCityAt(commander.position))
-        let newWorld = world.executeCommand(command)
-        let city = newWorld.getCityAt(commander.position)
+        world.executeCommand(command)
+        let city = world.getCityAt(commander.position)
         print(city?.name ?? "no city here")
         XCTAssertNotNil(city)
     }
     
     func testBuilderCommand() {
-        var world = World(width: 30, height: 30, hexMapFactory: WorldFactory.CreateWorld(width:height:))
+        let world = World(width: 30, height: 30, hexMapFactory: WorldFactory.CreateWorld(width:height:))
         let coord = AxialCoord(q: 23, r: 12)
         let newCity = City(name: "Test city", position: coord)
         world.addCity(newCity)
@@ -106,7 +107,7 @@ class CommandTests: XCTestCase {
         city.buildQueue.append(command)
         print(city)
         XCTAssertGreaterThan(city.buildQueue.count, 0)
-        print("City at \(coord): \(world.getCityAt(coord)?.name ?? "no city here"). build queue there: \(world.getCityAt(coord)?.buildQueue)")
+        print("City at \(coord): \(world.getCityAt(coord)?.name ?? "no city here"). build queue there: \(String(describing: world.getCityAt(coord)?.buildQueue))")
         
         // now to get this city in the world again.
         world.replace(city)
@@ -115,7 +116,7 @@ class CommandTests: XCTestCase {
     }
     
     func testCreateUnitTest() {
-        var world = World(width: 30, height: 30, hexMapFactory: WorldFactory.CreateWorld(width:height:))
+        let world = World(width: 30, height: 30, hexMapFactory: WorldFactory.CreateWorld(width:height:))
         let coord = AxialCoord(q: 23, r: 12)
         let newCity = City(name: "Test city", position: coord)
         world.addCity(newCity)
@@ -131,7 +132,7 @@ class CommandTests: XCTestCase {
         city.buildQueue.append(command)
         print(city)
         XCTAssertGreaterThan(city.buildQueue.count, 0)
-        print("City at \(coord): \(world.getCityAt(coord)?.name ?? "no city here"). build queue there: \(world.getCityAt(coord)?.buildQueue)")
+        print("City at \(coord): \(world.getCityAt(coord)?.name ?? "no city here"). build queue there: \(String(describing: world.getCityAt(coord)?.buildQueue))")
         
         // now to get this city in the world again.
         world.replace(city)

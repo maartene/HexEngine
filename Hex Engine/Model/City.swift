@@ -9,7 +9,7 @@
 import Foundation
 
 struct City: Builder {
-    var possibleCommands = [BuildCommand]()
+    var possibleCommands = [Command]()
     
     var buildQueue = [BuildCommand]()
     
@@ -24,7 +24,7 @@ struct City: Builder {
     init(name: String, position: AxialCoord) {
         self.name = name
         self.position = position
-        possibleCommands.append(BuildRabbitCommand(ownerID: self.id))
+        possibleCommands.append(QueueBuildRabbitCommand(ownerID: id))
         
         Self.onCityCreate?(self)
     }

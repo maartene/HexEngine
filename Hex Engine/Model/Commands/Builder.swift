@@ -9,20 +9,19 @@
 import Foundation
 
 protocol Builder: Commander {
-    var possibleCommands: [BuildCommand] { get }
+    var possibleCommands: [Command] { get }
     var buildQueue: [BuildCommand] { get set }
     
-    func build(in world: World, production: Double) throws -> World
+    func build(in world: World, production: Double) throws
     func addToBuildQueue(_ command: BuildCommand) -> Builder
 }
 
 extension Builder {
-    func build(in world: World, production: Double) throws -> World {
+    func build(in world: World, production: Double) throws {
         guard buildQueue.count > 0 else {
-            return world
+            return
         }
         
-        var newWorld = world
         var newBuilder = try world.getCityWithID(buildQueue[0].ownerID)
         
         var newBuildQueue = newBuilder.buildQueue
@@ -32,14 +31,14 @@ extension Builder {
         print("Added \(production) production. \(itemToBuild.productionRemaining) production remaining.")
     
         if itemToBuild.productionRemaining <= 0 {
-            newWorld = (try? itemToBuild.execute(in: newWorld)) ?? world
+            try itemToBuild.execute(in: world)
         } else {
             newBuildQueue.insert(itemToBuild, at: 0)
         }
         
         newBuilder.buildQueue = newBuildQueue
-        newWorld.replaceBuilder(newBuilder)
-        return newWorld
+        world.replaceBuilder(newBuilder)
+        return
     }
     
     func addToBuildQueue(_ command: BuildCommand) -> Builder {

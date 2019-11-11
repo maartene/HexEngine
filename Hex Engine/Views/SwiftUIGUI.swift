@@ -36,7 +36,7 @@ struct SwiftUIGUI: View {
                     { print("next turn")
                     //print("Units in hexMapController: \(HexMapController.instance.world.allUnits)")
                     //print("number of units: \(self.numberOfUnits)")
-                    self.world.nextTurn()
+                        self.world.executeCommand(NextTurnCommand(ownerID: UUID()))
                     
                 }) {
                     Text("Next Turn")

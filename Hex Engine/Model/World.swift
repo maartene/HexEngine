@@ -16,11 +16,16 @@ enum IDArrayError: Error {
 
 class World: ObservableObject {
     var hexMap: HexMap
+    var executedCommands = [CommandWrapper]()
     
     @Published var units = [UUID: Unit]()
     private var cities = [UUID: City]()
     
     var onUnitRemoved: ((Unit) -> Void)?
+    var onVisibilityMapUpdated: (() -> Void)?
+    
+    var visibilityMap = [AxialCoord: Bool]()
+    var visitedMap = [AxialCoord: Bool]()
     
     init(width: Int, height: Int, hexMapFactory: (Int, Int) -> HexMap) {
         self.hexMap = hexMapFactory(width, height)
@@ -30,9 +35,7 @@ class World: ObservableObject {
         units[unit.id] = unit
         
         // TESTING only: add a city with a fixed command
-        var city = City(name: "New City", position: AxialCoord(q: 1, r: 1))
-        let buildCommand = city.possibleCommands[0]
-        city.buildQueue.append(buildCommand)
+        let city = City(name: "New City", position: AxialCoord(q: 1, r: 1))
         cities[city.id] = city
     }
     
@@ -67,7 +70,6 @@ class World: ObservableObject {
     }
     
     func nextTurn() {
-        print("next turn!")
         for unit in units.values {
             units[unit.id] = unit.step(hexMap: hexMap)
         }
@@ -79,23 +81,37 @@ class World: ObservableObject {
                 print(error)
             }
         }
+        calculateVisibility()
     }
     
-    func setPath(for unitID: UUID, path: [AxialCoord]) {
+    func setPath(for unitID: UUID, path: [AxialCoord], moveImmediately: Bool = false) {
         guard var unit = units[unitID] else {
             print("unit with id \(unitID) not found.")
             return
         }
         
         unit.path = path
+        
+        if moveImmediately {
+            unit.move(hexMap: hexMap)
+        }
+        
         units[unit.id] = unit
+        calculateVisibility()
     }
     
     func executeCommand(_ command: Command) {
         do {
             try command.execute(in: self)
+            try executedCommands.append(CommandWrapper.wrapperFor(command: command))
+            /*let encoder = JSONEncoder()
+            encoder.outputFormatting = .prettyPrinted
+            let data = try encoder.encode(executedCommands)
+            let url = URL(fileURLWithPath: "world.json")
+            print(url)
+            try data.write(to: url)*/
         } catch {
-            print("An error of type '\(error)' occored. Returning world unchanged.")
+            print("An error of type '\(error)' occored.")
         }
     }
     
@@ -153,5 +169,43 @@ class World: ObservableObject {
         }
         
         cities[city.id] = city
+    }
+    
+    func replace(_ unit: Unit) {
+        guard units[unit.id] != nil else {
+            print("Could not replace unit with id \(unit.id), because it does not exist in the world.")
+            return
+        }
+        
+        units[unit.id] = unit
+    }
+    
+    func calculateVisibility() {
+        print("Calculate visibility")
+        for coord in hexMap.getTileCoordinates() {
+            visibilityMap[coord] = false
+        }
+        
+        for unit in units.values {
+            visibilityMap[unit.position] = true
+            visitedMap[unit.position] = true
+            let visibleNeighbours = HexMap.getAxialNeighbourCoordinates(tile: unit.position)
+            for neighbour in visibleNeighbours {
+                visibilityMap[neighbour] = true
+                visitedMap[neighbour] = true
+            }
+        }
+        
+        for city in cities.values {
+            visibilityMap[city.position] = true
+            visitedMap[city.position] = true
+            let visibleNeighbours = HexMap.getAxialNeighbourCoordinates(tile: city.position)
+            for neighbour in visibleNeighbours {
+                visibilityMap[neighbour] = true
+                visitedMap[neighbour] = true
+            }
+        }
+        
+        onVisibilityMapUpdated?()
     }
 }

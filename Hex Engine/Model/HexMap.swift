@@ -315,7 +315,7 @@ struct CubeCoord: Equatable, Hashable {
     }
 }
 
-struct AxialCoord: Equatable, Hashable, CustomStringConvertible {
+struct AxialCoord: Equatable, Hashable, CustomStringConvertible, Codable {
     var description: String {
         return "(q: \(q),r: \(r))"
     }
