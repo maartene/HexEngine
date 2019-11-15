@@ -14,6 +14,7 @@
 		DE13AD142257DF5800136AFE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE13AD122257DF5800136AFE /* Main.storyboard */; };
 		DE13AD202257DF5800136AFE /* Hex_EngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE13AD1F2257DF5800136AFE /* Hex_EngineTests.swift */; };
 		DE538AE5225DED11007104A9 /* HexMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE538AE4225DED11007104A9 /* HexMapTests.swift */; };
+		DE64F7B2237EDE2000C921ED /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE64F7B1237EDE2000C921ED /* Player.swift */; };
 		DE67A86E236052D500A858D0 /* CityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE67A86D236052D500A858D0 /* CityController.swift */; };
 		DE67A8702360536200A858D0 /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE67A86F2360536200A858D0 /* City.swift */; };
 		DE67A87223605CC400A858D0 /* SKNode+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE67A87123605CC400A858D0 /* SKNode+Extension.swift */; };
@@ -62,6 +63,7 @@
 		DE13AD1F2257DF5800136AFE /* Hex_EngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hex_EngineTests.swift; sourceTree = "<group>"; };
 		DE13AD212257DF5800136AFE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DE538AE4225DED11007104A9 /* HexMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMapTests.swift; sourceTree = "<group>"; };
+		DE64F7B1237EDE2000C921ED /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		DE67A86D236052D500A858D0 /* CityController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityController.swift; sourceTree = "<group>"; };
 		DE67A86F2360536200A858D0 /* City.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
 		DE67A87123605CC400A858D0 /* SKNode+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SKNode+Extension.swift"; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 				DEF58EFE22874CCD0020B473 /* Unit.swift */,
 				DEF58F0122874D7C0020B473 /* World.swift */,
 				DE67A86F2360536200A858D0 /* City.swift */,
+				DE64F7B1237EDE2000C921ED /* Player.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -328,6 +331,7 @@
 				DEB0A9A1226218AB005770B2 /* WorldFactory.swift in Sources */,
 				DEF661EE2365E6D400EDF9BB /* TileInfoLabel.swift in Sources */,
 				DEF661EC2365E69700EDF9BB /* CityInfoView.swift in Sources */,
+				DE64F7B2237EDE2000C921ED /* Player.swift in Sources */,
 				DEFFE28122587EDE00D9AE5A /* HexMapController.swift in Sources */,
 				DE13AD072257DF5600136AFE /* AppDelegate.swift in Sources */,
 				DEB540FA236DAF9A00D03062 /* GameCommands.swift in Sources */,

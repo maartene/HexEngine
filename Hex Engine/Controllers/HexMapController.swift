@@ -26,6 +26,16 @@ class HexMapController: ObservableObject {
     let tileYOffsetFactor: Double   // what fraction of tileHeight are rows offset in the Y value, in points
 
     var tileSKSpriteNodeMap = [AxialCoord: SKSpriteNode]()
+    var tileTextureMap = [Tile: SKTexture]()
+    
+    private func fillTileTextureMap() {
+        tileTextureMap = [Tile: SKTexture]()
+        tileTextureMap[.Forest] = SKTexture(imageNamed: "grass_13")
+        tileTextureMap[.Grass] = SKTexture(imageNamed: "grass_05")
+        tileTextureMap[.Mountain] = SKTexture(imageNamed: "dirt_18")
+        tileTextureMap[.Sand] = SKTexture(imageNamed: "sand_07")
+        tileTextureMap[.Water] = SKTexture(imageNamed: "water")
+    }
     
     var tileBecameSelected: ((AxialCoord, Tile) -> Void)?
     var tileBecameDeselected: ((AxialCoord) -> Void)?
@@ -77,6 +87,9 @@ class HexMapController: ObservableObject {
         highlighter.zPosition = 0.1
         self.scene.addChild(highlighter)
         Self.instance = self
+        
+        fillTileTextureMap()
+
     }
     
     func setupUI(in view: SKView) -> some NSView {
@@ -99,6 +112,10 @@ class HexMapController: ObservableObject {
         return Self.hexToPixel(hex, tileWidth: self.tileWidth, tileHeight: self.tileHeight, tileYOffsetFactor: self.tileYOffsetFactor)
     }
     
+    func getTextureForTile(tile: Tile) -> SKTexture {
+        return tileTextureMap[tile] ?? SKTexture()
+    }
+    
     /*func pixelToHex(_ point: CGPoint) -> AxialCoord {
         //let x = tileWidth * (sqrt(2.0) * Double(hex.q) + sqrt(2)/2.0 * Double(hex.r))
         //let y = tileHeight * (3.0 / 2 * Double(hex.r))
@@ -119,22 +136,7 @@ class HexMapController: ObservableObject {
             let r = coord.r
             
             if world.hexMap[q,r] != .void {
-                let spriteName: String
-                switch world.hexMap[q,r] {
-                case .Forest:
-                    spriteName = "grass_13"
-                case .Grass:
-                    spriteName = "grass_05"
-                case .Mountain:
-                    spriteName = "dirt_18"
-                case .Sand:
-                    spriteName = "sand_07"
-                case .Water:
-                    spriteName = "water"
-                default:
-                    spriteName = ""
-                }
-                let tile = SKSpriteNode(imageNamed: spriteName)
+                let tile = SKSpriteNode(imageNamed: "unknown")
                 
                 //tile.anchorPoint = CGPoint(x: tileWidth / 2, y: tileHeight / 2)
                 let pos = hexToPixel(AxialCoord(q: q, r: r))
@@ -250,18 +252,14 @@ class HexMapController: ObservableObject {
                 continue
             }
             
+            let tile = world.hexMap[coord]
+            
             if world.visibilityMap[coord] ?? false {
                 sprite.alpha = 1
-                sprite.removeAllChildren()
+                sprite.texture = getTextureForTile(tile: tile)
             } else if world.visitedMap[coord] ?? false {
                 sprite.alpha = 0.5
-                sprite.removeAllChildren()
-            } else {
-                if sprite.children.count == 0 {
-                    let child = SKSpriteNode(imageNamed: "unknown")
-                    sprite.addChild(child)
-                    child.zPosition = 0.01
-                }
+                sprite.texture = getTextureForTile(tile: tile)
             }
         }
     }
