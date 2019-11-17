@@ -190,6 +190,13 @@ struct HexMap {
         return results
     }
     
+    static func coordinatesWithinRange(from tile: AxialCoord, range: Int) -> [AxialCoord] {
+        let result = coordinatesWithinRange(from: tile.toCube(), range: range)
+        return result.map { tile in
+            tile.toAxial()
+        }
+    }
+    
     static func coordinatesIntersectingRanges(from tileA: CubeCoord, withRange rangeTileA: Int, to TileB: CubeCoord, withRange rangeTileB: Int) -> [CubeCoord] {
         let coordinatesInRangeOfTileA = coordinatesWithinRange(from: tileA, range: rangeTileA)
         let coordinatesInRangeOfTileB = coordinatesWithinRange(from: TileB, range: rangeTileB)

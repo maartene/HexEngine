@@ -20,6 +20,10 @@ struct City: Builder {
     
     let name: String
     
+    var visibility: Int {
+        return 2
+    }
+    
     static var onCityCreate: ((City) -> Void)?
     
     init(owningPlayer: UUID, name: String, position: AxialCoord) {
