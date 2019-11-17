@@ -10,6 +10,7 @@ import SwiftUI
 
 struct CityInfoView: View {
     @ObservedObject var cityController: CityController
+    @ObservedObject var hexMapController: HexMapController
     @ObservedObject var world: World
     
     var city: City? {
@@ -36,11 +37,13 @@ struct CityInfoView: View {
                                 Button(self.city?.possibleCommands[number].title ?? "") {
                                     self.executeBuildCommand(number: number, city: self.city)
                                 }.overlay(Capsule().stroke(lineWidth: 1))
+                                    .disabled(self.city?.owningPlayer != self.hexMapController.guiPlayer)
                             }
                         }
                         
                         Text("""
                             City: \(city?.name ?? "nil")
+                            Owning player: \(city!.owningPlayer)
                             Build queue length: \(city?.buildQueue.count ?? 0)
                         """)
                     }.padding()

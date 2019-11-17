@@ -132,4 +132,16 @@ final class UnitController: ObservableObject {
         pathIndicator?.strokeColor = SKColor.blue
         scene.addChild(pathIndicator!)
     }
+    
+    func showHideUnits(in world: World, visibilityMap: [AxialCoord: TileVisibility]) {
+        for unitID in unitSpriteMap.keys {
+            if let unit = try? world.getUnitWithID(unitID) {
+                if visibilityMap[unit.position] ?? .unvisited == .visible {
+                    unitSpriteMap[unitID]!.alpha = 1
+                } else {
+                    unitSpriteMap[unitID]!.alpha = 0
+                }
+            }
+        }
+    }
 }

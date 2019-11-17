@@ -28,6 +28,8 @@ class HexMapController: ObservableObject {
     var tileSKSpriteNodeMap = [AxialCoord: SKSpriteNode]()
     var tileTextureMap = [Tile: SKTexture]()
     
+    var guiPlayer: UUID
+    
     private func fillTileTextureMap() {
         tileTextureMap = [Tile: SKTexture]()
         tileTextureMap[.Forest] = SKTexture(imageNamed: "grass_13")
@@ -60,6 +62,10 @@ class HexMapController: ObservableObject {
     var unitController: UnitController
     var cityController: CityController
     
+    var guiPlayerIsCurrentPlayer: Bool {
+        guiPlayer == world.currentPlayer?.id
+    }
+    
     init(scene: SKScene, world: World, tileWidth: Double, tileHeight: Double, tileYOffsetFactor: Double) {
         self.scene = scene
         self.world = world
@@ -70,6 +76,8 @@ class HexMapController: ObservableObject {
         
         highlighter = SKShapeNode(circleOfRadius: CGFloat(tileWidth / 2.0))
         cityController = CityController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
+        
+        guiPlayer = world.currentPlayer!.id
         
         self.world.onUnitRemoved = unitController.onUnitRemoved
         self.world.onVisibilityMapUpdated = showHideTiles
@@ -158,7 +166,9 @@ class HexMapController: ObservableObject {
             }
         }
         
-        showHideTiles()
+        let player = world.players.first(where: {$0.id == guiPlayer})!
+        world.updateVisibilityForPlayer(player: player)
+        //showHideTiles(visibilityMap: player.visibilityMap)
     }
     
     func middleOfMapInWorldSpace() -> CGPoint {
@@ -246,21 +256,26 @@ class HexMapController: ObservableObject {
     }
     
     func showHideTiles() {
-        print("showHideTiles \(tileSKSpriteNodeMap.keys.count)")
+        let player = world.players.first(where: {$0.id == guiPlayer})!
+        
+        //print(visibilityMap.count)
         for coord in tileSKSpriteNodeMap.keys {
             guard let sprite = tileSKSpriteNodeMap[coord] else {
                 continue
             }
             
             let tile = world.hexMap[coord]
-            
-            if world.visibilityMap[coord] ?? false {
+            if (player.visibilityMap[coord] ?? .unvisited) == .visible {
                 sprite.alpha = 1
                 sprite.texture = getTextureForTile(tile: tile)
-            } else if world.visitedMap[coord] ?? false {
-                sprite.alpha = 0.5
+            } else if (player.visibilityMap[coord] ?? .unvisited) == .visited {
                 sprite.texture = getTextureForTile(tile: tile)
+                sprite.alpha = 0.25
+            } else {
+                //sprite.texture = SKTexture(imageNamed: "unknown")
             }
         }
+        
+        unitController.showHideUnits(in: world, visibilityMap: player.visibilityMap)
     }
 }

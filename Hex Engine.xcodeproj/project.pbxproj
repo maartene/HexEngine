@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DE0CE0D0238049190009B3A1 /* PlayersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0CE0CF238049190009B3A1 /* PlayersView.swift */; };
 		DE13AD072257DF5600136AFE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE13AD062257DF5600136AFE /* AppDelegate.swift */; };
 		DE13AD0D2257DF5600136AFE /* HexMapScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE13AD0C2257DF5600136AFE /* HexMapScene.swift */; };
 		DE13AD0F2257DF5600136AFE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE13AD0E2257DF5600136AFE /* ViewController.swift */; };
@@ -29,6 +30,7 @@
 		DECCAD8422665E7C002D820E /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECCAD8322665E7C002D820E /* Double+Extension.swift */; };
 		DEE591FD235CB4D9007686D8 /* CityCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE591FC235CB4D9007686D8 /* CityCommands.swift */; };
 		DEE591FF235D71C1007686D8 /* Builder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE591FE235D71C1007686D8 /* Builder.swift */; };
+		DEEDE7AD23816193005E7613 /* PlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEDE7AC23816193005E7613 /* PlayerTests.swift */; };
 		DEF487362364B48F001E47A5 /* SwiftUIGUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF487352364B48F001E47A5 /* SwiftUIGUI.swift */; };
 		DEF58EFF22874CCD0020B473 /* Unit.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF58EFE22874CCD0020B473 /* Unit.swift */; };
 		DEF58F0222874D7C0020B473 /* World.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF58F0122874D7C0020B473 /* World.swift */; };
@@ -51,6 +53,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DE0CE0CF238049190009B3A1 /* PlayersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayersView.swift; sourceTree = "<group>"; };
 		DE13AD032257DF5600136AFE /* Hex Engine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hex Engine.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE13AD062257DF5600136AFE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DE13AD0C2257DF5600136AFE /* HexMapScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMapScene.swift; sourceTree = "<group>"; };
@@ -78,6 +81,7 @@
 		DECCAD8322665E7C002D820E /* Double+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extension.swift"; sourceTree = "<group>"; };
 		DEE591FC235CB4D9007686D8 /* CityCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityCommands.swift; sourceTree = "<group>"; };
 		DEE591FE235D71C1007686D8 /* Builder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Builder.swift; sourceTree = "<group>"; };
+		DEEDE7AC23816193005E7613 /* PlayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerTests.swift; sourceTree = "<group>"; };
 		DEF487352364B48F001E47A5 /* SwiftUIGUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIGUI.swift; sourceTree = "<group>"; };
 		DEF58EFE22874CCD0020B473 /* Unit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Unit.swift; sourceTree = "<group>"; };
 		DEF58F0122874D7C0020B473 /* World.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = World.swift; sourceTree = "<group>"; };
@@ -151,6 +155,7 @@
 				DE538AE4225DED11007104A9 /* HexMapTests.swift */,
 				DE75E383235B41490018F1F9 /* WorldTests.swift */,
 				DE75E385235B416F0018F1F9 /* CommandTests.swift */,
+				DEEDE7AC23816193005E7613 /* PlayerTests.swift */,
 			);
 			path = "Hex EngineTests";
 			sourceTree = "<group>";
@@ -199,6 +204,7 @@
 				DEF661E92365E67100EDF9BB /* UnitInfoView.swift */,
 				DEF661EB2365E69700EDF9BB /* CityInfoView.swift */,
 				DEF661ED2365E6D400EDF9BB /* TileInfoLabel.swift */,
+				DE0CE0CF238049190009B3A1 /* PlayersView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -334,6 +340,7 @@
 				DE64F7B2237EDE2000C921ED /* Player.swift in Sources */,
 				DEFFE28122587EDE00D9AE5A /* HexMapController.swift in Sources */,
 				DE13AD072257DF5600136AFE /* AppDelegate.swift in Sources */,
+				DE0CE0D0238049190009B3A1 /* PlayersView.swift in Sources */,
 				DEB540FA236DAF9A00D03062 /* GameCommands.swift in Sources */,
 				DEF58F0422874FA50020B473 /* UnitController.swift in Sources */,
 				DE67A8702360536200A858D0 /* City.swift in Sources */,
@@ -345,6 +352,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DEEDE7AD23816193005E7613 /* PlayerTests.swift in Sources */,
 				DE75E384235B41490018F1F9 /* WorldTests.swift in Sources */,
 				DE538AE5225DED11007104A9 /* HexMapTests.swift in Sources */,
 				DE13AD202257DF5800136AFE /* Hex_EngineTests.swift in Sources */,

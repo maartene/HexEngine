@@ -30,7 +30,7 @@ struct BuildCityCommand: Command, Codable {
             throw BuildCityCommandErrors.tileOfWrongType
         }
         
-        let city = City(name: "New city \(Int.random(in: 0...100))", position: owner.position)
+        let city = City(owningPlayer: owner.owningPlayer, name: "New city \(Int.random(in: 0...100))", position: owner.position)
         world.addCity(city)
         
         // remove unit from world

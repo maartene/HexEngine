@@ -22,7 +22,7 @@ struct BuildRabbitCommand: BuildCommand, Codable {
     
     func execute(in world: World) throws {
         let owner = try world.getCityWithID(ownerID)
-        let newUnit = Unit.Rabbit(startPosition: owner.position)
+        let newUnit = Unit.Rabbit(owningPlayer: owner.owningPlayer, startPosition: owner.position)
         
         world.addUnit(newUnit)
         return

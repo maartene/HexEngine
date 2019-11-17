@@ -38,13 +38,15 @@ class CommandTests: XCTestCase {
         }
         
         struct TestCommander: Commander {
+            var owningPlayer: UUID
             var id: UUID
             var position: AxialCoord
         }
+        let world = World(playerCount: 1, width: 100, height: 100, hexMapFactory: WorldFactory.CreateWorld(width:height:))
         
-        let commander = TestCommander(id: UUID(), position: AxialCoord(q: 23, r: 12))
+        let commander = TestCommander(owningPlayer: world.currentPlayer!.id, id: UUID(), position: AxialCoord(q: 23, r: 12))
         let command = TestCommand(ownerID: commander.id)
-        let world = World(width: 100, height: 100, hexMapFactory: WorldFactory.CreateWorld(width:height:))
+        
         XCTAssertNotNil(world.executeCommand(command))
     }
     
@@ -63,13 +65,15 @@ class CommandTests: XCTestCase {
         }
         
         struct TestCommander: Commander {
+            var owningPlayer: UUID
             var id: UUID
             var position: AxialCoord
         }
+        let world = World(playerCount: 1, width: 100, height: 100, hexMapFactory: WorldFactory.CreateWorld(width:height:))
         
-        let commander = TestCommander(id: UUID(), position: AxialCoord(q: 23, r: 12))
+        let commander = TestCommander(owningPlayer: world.currentPlayer!.id, id: UUID(), position: AxialCoord(q: 23, r: 12))
         let command = TestCommand(ownerID: commander.id)
-        let world = World(width: 100, height: 100, hexMapFactory: WorldFactory.CreateWorld(width:height:))
+        
         let oldTile = world.hexMap[0,0]
         world.executeCommand(command)
         XCTAssertNotEqual(oldTile, world.hexMap[0,0])
@@ -77,8 +81,9 @@ class CommandTests: XCTestCase {
     
     func testAddCityCommand() {
         //Int, name: String, movement: Int = 2, startPosition: AxialCoord = AxialCoord.zero) {
-        let commander = Unit(name: "Rabbit", startPosition: AxialCoord(q: 23, r: 12))
-        let world = World(width: 30, height: 30, hexMapFactory: WorldFactory.CreateWorld(width:height:))
+        let world = World(playerCount: 1, width: 30, height: 30, hexMapFactory: WorldFactory.CreateWorld(width:height:))
+        let commander = Unit(owningPlayer: world.currentPlayer!.id, name: "Rabbit", startPosition: AxialCoord(q: 23, r: 12))
+        
         world.addUnit(commander)
         world.hexMap[commander.position] = .Grass
         
@@ -91,9 +96,9 @@ class CommandTests: XCTestCase {
     }
     
     func testBuilderCommand() {
-        let world = World(width: 30, height: 30, hexMapFactory: WorldFactory.CreateWorld(width:height:))
+        let world = World(playerCount: 1, width: 30, height: 30, hexMapFactory: WorldFactory.CreateWorld(width:height:))
         let coord = AxialCoord(q: 23, r: 12)
-        let newCity = City(name: "Test city", position: coord)
+        let newCity = City(owningPlayer: world.currentPlayer!.id, name: "Test city", position: coord)
         world.addCity(newCity)
         
         guard var city = world.getCityAt(coord) else {
@@ -104,8 +109,8 @@ class CommandTests: XCTestCase {
         let command = city.possibleCommands[0]
         
         // note: this is a new city. 
-        city.buildQueue.append(command)
-        print(city)
+        world.executeCommand(command)
+        city = world.getCityAt(coord)!
         XCTAssertGreaterThan(city.buildQueue.count, 0)
         print("City at \(coord): \(world.getCityAt(coord)?.name ?? "no city here"). build queue there: \(String(describing: world.getCityAt(coord)?.buildQueue))")
         
@@ -116,9 +121,9 @@ class CommandTests: XCTestCase {
     }
     
     func testCreateUnitTest() {
-        let world = World(width: 30, height: 30, hexMapFactory: WorldFactory.CreateWorld(width:height:))
+        let world = World(playerCount: 1, width: 30, height: 30, hexMapFactory: WorldFactory.CreateWorld(width:height:))
         let coord = AxialCoord(q: 23, r: 12)
-        let newCity = City(name: "Test city", position: coord)
+        let newCity = City(owningPlayer: world.currentPlayer!.id, name: "Test city", position: coord)
         world.addCity(newCity)
         
         guard var city = world.getCityAt(coord) else {
@@ -129,8 +134,8 @@ class CommandTests: XCTestCase {
         let command = city.possibleCommands[0]
         
         // note: this is a new city.
-        city.buildQueue.append(command)
-        print(city)
+        world.executeCommand(command)
+        city = world.getCityAt(coord)!
         XCTAssertGreaterThan(city.buildQueue.count, 0)
         print("City at \(coord): \(world.getCityAt(coord)?.name ?? "no city here"). build queue there: \(String(describing: world.getCityAt(coord)?.buildQueue))")
         

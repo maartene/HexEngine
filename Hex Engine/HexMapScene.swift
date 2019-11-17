@@ -22,7 +22,7 @@ class HexMapScene: SKScene {
     var uiState = UI_State.map
     
     override func sceneDidLoad() {
-        let world = World(width: 84, height: 54, hexMapFactory: WorldFactory.CreateWorld)
+        let world = World(playerCount: 4, width: 84, height: 54, hexMapFactory: WorldFactory.CreateWorld)
     
         hexMapController = HexMapController(scene: self, world: world, tileWidth: 120.0, tileHeight: 140.0, tileYOffsetFactor: 0.74)
         

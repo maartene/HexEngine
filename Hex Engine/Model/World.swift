@@ -19,23 +19,41 @@ class World: ObservableObject {
     var executedCommands = [CommandWrapper]()
     
     @Published var units = [UUID: Unit]()
-    private var cities = [UUID: City]()
+    var cities = [UUID: City]()
     
     var onUnitRemoved: ((Unit) -> Void)?
     var onVisibilityMapUpdated: (() -> Void)?
-    
     var visibilityMap = [AxialCoord: Bool]()
     var visitedMap = [AxialCoord: Bool]()
     
-    init(width: Int, height: Int, hexMapFactory: (Int, Int) -> HexMap) {
+    var players = Set<Player>()
+    var playerTurnSequence = [UUID]()
+    @Published var currentPlayerIndex = 0
+    var currentPlayer: Player? {
+        return players.first { $0.id == playerTurnSequence[currentPlayerIndex] }
+    }
+    
+    init(playerCount: Int, width: Int, height: Int, hexMapFactory: (Int, Int) -> HexMap) {
         self.hexMap = hexMapFactory(width, height)
         
+        for i in 0 ..< playerCount {
+            let newPlayer = Player(name: "Player \(i)")
+            players.insert(newPlayer)
+            playerTurnSequence.append(newPlayer.id)
+        }
+        
         // TESTING only: add a rabbit to the map
-        let unit = Unit.Rabbit(startPosition: AxialCoord(q: 1, r: 2))
+        let unit = Unit.Rabbit(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
         units[unit.id] = unit
         
+        if playerCount > 1 {
+            // TESTING only: add another rabbit (with a different owner to the map
+            let anotherUnit = Unit.Rabbit(owningPlayer: playerTurnSequence[1], startPosition: AxialCoord(q: -1, r: -1))
+            units[anotherUnit.id] = anotherUnit
+        }
+        
         // TESTING only: add a city with a fixed command
-        let city = City(name: "New City", position: AxialCoord(q: 1, r: 1))
+        let city = City(owningPlayer: currentPlayer!.id, name: "New City", position: AxialCoord(q: 1, r: 1))
         cities[city.id] = city
     }
     
@@ -81,7 +99,17 @@ class World: ObservableObject {
                 print(error)
             }
         }
-        calculateVisibility()
+        
+        for player in players {
+            players.update(with: player.calculateVisibility(in: self))
+        }
+        onVisibilityMapUpdated?()
+        nextPlayer()
+    }
+    
+    func nextPlayer() {
+        currentPlayerIndex += 1
+        currentPlayerIndex = currentPlayerIndex % players.count
     }
     
     func setPath(for unitID: UUID, path: [AxialCoord], moveImmediately: Bool = false) {
@@ -97,7 +125,14 @@ class World: ObservableObject {
         }
         
         units[unit.id] = unit
-        calculateVisibility()
+        
+        updateVisibilityForPlayer(player: currentPlayer!)
+    }
+    
+    func updateVisibilityForPlayer(player: Player) {
+        let player = player.calculateVisibility(in: self)
+        players.update(with: player)
+        onVisibilityMapUpdated?()
     }
     
     func executeCommand(_ command: Command) {
@@ -178,34 +213,5 @@ class World: ObservableObject {
         }
         
         units[unit.id] = unit
-    }
-    
-    func calculateVisibility() {
-        print("Calculate visibility")
-        for coord in hexMap.getTileCoordinates() {
-            visibilityMap[coord] = false
-        }
-        
-        for unit in units.values {
-            visibilityMap[unit.position] = true
-            visitedMap[unit.position] = true
-            let visibleNeighbours = HexMap.getAxialNeighbourCoordinates(tile: unit.position)
-            for neighbour in visibleNeighbours {
-                visibilityMap[neighbour] = true
-                visitedMap[neighbour] = true
-            }
-        }
-        
-        for city in cities.values {
-            visibilityMap[city.position] = true
-            visitedMap[city.position] = true
-            let visibleNeighbours = HexMap.getAxialNeighbourCoordinates(tile: city.position)
-            for neighbour in visibleNeighbours {
-                visibilityMap[neighbour] = true
-                visitedMap[neighbour] = true
-            }
-        }
-        
-        onVisibilityMapUpdated?()
     }
 }

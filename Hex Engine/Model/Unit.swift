@@ -10,6 +10,7 @@ import Foundation
 
 struct Unit {
     let id = UUID()
+    let owningPlayer: UUID
     let name: String
     var movement: Int
     var movementLeft: Double
@@ -20,7 +21,8 @@ struct Unit {
     static var onUnitCreate: ((Unit) -> Void)?
     static var onUnitChanged: ((Unit) -> Void)?
     
-    init(name: String, movement: Int = 2, visibility: Int = 2, startPosition: AxialCoord = AxialCoord.zero) {
+    init(owningPlayer: UUID, name: String, movement: Int = 2, visibility: Int = 2, startPosition: AxialCoord = AxialCoord.zero) {
+        self.owningPlayer = owningPlayer
         self.name = name
         self.movement = movement
         self.movementLeft = Double(movement)
@@ -64,8 +66,8 @@ struct Unit {
         }
     }
     
-    static func Rabbit(startPosition: AxialCoord) -> Unit {
-        var newRabbit = Unit(name: "Rabbit", movement: 2, startPosition: startPosition)
+    static func Rabbit(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
+        var newRabbit = Unit(owningPlayer: owningPlayer, name: "Rabbit", movement: 2, startPosition: startPosition)
         newRabbit.possibleCommands = [BuildCityCommand(ownerID: newRabbit.id)]
         return newRabbit
     }

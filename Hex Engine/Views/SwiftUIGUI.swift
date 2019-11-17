@@ -18,10 +18,10 @@ struct SwiftUIGUI: View {
     var body: some View {
         VStack {
             HStack(alignment: .top) {
-                UnitInfoView(unitController: unitController, world: world, hexMapController: hexMapController).shadow(radius: 4).padding()
+                UnitInfoView(unitController: unitController, world: world, hexMapController: hexMapController).shadow(radius: 4).padding().disabled(hexMapController.guiPlayerIsCurrentPlayer == false)
                 Spacer()
                 //Text("Number of units in the world: \(world.units.count)")
-                CityInfoView(cityController: hexMapController.cityController, world: world).shadow(radius: 4).padding().transition(.opacity)
+                CityInfoView(cityController: hexMapController.cityController, hexMapController: hexMapController, world: world).shadow(radius: 4).padding().transition(.opacity).disabled(hexMapController.guiPlayerIsCurrentPlayer == false)
             }
             
             //Text("SwiftUI for SpriteKit gui!")
@@ -29,8 +29,10 @@ struct SwiftUIGUI: View {
             
             Spacer()
             
-            HStack {
+            HStack(alignment: .bottom) {
                 TileInfoLabel(hexMapController: hexMapController).shadow(radius: 4).padding()
+                Spacer()
+                PlayersView(world: world).shadow(radius: 4).padding()
                 Spacer()
                 Button(action:
                     { print("next turn")

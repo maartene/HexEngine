@@ -20,6 +20,18 @@ struct UnitInfoView: View {
         return nil
     }
     
+    var owningPlayerName: String {
+        guard let unit = unit else {
+            return "unknown unit"
+        }
+        
+        if let player = world.players.first(where: {$0.id == unit.owningPlayer}) {
+            return player.name
+        } else {
+            return "unknown owning player"
+        }
+    }
+    
     var body: some View {
         VStack {
             if unit == nil {
@@ -32,17 +44,18 @@ struct UnitInfoView: View {
                                 self.hexMapController.uiState = UI_State.selectTile
                             }
                             .overlay(Capsule().stroke(lineWidth: hexMapController.uiState == UI_State.selectTile ? 4 : 1))
-                            .disabled(unit!.movement <= 0)
+                            .disabled(unit!.movement <= 0 || unit?.owningPlayer != hexMapController.guiPlayer)
                             
                             ForEach(0 ..< unit!.possibleCommands.count) { number in
                                 Button(self.unit!.possibleCommands[number].title) {
                                 self.world.executeCommand(self.unit!.possibleCommands[number])
                                 }.overlay(Capsule().stroke(lineWidth: 1))
-                                .disabled(self.unit!.movement <= 0)
+                                    .disabled(self.unit!.movement <= 0 || self.unit?.owningPlayer != self.hexMapController.guiPlayer)
                             }
                         }
                         Text("""
                             Unit: \(unit!.name) (\(unit!.id))
+                            Owner: \(owningPlayerName) (\(unit!.owningPlayer))
                             Position: \(unit!.position.description)
                             Movement: \(unit!.movementLeft)/\(unit!.movement)
                         """)
