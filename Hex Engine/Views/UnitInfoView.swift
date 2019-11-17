@@ -25,7 +25,7 @@ struct UnitInfoView: View {
             return "unknown unit"
         }
         
-        if let player = world.players.first(where: {$0.id == unit.owningPlayer}) {
+        if let player = world.players[unit.owningPlayer] {
             return player.name
         } else {
             return "unknown owning player"

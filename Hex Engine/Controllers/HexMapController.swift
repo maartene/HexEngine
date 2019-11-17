@@ -166,7 +166,7 @@ class HexMapController: ObservableObject {
             }
         }
         
-        let player = world.players.first(where: {$0.id == guiPlayer})!
+        let player = world.players[guiPlayer]!
         world.updateVisibilityForPlayer(player: player)
         //showHideTiles(visibilityMap: player.visibilityMap)
     }
@@ -256,7 +256,7 @@ class HexMapController: ObservableObject {
     }
     
     func showHideTiles() {
-        let player = world.players.first(where: {$0.id == guiPlayer})!
+        let player = world.players[guiPlayer]!
         
         //print(visibilityMap.count)
         for coord in tileSKSpriteNodeMap.keys {

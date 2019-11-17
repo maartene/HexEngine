@@ -26,7 +26,7 @@ struct PlayersView: View {
     }
     
     func getPlayerName(_ playerID: UUID) -> String {
-        return world.players.first(where: {$0.id == playerID})?.name ?? "unknown"
+        return world.players[playerID]?.name ?? "unknown"
     }
 }
 

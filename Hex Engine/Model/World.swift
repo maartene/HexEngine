@@ -26,11 +26,11 @@ class World: ObservableObject {
     var visibilityMap = [AxialCoord: Bool]()
     var visitedMap = [AxialCoord: Bool]()
     
-    var players = Set<Player>()
+    var players = [UUID: Player]()
     var playerTurnSequence = [UUID]()
     @Published var currentPlayerIndex = 0
     var currentPlayer: Player? {
-        return players.first { $0.id == playerTurnSequence[currentPlayerIndex] }
+        return players[playerTurnSequence[currentPlayerIndex]]
     }
     
     init(playerCount: Int, width: Int, height: Int, hexMapFactory: (Int, Int) -> HexMap) {
@@ -38,7 +38,7 @@ class World: ObservableObject {
         
         for i in 0 ..< playerCount {
             let newPlayer = Player(name: "Player \(i)")
-            players.insert(newPlayer)
+            players[newPlayer.id] = newPlayer
             playerTurnSequence.append(newPlayer.id)
         }
         
@@ -100,8 +100,8 @@ class World: ObservableObject {
             }
         }
         
-        for player in players {
-            players.update(with: player.calculateVisibility(in: self))
+        for player in players.values {
+            players[player.id] = player.calculateVisibility(in: self)
         }
         onVisibilityMapUpdated?()
         nextPlayer()
@@ -131,7 +131,7 @@ class World: ObservableObject {
     
     func updateVisibilityForPlayer(player: Player) {
         let player = player.calculateVisibility(in: self)
-        players.update(with: player)
+        players[player.id] = player
         onVisibilityMapUpdated?()
     }
     
