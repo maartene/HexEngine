@@ -22,6 +22,7 @@ final class UnitController: ObservableObject {
     
     var unitBecameSelected: ((Unit) -> Void)?
     var unitBecameDeselected: ((UUID) -> Void)?
+    var getColorForPlayerFunction: ((UUID) -> SKColor)?
     
     var pathIndicator: SKShapeNode? {
         didSet {
@@ -52,6 +53,12 @@ final class UnitController: ObservableObject {
         // move sprite to correct position
         sprite.position = HexMapController.hexToPixel(unit.position, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
         
+        // add "player badge"
+        let badge = SKSpriteNode(imageNamed: "badge")
+        badge.zPosition = 0.1
+        badge.colorBlendFactor = 1.0
+        badge.color = getColorForPlayerFunction?(unit.owningPlayer) ?? SKColor.white
+        sprite.addChild(badge)
         
         
         unitSpriteMap[unit.id] = sprite
