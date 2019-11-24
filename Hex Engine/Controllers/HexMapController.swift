@@ -85,6 +85,13 @@ class HexMapController: ObservableObject {
         
         highlighter = SKShapeNode(circleOfRadius: CGFloat(tileWidth / 2.0))
         cityController = CityController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
+        cityController.getColorForPlayerFunction = { playerID in
+            if let playerIndex = world.playerTurnSequence.firstIndex(of: playerID) {
+                return HexMapController.colors[playerIndex]
+            } else {
+                return SKColor.white
+            }
+        }
         
         guiPlayer = world.currentPlayer!.id
         

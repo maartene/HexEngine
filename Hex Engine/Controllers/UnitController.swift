@@ -56,6 +56,7 @@ final class UnitController: ObservableObject {
         // add "player badge"
         let badge = SKSpriteNode(imageNamed: "badge")
         badge.zPosition = 0.1
+        badge.anchorPoint = CGPoint(x: 0, y: 1)
         badge.colorBlendFactor = 1.0
         badge.color = getColorForPlayerFunction?(unit.owningPlayer) ?? SKColor.white
         sprite.addChild(badge)
