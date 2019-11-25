@@ -16,15 +16,20 @@ Uses art assets from [Kenney](https://www.kenney.nl)
 * Basic map actions: pan around the map ("drag"), select tiles ("click"/"tap"), zoom-in/zoom-out ("pinch", scrollwheel);
 * Convert between "screen space" and HexMap coordinates;
 * Select a unit, displays a path for the unit if one is set;
-* Issue a "move" command for a unit;
+* Issue a "move" command and "build city" command for a unit;
+* Select a city, issue a "breed rabbit" command;
+* Cities and units have owners (players). Commands can only be entered on owning player turn.
 * Path finding for units (takes inaccessible terrain and terrain costs into account);
-* "Next turn" button processes actions for all units, i.e. moves along path if one is set.
+* "Next turn" button processes actions for all units, i.e. moves along path if one is set;
+* Visibility/fog-of-war
+* UI is SwiftUI based.
 
 ## What is missing
 Where to begin?
 * Units should have variable abilities, not just move;
 * Typical stuff on a hex grid: cities, buildings, improvements;
 * Build/create stuff over time;
+* Tech tree;
 * Players;
 * ...
 
@@ -33,7 +38,7 @@ Adding features to the hexmap and world (i.e. the simulation) is not trivial. Ho
 
 ## So, what can I do with it now?
 Well, it is off course not necesarry to make a 4x game using the HexMap. You could use it for something smaller. The basic scaffold is ViewController -> HexMapScene -> HexMapController -> World -> HexMap.
-To simplify, you can strip out all reference to UI/GUI and UnitController. You then have a basic map that you can interact with.
+To simplify, you can strip out all reference to UI/GUI and UnitController/CityController. You then have a basic map that you can interact with.
 
 # Contact details
 Need to contact me? Drop an email at maarten@thedreamweb.eu or twitter at [@maarten_engels](https://twitter.com/maarten_engels)
