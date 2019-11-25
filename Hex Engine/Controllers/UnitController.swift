@@ -16,7 +16,7 @@ final class UnitController: ObservableObject {
     let tileHeight: Double
     let tileYOffsetFactor: Double
     
-    var unitSpriteMap = [UUID: SKSpriteNode]()
+    var unitSpriteMap = [UUID: UnitSprite]()
     
     @Published var selectedUnit: UUID?
     
@@ -45,24 +45,17 @@ final class UnitController: ObservableObject {
     func onUnitCreate(unit: Unit) {
         print("Creating sprite for unit \(unit)")
         // find a resource for the unit
-        let sprite = SKSpriteNode(imageNamed: unit.name)
-        sprite.anchorPoint = CGPoint(x: 0.5, y: 0.25)
+        let color = getColorForPlayerFunction?(unit.owningPlayer) ?? SKColor.white
+        
+        let sprite = UnitSprite(unit: unit, playerColor: color)
         
         sprite.zPosition = 1
-        
+          
         // move sprite to correct position
         sprite.position = HexMapController.hexToPixel(unit.position, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
         
-        // add "player badge"
-        let badge = SKSpriteNode(imageNamed: "badge")
-        badge.zPosition = 0.1
-        badge.anchorPoint = CGPoint(x: 0, y: 1)
-        badge.colorBlendFactor = 1.0
-        badge.color = getColorForPlayerFunction?(unit.owningPlayer) ?? SKColor.white
-        sprite.addChild(badge)
-        
-        
         unitSpriteMap[unit.id] = sprite
+        
         scene.addChild(sprite)
     }
     
@@ -99,13 +92,7 @@ final class UnitController: ObservableObject {
         deselectUnit()
         
         if let sprite = unitSpriteMap[unit.id] {
-            let radius = max(sprite.size.width, sprite.size.height) / 2.0
-            let circle = SKShapeNode(circleOfRadius: radius)
-            circle.strokeColor = SKColor.white
-            circle.lineWidth = 2.0
-            circle.glowWidth = 4.0
-            sprite.addChild(circle)
-            
+            sprite.select()
             if unit.path.count > 0 {
                 drawPath(for: unit)
             } else {
@@ -124,7 +111,7 @@ final class UnitController: ObservableObject {
         if let selectedUnitID = selectedUnit {
             unitBecameDeselected?(selectedUnitID)
             if let previousSelectedUnit = unitSpriteMap[selectedUnitID] {
-                previousSelectedUnit.removeAllChildren()
+                previousSelectedUnit.deselect()
                 //if uiState == .map { selectedUnit = nil }
             }
         }

@@ -25,19 +25,9 @@ class HexMapController: ObservableObject {
     let tileHeight: Double          // in points
     let tileYOffsetFactor: Double   // what fraction of tileHeight are rows offset in the Y value, in points
 
-    var tileSKSpriteNodeMap = [AxialCoord: SKSpriteNode]()
-    var tileTextureMap = [Tile: SKTexture]()
+    var tileSKSpriteNodeMap = [AxialCoord: TileSprite]()
     
     var guiPlayer: UUID
-    
-    private func fillTileTextureMap() {
-        tileTextureMap = [Tile: SKTexture]()
-        tileTextureMap[.Forest] = SKTexture(imageNamed: "grass_13")
-        tileTextureMap[.Grass] = SKTexture(imageNamed: "grass_05")
-        tileTextureMap[.Mountain] = SKTexture(imageNamed: "dirt_18")
-        tileTextureMap[.Sand] = SKTexture(imageNamed: "sand_07")
-        tileTextureMap[.Water] = SKTexture(imageNamed: "water")
-    }
     
     var tileBecameSelected: ((AxialCoord, Tile) -> Void)?
     var tileBecameDeselected: ((AxialCoord) -> Void)?
@@ -111,9 +101,6 @@ class HexMapController: ObservableObject {
         highlighter.zPosition = 0.1
         self.scene.addChild(highlighter)
         Self.instance = self
-        
-        fillTileTextureMap()
-
     }
     
     func setupUI(in view: SKView) -> some NSView {
@@ -136,10 +123,6 @@ class HexMapController: ObservableObject {
         return Self.hexToPixel(hex, tileWidth: self.tileWidth, tileHeight: self.tileHeight, tileYOffsetFactor: self.tileYOffsetFactor)
     }
     
-    func getTextureForTile(tile: Tile) -> SKTexture {
-        return tileTextureMap[tile] ?? SKTexture()
-    }
-    
     /*func pixelToHex(_ point: CGPoint) -> AxialCoord {
         //let x = tileWidth * (sqrt(2.0) * Double(hex.q) + sqrt(2)/2.0 * Double(hex.r))
         //let y = tileHeight * (3.0 / 2 * Double(hex.r))
@@ -160,14 +143,11 @@ class HexMapController: ObservableObject {
             let r = coord.r
             
             if world.hexMap[q,r] != .void {
-                let tile = SKSpriteNode(imageNamed: "unknown")
+                let tile = TileSprite(tile: world.hexMap[q,r], hexPosition: AxialCoord(q: q, r: r))
                 
                 //tile.anchorPoint = CGPoint(x: tileWidth / 2, y: tileHeight / 2)
                 let pos = hexToPixel(AxialCoord(q: q, r: r))
-                tile.userData = ["q": q, "r": r]
                 tile.position = pos
-                tile.color = SKColor.white
-                tile.colorBlendFactor = 1.0
                 
                 // add x/y/z coordinates to tile as text
                 /*
@@ -192,17 +172,19 @@ class HexMapController: ObservableObject {
     }
     
     func clickedNode(_ node: SKSpriteNode) {
+        deselectAll()
         print("clickedNode: \(node)")
         // first, determine what kind of node this is.
-        if cityController.citySpriteMap.values.contains(node) {
+        if let cityNode = node as? CitySprite {
             print("Clicked city node: \(node)")
             if let cityID = cityController.getCityForNode(node) {
                 if (try? world.getCityWithID(cityID)) != nil {
+                    cityNode.select()
                     cityController.selectedCity = cityID
                 }
             }
         } // is it a unit?
-        else if unitController.unitSpriteMap.values.contains(node) {
+        else if let unitNode = node as? UnitSprite {
             
             print("Clicked unit node: \(node)")
             // get unit for the node
@@ -215,13 +197,10 @@ class HexMapController: ObservableObject {
             }
             
         } // is it a tile?
-        else if tileSKSpriteNodeMap.values.contains(node) {
-            if let q = node.userData?["q"] as? Int, let r = node.userData?["r"] as? Int {
-                print("Clicked tile at coord \(q), \(r)", node)
-                deselectTile()
-                selectTile(AxialCoord(q: q, r: r))
-                unitController.deselectUnit()
-            }
+        else if let tileNode = node as? TileSprite {
+            print("Clicked tile at coord \(node.position)", node)
+            selectTile(tileNode.hexPosition)
+            unitController.deselectUnit()
         }
         
         // if we are in a state where we need to select a tile, calculate the path.
@@ -232,6 +211,12 @@ class HexMapController: ObservableObject {
             }
             uiState = .map
         }
+    }
+    
+    func deselectAll() {
+        deselectTile()
+        unitController.deselectUnit()
+        cityController.deselectCity()
     }
     
     func mouseOverNode(_ node: SKSpriteNode) {
@@ -274,22 +259,11 @@ class HexMapController: ObservableObject {
     func showHideTiles() {
         let player = world.players[guiPlayer]!
         
-        //print(visibilityMap.count)
         for coord in tileSKSpriteNodeMap.keys {
             guard let sprite = tileSKSpriteNodeMap[coord] else {
                 continue
             }
-            
-            let tile = world.hexMap[coord]
-            if (player.visibilityMap[coord] ?? .unvisited) == .visible {
-                sprite.alpha = 1
-                sprite.texture = getTextureForTile(tile: tile)
-            } else if (player.visibilityMap[coord] ?? .unvisited) == .visited {
-                sprite.texture = getTextureForTile(tile: tile)
-                sprite.alpha = 0.25
-            } else {
-                //sprite.texture = SKTexture(imageNamed: "unknown")
-            }
+            sprite.visibility = player.visibilityMap[coord, default: .unvisited]
         }
         
         unitController.showHideUnits(in: world, visibilityMap: player.visibilityMap)

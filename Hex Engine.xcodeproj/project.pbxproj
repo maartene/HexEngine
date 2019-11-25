@@ -14,6 +14,9 @@
 		DE13AD112257DF5800136AFE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE13AD102257DF5800136AFE /* Assets.xcassets */; };
 		DE13AD142257DF5800136AFE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE13AD122257DF5800136AFE /* Main.storyboard */; };
 		DE13AD202257DF5800136AFE /* Hex_EngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE13AD1F2257DF5800136AFE /* Hex_EngineTests.swift */; };
+		DE19C3B4238AAF1300BC4034 /* UnitSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19C3B3238AAF1300BC4034 /* UnitSprite.swift */; };
+		DE19C3B6238AB40C00BC4034 /* CitySprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19C3B5238AB40C00BC4034 /* CitySprite.swift */; };
+		DE19C3BA238AD46500BC4034 /* TileSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19C3B9238AD46500BC4034 /* TileSprite.swift */; };
 		DE538AE5225DED11007104A9 /* HexMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE538AE4225DED11007104A9 /* HexMapTests.swift */; };
 		DE64F7B2237EDE2000C921ED /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE64F7B1237EDE2000C921ED /* Player.swift */; };
 		DE67A86E236052D500A858D0 /* CityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE67A86D236052D500A858D0 /* CityController.swift */; };
@@ -66,6 +69,9 @@
 		DE13AD1B2257DF5800136AFE /* Hex EngineTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Hex EngineTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE13AD1F2257DF5800136AFE /* Hex_EngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hex_EngineTests.swift; sourceTree = "<group>"; };
 		DE13AD212257DF5800136AFE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DE19C3B3238AAF1300BC4034 /* UnitSprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitSprite.swift; sourceTree = "<group>"; };
+		DE19C3B5238AB40C00BC4034 /* CitySprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitySprite.swift; sourceTree = "<group>"; };
+		DE19C3B9238AD46500BC4034 /* TileSprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileSprite.swift; sourceTree = "<group>"; };
 		DE538AE4225DED11007104A9 /* HexMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMapTests.swift; sourceTree = "<group>"; };
 		DE64F7B1237EDE2000C921ED /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		DE67A86D236052D500A858D0 /* CityController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityController.swift; sourceTree = "<group>"; };
@@ -172,6 +178,28 @@
 			path = SKExtensions;
 			sourceTree = "<group>";
 		};
+		DE19C3B7238AD42400BC4034 /* GUI */ = {
+			isa = PBXGroup;
+			children = (
+				DEF487352364B48F001E47A5 /* SwiftUIGUI.swift */,
+				DEF661E92365E67100EDF9BB /* UnitInfoView.swift */,
+				DEF661EB2365E69700EDF9BB /* CityInfoView.swift */,
+				DEF661ED2365E6D400EDF9BB /* TileInfoLabel.swift */,
+				DE0CE0CF238049190009B3A1 /* PlayersView.swift */,
+			);
+			path = GUI;
+			sourceTree = "<group>";
+		};
+		DE19C3B8238AD43E00BC4034 /* Sprites */ = {
+			isa = PBXGroup;
+			children = (
+				DE19C3B3238AAF1300BC4034 /* UnitSprite.swift */,
+				DE19C3B5238AB40C00BC4034 /* CitySprite.swift */,
+				DE19C3B9238AD46500BC4034 /* TileSprite.swift */,
+			);
+			path = Sprites;
+			sourceTree = "<group>";
+		};
 		DE6FEBB92257EA9000F1E495 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -202,11 +230,8 @@
 		DEA62F6E2348C2A7004BCF8B /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				DEF487352364B48F001E47A5 /* SwiftUIGUI.swift */,
-				DEF661E92365E67100EDF9BB /* UnitInfoView.swift */,
-				DEF661EB2365E69700EDF9BB /* CityInfoView.swift */,
-				DEF661ED2365E6D400EDF9BB /* TileInfoLabel.swift */,
-				DE0CE0CF238049190009B3A1 /* PlayersView.swift */,
+				DE19C3B8238AD43E00BC4034 /* Sprites */,
+				DE19C3B7238AD42400BC4034 /* GUI */,
 				DEEDE7AE23817888005E7613 /* TitleScreenView.swift */,
 			);
 			path = Views;
@@ -328,7 +353,9 @@
 				DE67A87223605CC400A858D0 /* SKNode+Extension.swift in Sources */,
 				DEF661EA2365E67100EDF9BB /* UnitInfoView.swift in Sources */,
 				DECCAD8422665E7C002D820E /* Double+Extension.swift in Sources */,
+				DE19C3B4238AAF1300BC4034 /* UnitSprite.swift in Sources */,
 				DE6BE6272257E0F20027380C /* HexMap.swift in Sources */,
+				DE19C3BA238AD46500BC4034 /* TileSprite.swift in Sources */,
 				DEFFE2832258B5C400D9AE5A /* CGPoint+Extension.swift in Sources */,
 				DEF58F0222874D7C0020B473 /* World.swift in Sources */,
 				DE67A86E236052D500A858D0 /* CityController.swift in Sources */,
@@ -337,6 +364,7 @@
 				DE75E362235A450F0018F1F9 /* UnitCommands.swift in Sources */,
 				DEE591FD235CB4D9007686D8 /* CityCommands.swift in Sources */,
 				DEF487362364B48F001E47A5 /* SwiftUIGUI.swift in Sources */,
+				DE19C3B6238AB40C00BC4034 /* CitySprite.swift in Sources */,
 				DEB0A9A1226218AB005770B2 /* WorldFactory.swift in Sources */,
 				DEF661EE2365E6D400EDF9BB /* TileInfoLabel.swift in Sources */,
 				DEF661EC2365E69700EDF9BB /* CityInfoView.swift in Sources */,
