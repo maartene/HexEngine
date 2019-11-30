@@ -11,30 +11,50 @@ Uses art assets from [Kenney](https://www.kenney.nl)
 
 # Features
 ## What is working
-* HexGrid operations: choose/convert between Cube and Axial coordinates, find neighbours, diagonals, lines, hex within range;
+### HexGrid and Map operations:
+* choose/convert between Cube and Axial coordinates, find neighbours, diagonals, lines, hex within range;
 * A map is generated using perlin noise and a fixed seed (so it's always the same);
 * Basic map actions: pan around the map ("drag"), select tiles ("click"/"tap"), zoom-in/zoom-out ("pinch", scrollwheel);
 * Convert between "screen space" and HexMap coordinates;
+* Visibility/fog-of-war
+
+### Units:
 * Select a unit, displays a path for the unit if one is set;
 * Issue a "move" command and "build city" command for a unit;
+* Path finding for units (takes inaccessible terrain and terrain costs into account);
+
+### Cities
 * Select a city, issue a "breed rabbit" command;
 * Cities and units have owners (players). Commands can only be entered on owning player turn.
-* Path finding for units (takes inaccessible terrain and terrain costs into account);
+
+### Players
+* Basic player implementation
 * "Next turn" button processes actions for all units, i.e. moves along path if one is set;
-* Visibility/fog-of-war
+
+### Application technology
 * UI is SwiftUI based.
 
 ## What is missing
-Where to begin?
-* Units should have variable abilities, not just move;
-* Typical stuff on a hex grid: cities, buildings, improvements;
-* Build/create stuff over time;
-* Tech tree;
-* Players;
-* ...
+### HexMap
+* high res sprites for tiles, units, cities, etc.
+
+### Units
+* Combat
+* Build improvements
+* Other abilities
+* Animations
+
+### Cities
+* Population: needs and resources
+* Production based on population, terrain and improvements
+
+### Players
+* Tech tree
+* AI
 
 ## Why is this taking so long?
-Adding features to the hexmap and world (i.e. the simulation) is not trivial. However, the effort required there is eclipsed by how much time UI work takes. Because that is where state becomes messy: UI state versus simulation state, feedback to users, handle different input modes. It also tends to be where the tight coupling starts to creep in. Last couple of weeks have been 90% UI...
+Adding features to the hexmap and world (i.e. the simulation) is not trivial. However, the effort required there is eclipsed by how much time UI work takes. Because that is where state becomes messy: UI state versus simulation state, feedback to users, handle different input modes. It also tends to be where the tight coupling starts to creep in. 
+*Update:* UI became a lot easier after switching to SwiftUI.
 
 ## So, what can I do with it now?
 Well, it is off course not necesarry to make a 4x game using the HexMap. You could use it for something smaller. The basic scaffold is ViewController -> HexMapScene -> HexMapController -> World -> HexMap.

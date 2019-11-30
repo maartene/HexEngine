@@ -19,7 +19,7 @@ class World: ObservableObject {
     var executedCommands = [CommandWrapper]()
     
     @Published var units = [UUID: Unit]()
-    var cities = [UUID: City]()
+    @Published var cities = [UUID: City]()
     
     var onUnitRemoved: ((Unit) -> Void)?
     var onVisibilityMapUpdated: (() -> Void)?
