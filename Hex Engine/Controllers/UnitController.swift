@@ -79,7 +79,7 @@ final class UnitController: ObservableObject {
         }
     }
     
-    func getUnitForNode(_ node: SKSpriteNode) -> UUID? {
+    func getUnitForNode(_ node: UnitSprite) -> UUID? {
         for pair in unitSpriteMap.enumerated() {
             if pair.element.value == node {
                 return pair.element.key

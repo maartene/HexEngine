@@ -168,6 +168,7 @@ class HexMapController: ObservableObject {
         deselectAll()
         print("clickedNode: \(node)")
         // first, determine what kind of node this is.
+        // is it a city?
         if let cityNode = node as? CitySprite {
             print("Clicked city node: \(node)")
             if let cityID = cityController.getCityForNode(node) {
@@ -176,12 +177,13 @@ class HexMapController: ObservableObject {
                     cityController.selectedCity = cityID
                 }
             }
-        } // is it a unit?
+        }
+        // is it a unit?
         else if let unitNode = node as? UnitSprite {
             
             print("Clicked unit node: \(node)")
             // get unit for the node
-            if let unitID = unitController.getUnitForNode(node) {
+            if let unitID = unitController.getUnitForNode(unitNode) {
                 if let unit = try? world.getUnitWithID(unitID) {
                     unitController.selectUnit(unit)
                     deselectTile()
