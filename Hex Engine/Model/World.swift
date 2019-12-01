@@ -37,7 +37,12 @@ class World: ObservableObject {
         self.hexMap = hexMapFactory(width, height)
         
         for i in 0 ..< playerCount {
-            let newPlayer = Player(name: "Player \(i)")
+            var newPlayer = Player(name: "Player \(i)")
+            
+            // add a "brain" to all other players.
+            if i > 0 {
+                newPlayer.ai = TurnSkipAI()
+            }
             players[newPlayer.id] = newPlayer
             playerTurnSequence.append(newPlayer.id)
         }
@@ -88,23 +93,31 @@ class World: ObservableObject {
     }
     
     func nextTurn() {
-        for unit in units.values {
-            units[unit.id] = unit.step(hexMap: hexMap)
-        }
-    
-        for city in cities.values {
-            do {
-                try city.build(in: self, production: 5)
-            } catch {
-                print(error)
+        nextPlayer()
+        // process current player
+        if let player = currentPlayer {
+            for unit in units.values.filter({$0.owningPlayer == player.id}) {
+                    units[unit.id] = unit.step(hexMap: hexMap)
+                }
+            
+            for city in cities.values.filter({$0.owningPlayer == player.id}) {
+                    do {
+                        try city.build(in: self, production: 5)
+                    } catch {
+                        print(error)
+                    }
+                }
+            
+            players[player.id] = player.calculateVisibility(in: self)
+            
+            
+            // if it's an AI, do something
+            if let ai = player.ai {
+                ai.performTurn(for: player.id, in: self)
             }
         }
         
-        for player in players.values {
-            players[player.id] = player.calculateVisibility(in: self)
-        }
         onVisibilityMapUpdated?()
-        nextPlayer()
     }
     
     func nextPlayer() {

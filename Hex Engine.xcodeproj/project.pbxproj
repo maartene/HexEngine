@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		DE0CE0D0238049190009B3A1 /* PlayersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0CE0CF238049190009B3A1 /* PlayersView.swift */; };
+		DE12FB432392928A00A58357 /* AI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE12FB422392928A00A58357 /* AI.swift */; };
 		DE13AD072257DF5600136AFE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE13AD062257DF5600136AFE /* AppDelegate.swift */; };
 		DE13AD0D2257DF5600136AFE /* HexMapScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE13AD0C2257DF5600136AFE /* HexMapScene.swift */; };
 		DE13AD0F2257DF5600136AFE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE13AD0E2257DF5600136AFE /* ViewController.swift */; };
@@ -58,6 +59,7 @@
 
 /* Begin PBXFileReference section */
 		DE0CE0CF238049190009B3A1 /* PlayersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayersView.swift; sourceTree = "<group>"; };
+		DE12FB422392928A00A58357 /* AI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AI.swift; sourceTree = "<group>"; };
 		DE13AD032257DF5600136AFE /* Hex Engine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hex Engine.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE13AD062257DF5600136AFE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DE13AD0C2257DF5600136AFE /* HexMapScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMapScene.swift; sourceTree = "<group>"; };
@@ -210,6 +212,7 @@
 				DEF58F0122874D7C0020B473 /* World.swift */,
 				DE67A86F2360536200A858D0 /* City.swift */,
 				DE64F7B1237EDE2000C921ED /* Player.swift */,
+				DE12FB422392928A00A58357 /* AI.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -357,6 +360,7 @@
 				DE6BE6272257E0F20027380C /* HexMap.swift in Sources */,
 				DE19C3BA238AD46500BC4034 /* TileSprite.swift in Sources */,
 				DEFFE2832258B5C400D9AE5A /* CGPoint+Extension.swift in Sources */,
+				DE12FB432392928A00A58357 /* AI.swift in Sources */,
 				DEF58F0222874D7C0020B473 /* World.swift in Sources */,
 				DE67A86E236052D500A858D0 /* CityController.swift in Sources */,
 				DE75E35F235A3D0A0018F1F9 /* Command.swift in Sources */,

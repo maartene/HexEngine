@@ -12,6 +12,8 @@ struct Player: Identifiable, Hashable, Equatable {
     let id = UUID()
     let name: String
     
+    var ai: AI?
+    
     var visibilityMap = [AxialCoord: TileVisibility]()
     
     static func == (lhs: Player, rhs: Player) -> Bool {
@@ -20,6 +22,10 @@ struct Player: Identifiable, Hashable, Equatable {
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+    }
+    
+    func processTurn(in world: World) {
+        
     }
     
     func calculateVisibility(in world: World) -> Player {

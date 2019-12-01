@@ -148,14 +148,7 @@ class HexMapController: ObservableObject {
                 //tile.anchorPoint = CGPoint(x: tileWidth / 2, y: tileHeight / 2)
                 let pos = hexToPixel(AxialCoord(q: q, r: r))
                 tile.position = pos
-                
-                // add x/y/z coordinates to tile as text
-                /*
-                let label = SKLabelNode(text: "\(q),\(r)")
-                label.zPosition = tile.zPosition + 1
-                tile.addChild(label)
-                 */
-                
+                                
                 tileSKSpriteNodeMap[AxialCoord(q: q, r: r)] = tile
                 
                 scene.addChild(tile)
