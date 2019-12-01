@@ -44,3 +44,21 @@ struct QueueBuildRabbitCommand: Command, Codable {
         return
     }
 }
+
+struct RemoveFromBuildQueueCommand: Command, Codable {
+    var title = "Remove from build queue"
+    
+    var ownerID: UUID
+    
+    let commandToRemoveIndex: Int
+    
+    func execute(in world: World) throws {
+        var city = try world.getCityWithID(ownerID)
+        
+        city.buildQueue.remove(at: commandToRemoveIndex)
+        
+        world.replace(city)
+        return
+    }
+    
+}

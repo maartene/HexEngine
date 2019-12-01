@@ -24,6 +24,25 @@ struct CityInfoView: View {
         return nil
     }
     
+    struct BuildQueueEntry: Identifiable {
+        let id: Int
+        let command: BuildCommand
+    }
+    
+    var buildQueue: [BuildQueueEntry] {
+        var result = [BuildQueueEntry]()
+        
+        guard let city = city else {
+            return result
+        }
+        
+        for enumarated in city.buildQueue.enumerated() {
+            result.append(BuildQueueEntry(id: enumarated.offset, command: enumarated.element))
+        }
+        
+        return result
+    }
+    
     var body: some View {
         VStack {
             if city == nil {
@@ -44,14 +63,47 @@ struct CityInfoView: View {
                         Text("""
                             City: \(city?.name ?? "nil")
                             Owning player: \(city!.owningPlayer)
-                            Build queue length: \(city?.buildQueue.count ?? 0)
                         """)
+                        
+                        HStack {
+                            Text("Build queue: ")
+                            if city?.buildQueue.count ?? 0 == 0 {
+                                Text("empty")
+                            } else {
+                                ForEach(buildQueue) { buildQueueEntry in
+                                    ZStack(alignment: .topTrailing) {
+                                        Text(buildQueueEntry.command.title).padding(4)
+                                            .background(Color.green.opacity(0.75))
+                                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                                        
+                                        Text("􀁏")
+                                            .foregroundColor(Color.red)
+                                            .frame(width: 24, height: 24).offset(x: 12, y: -12)
+                                            .shadow(radius: 4)
+                                            .onTapGesture {
+                                                self.removeBuildQueueEntry(buildQueueEntry.id)
+                                            //print("remove entry: \(buildQueueEntry)")
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }.padding()
                     .background(Color.gray.opacity(0.5)).clipShape(RoundedRectangle(cornerRadius: 10))
                     .overlay(RoundedRectangle(cornerRadius: 10).stroke(lineWidth: 1))
                 }
             }
         }
+    }
+    
+    func removeBuildQueueEntry(_ index: Int) {
+        guard let city = city else {
+            print("city not found")
+            return
+        }
+        
+        let command = RemoveFromBuildQueueCommand(ownerID: city.id, commandToRemoveIndex: index)
+        world.executeCommand(command)
     }
     
     func executeBuildCommand(number: Int, city: City?) {
