@@ -41,16 +41,24 @@ struct UnitInfoView: View {
                     VStack(alignment: .leading) {
                         HStack {
                             Button("Move") {
-                                self.hexMapController.uiState = UI_State.selectTile
+                                self.hexMapController.uiState = UI_State.selectMoveTargetTile
                             }
-                            .overlay(Capsule().stroke(lineWidth: hexMapController.uiState == UI_State.selectTile ? 4 : 1))
+                            .overlay(Capsule().stroke(lineWidth: hexMapController.uiState == UI_State.selectMoveTargetTile ? 4 : 1))
                             .disabled(unit!.movement <= 0 || unit?.owningPlayer != hexMapController.guiPlayer)
                             
-                            ForEach(0 ..< unit!.possibleCommands.count) { number in
-                                Button(self.unit!.possibleCommands[number].title) {
-                                self.world.executeCommand(self.unit!.possibleCommands[number])
-                                }.overlay(Capsule().stroke(lineWidth: 1))
-                                    .disabled(self.unit!.movement <= 0 || self.unit?.owningPlayer != self.hexMapController.guiPlayer)
+                            Button("Attack") {
+                                self.hexMapController.uiState = UI_State.selectAttackTargetTile
+                            }
+                            .overlay(Capsule().stroke(lineWidth: hexMapController.uiState == UI_State.selectAttackTargetTile ? 4 : 1))
+                            .disabled(unit!.movement <= 0 || unit?.attackPower ?? 0 <= 0  || unit?.owningPlayer != hexMapController.guiPlayer)
+                            
+                            if unit!.possibleCommands.count > 0 {
+                                ForEach(0 ..< unit!.possibleCommands.count) { number in
+                                    Button(self.unit!.possibleCommands[number].title) {
+                                    self.world.executeCommand(self.unit!.possibleCommands[number])
+                                    }.overlay(Capsule().stroke(lineWidth: 1))
+                                        .disabled(self.unit!.movement <= 0 || self.unit?.owningPlayer != self.hexMapController.guiPlayer)
+                                }
                             }
                         }
                         Text("""

@@ -23,6 +23,7 @@ enum CommandWrapper: Encodable {
     case moveUnitCommand(value: MoveUnitCommand)
     case queueBuildRabbitCommand(value: QueueBuildRabbitCommand)
     case nextTurnCommand(value: NextTurnCommand)
+    case attackTileCommand(value: AttackCommand)
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -35,6 +36,9 @@ enum CommandWrapper: Encodable {
             try container.encode(value, forKey: .value)
         case .moveUnitCommand(let value):
             try container.encode("moveUnitCommand", forKey: .type)
+            try container.encode(value, forKey: .value)
+        case .attackTileCommand(let value):
+            try container.encode("attackCommand", forKey: .type)
             try container.encode(value, forKey: .value)
         case .queueBuildRabbitCommand(let value):
             try container.encode("queueBuildRabbitCommand", forKey: .type)
@@ -56,6 +60,8 @@ enum CommandWrapper: Encodable {
             return .queueBuildRabbitCommand(value: c)
         } else if let c = command as? NextTurnCommand {
             return .nextTurnCommand(value: c)
+        } else if let c = command as? AttackCommand {
+            return .attackTileCommand(value: c)
         } else {
             throw CommandWrapperErrors.cannotConvertCommandError
         }

@@ -15,18 +15,28 @@ struct Unit {
     let name: String
     var movement: Int
     var movementLeft: Double
+    var attackPower: Double
+    var defencePower: Double
+    var maxHitPoints: Double
+    var currentHitPoints: Double
     var visibility: Int
     var position: AxialCoord
     var path = [AxialCoord]()
     var possibleCommands = [Command]()
     static var onUnitCreate: ((Unit) -> Void)?
     static var onUnitChanged: ((Unit) -> Void)?
+    //static var onUnitDies: ((Unit) -> Void)?
     
-    init(owningPlayer: UUID, name: String, movement: Int = 2, visibility: Int = 2, startPosition: AxialCoord = AxialCoord.zero) {
+    init(owningPlayer: UUID, name: String, movement: Int = 2, attackPower: Double = 0.0, defencePower: Double = 1.0, maxHitPoints: Double = 5.0,
+         visibility: Int = 2, startPosition: AxialCoord = AxialCoord.zero) {
         self.owningPlayer = owningPlayer
         self.name = name
         self.movement = movement
         self.movementLeft = Double(movement)
+        self.attackPower = attackPower
+        self.defencePower = defencePower
+        self.maxHitPoints = maxHitPoints
+        self.currentHitPoints = maxHitPoints
         self.visibility = visibility
         self.position = startPosition
         
@@ -67,9 +77,25 @@ struct Unit {
         }
     }
     
+    mutating func takeDamage(_ amount: Double) {
+        let damageTaken = max(0, amount / defencePower)
+        currentHitPoints -= damageTaken
+        print("\(name): Took \(damageTaken) damage. Attacked for \(amount), defense value: \(defencePower). HP left: \(currentHitPoints)")
+        Self.onUnitChanged?(self)
+        
+        /*if currentHitPoints <= 0 {
+            Self.onUnitDies?(self)
+        }*/
+        
+    }
+    
     static func Rabbit(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
         var newRabbit = Unit(owningPlayer: owningPlayer, name: "Rabbit", movement: 2, startPosition: startPosition)
         newRabbit.possibleCommands = [BuildCityCommand(ownerID: newRabbit.id)]
         return newRabbit
+    }
+    
+    static func Snake(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
+        return Unit(owningPlayer: owningPlayer, name: "Snake", attackPower: 2, startPosition: startPosition)
     }
 }

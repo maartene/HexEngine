@@ -11,6 +11,14 @@ import Foundation
 enum BuildCityCommandErrors: Error {
     case tileAlreadyOccupied
     case tileOfWrongType
+    
+}
+
+enum AttackCommandErrors: Error {
+    case unitCannotAttack
+    case illegalTarget
+    case noTargetTile
+    case notEnoughMovementLeftToAttack
 }
 
 struct BuildCityCommand: Command, Codable {
@@ -76,5 +84,59 @@ struct MoveUnitCommand: Command, Codable {
         
         print("Calculate path: \(path)")
         world.setPath(for: ownerID, path: path, moveImmediately: true)
+    }
+}
+
+struct AttackCommand: Command, Codable {
+    let title: String = "Attack"
+    var ownerID: UUID
+    var targetPosition: AxialCoord?
+    
+    func execute(in world: World) throws {
+        let owner = try world.getUnitWithID(ownerID)
+        guard owner.movementLeft > 0 else {
+            throw AttackCommandErrors.notEnoughMovementLeftToAttack
+        }
+        
+        guard owner.attackPower > 0 else {
+            throw AttackCommandErrors.unitCannotAttack
+        }
+        
+        guard let targetPosition = targetPosition else {
+            throw AttackCommandErrors.noTargetTile
+        }
+        
+        // let's see whether there is a unit on the target coord
+        let units = world.getUnitsOnTile(targetPosition)
+        if var attackedUnit = units.first {
+            // we're attacking a unit
+            print("attacking unit \(attackedUnit.name)")
+            attackedUnit.takeDamage(owner.attackPower)
+            var changedOwner = owner
+            changedOwner.movementLeft = 0
+            world.replace(changedOwner)
+            world.replace(attackedUnit)
+            
+            if attackedUnit.currentHitPoints <= 0 {
+                world.removeUnit(attackedUnit)
+            }
+            return
+        }
+        
+        if let city = world.getCityAt(targetPosition) {
+            // we're attacking a city
+            print("attacking city \(city.name)")
+            return
+        }
+        
+        throw AttackCommandErrors.illegalTarget
+    }
+    
+    func canExecute(in world: World) -> Bool {
+        guard let owner = try? world.getUnitWithID(ownerID) else {
+            return false
+        }
+        
+        return owner.attackPower > 0
     }
 }

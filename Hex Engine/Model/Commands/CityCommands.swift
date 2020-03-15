@@ -45,6 +45,39 @@ struct QueueBuildRabbitCommand: Command, Codable {
     }
 }
 
+// Don't call this command directly, but execute it from a Queue command instead.
+struct BuildSnakeCommand: BuildCommand, Codable {
+    var productionRemaining = 15.0
+    
+    var title = "Breed Snake"
+    
+    var ownerID: UUID
+    
+    func execute(in world: World) throws {
+        let owner = try world.getCityWithID(ownerID)
+        let newUnit = Unit.Snake(owningPlayer: owner.owningPlayer, startPosition: owner.position)
+        
+        world.addUnit(newUnit)
+        return
+    }
+}
+
+struct QueueBuildSnakeCommand: Command, Codable {
+    var title = "Breed Snake"
+    
+    var ownerID: UUID
+    
+    func execute(in world: World) throws {
+        let owner = try world.getCityWithID(ownerID)
+        guard let changedOwner = owner.addToBuildQueue(BuildSnakeCommand(ownerID: ownerID)) as? City else {
+            throw CityCommandErrors.builderIsNotACityError
+        }
+        
+        world.replace(changedOwner)
+        return
+    }
+}
+
 struct RemoveFromBuildQueueCommand: Command, Codable {
     var title = "Remove from build queue"
     

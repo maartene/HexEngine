@@ -12,7 +12,8 @@ import SwiftUI
 
 enum UI_State {
     case map
-    case selectTile
+    case selectMoveTargetTile
+    case selectAttackTargetTile
 }
 
 class HexMapController: ObservableObject {
@@ -199,10 +200,22 @@ class HexMapController: ObservableObject {
         }
         
         // if we are in a state where we need to select a tile, calculate the path.
-        if uiState == .selectTile {
+        if uiState == .selectMoveTargetTile {
             if let unitID = unitController.selectedUnit, let tile = selectedTile {
                 let command = MoveUnitCommand(ownerID: unitID, targetPosition: tile)
                 world.executeCommand(command)
+            }
+            uiState = .map
+        }
+        
+        if uiState == .selectAttackTargetTile {
+            if let unitID = unitController.selectedUnit, let tile = selectedTile {
+                let command = AttackCommand(ownerID: unitID, targetPosition: tile)
+                if command.canExecute(in: world) {
+                    world.executeCommand(command)
+                } else {
+                    print("Unit \(unitID) cannot exectute 'ATTACK' command.")
+                }
             }
             uiState = .map
         }
@@ -219,7 +232,9 @@ class HexMapController: ObservableObject {
         switch uiState {
         case .map:
             highlighter.strokeColor = SKColor.gray
-        case .selectTile:
+        case .selectMoveTargetTile:
+            highlighter.strokeColor = SKColor.green
+        case .selectAttackTargetTile:
             highlighter.strokeColor = SKColor.red
         }
     }

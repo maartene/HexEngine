@@ -31,6 +31,7 @@ struct City: Builder {
         self.name = name
         self.position = position
         possibleCommands.append(QueueBuildRabbitCommand(ownerID: id))
+        possibleCommands.append(QueueBuildSnakeCommand(ownerID: id))
         
         Self.onCityCreate?(self)
     }
