@@ -8,11 +8,9 @@
 
 import Foundation
 
-protocol Entity {
-    var id: UUID { get }
-    var position: AxialCoord { get set }
-}
-
 protocol Component {
-    var owner: Entity { get }
+    var ownerID: UUID { get }
+    var possibleCommands: [Command] { get }
+    
+    func step(in world: World)
 }

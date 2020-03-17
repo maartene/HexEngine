@@ -49,11 +49,11 @@ class World: ObservableObject {
         
         // TESTING only: add a rabbit to the map
         //let unit = Unit.Rabbit(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
-        let unit = Unit.Snake(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
+        let unit = Unit.Rabbit(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
         units[unit.id] = unit
         
-        let narwhal = Unit.Narwhal(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 2, r: 1))
-        units[narwhal.id] = narwhal
+        //let narwhal = Unit.Narwhal(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 2, r: 1))
+        //units[narwhal.id] = narwhal
 	        
         if playerCount > 1 {
             // TESTING only: add another rabbit (with a different owner to the map
@@ -100,8 +100,8 @@ class World: ObservableObject {
         nextPlayer()
         // process current player
         if let player = currentPlayer {
-            for unit in units.values.filter({$0.owningPlayer == player.id}) {
-                    units[unit.id] = unit.step(hexMap: hexMap)
+            for unit in units.values.filter({$0.owningPlayerID == player.id}) {
+                    unit.step(in: self)
                 }
             
             for city in cities.values.filter({$0.owningPlayer == player.id}) {
@@ -127,23 +127,6 @@ class World: ObservableObject {
     func nextPlayer() {
         currentPlayerIndex += 1
         currentPlayerIndex = currentPlayerIndex % players.count
-    }
-    
-    func setPath(for unitID: UUID, path: [AxialCoord], moveImmediately: Bool = false) {
-        guard var unit = units[unitID] else {
-            print("unit with id \(unitID) not found.")
-            return
-        }
-        
-        unit.path = path
-        
-        if moveImmediately {
-            unit.move(hexMap: hexMap)
-        }
-        
-        units[unit.id] = unit
-        
-        updateVisibilityForPlayer(player: currentPlayer!)
     }
     
     func updateVisibilityForPlayer(player: Player) {

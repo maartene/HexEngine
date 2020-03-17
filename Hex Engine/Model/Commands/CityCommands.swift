@@ -46,7 +46,7 @@ struct QueueBuildRabbitCommand: Command, Codable {
 }
 
 // Don't call this command directly, but execute it from a Queue command instead.
-struct BuildSnakeCommand: BuildCommand, Codable {
+/*struct BuildSnakeCommand: BuildCommand, Codable {
     var productionRemaining = 15.0
     
     var title = "Breed Snake"
@@ -109,7 +109,7 @@ struct QueueBuildNarwhalCommand: Command, Codable {
         world.replace(changedOwner)
         return
     }
-}
+}*/
 
 struct RemoveFromBuildQueueCommand: Command, Codable {
     var title = "Remove from build queue"

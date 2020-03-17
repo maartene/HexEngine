@@ -36,7 +36,7 @@ struct BuildCityCommand: Command, Codable {
             throw BuildCityCommandErrors.tileOfWrongType
         }
         
-        let city = City(owningPlayer: owner.owningPlayer, name: "New city \(Int.random(in: 0...100))", position: owner.position)
+        let city = City(owningPlayer: owner.owningPlayerID, name: "New city \(Int.random(in: 0...100))", position: owner.position)
         world.addCity(city)
         
         // remove unit from world
@@ -63,41 +63,7 @@ struct BuildCityCommand: Command, Codable {
     }
 }
 
-struct MoveUnitCommand: TileTargettingCommand, Codable {
-    let title: String = "Move"
-    
-    var ownerID: UUID
-    
-    var targetTile: AxialCoord?
-    
-    func execute(in world: World) throws {
-        let owner = try world.getUnitWithID(ownerID)
-        
-        world.hexMap.rebuildPathFindingGraph(movementCosts: owner.movementCosts)
-        
-        guard let targetPosition = targetTile else {
-            throw CommandErrors.missingTarget
-        }
-        
-        guard let path = world.hexMap.findPathFrom(owner.position, to: targetPosition, movementCosts: owner.movementCosts) else {
-            print("No valid path from \(owner.position) to \(targetPosition).")
-            return
-        }
-        
-        print("Calculate path: \(path)")
-        world.setPath(for: ownerID, path: path, moveImmediately: true)
-    }
-    
-    func canExecute(in world: World) -> Bool {
-        if let owner = try? world.getUnitWithID(ownerID) {
-            return owner.movement > 0
-        }
-        
-        return false
-    }
-}
-
-struct AttackCommand: TileTargettingCommand, Codable {
+/*struct AttackCommand: TileTargettingCommand, Codable {
     let title: String = "Attack"
     var ownerID: UUID
     var targetTile: AxialCoord?
@@ -119,7 +85,7 @@ struct AttackCommand: TileTargettingCommand, Codable {
         // let's see whether there is a unit on the target coord
         let units = world.getUnitsOnTile(targetPosition)
         if var attackedUnit = units.first {
-            guard attackedUnit.owningPlayer != owner.owningPlayer else {
+            guard attackedUnit.owningPlayerID != owner.owningPlayerID else {
                 print("You're on the same team!")
                 return
             }
@@ -149,4 +115,4 @@ struct AttackCommand: TileTargettingCommand, Codable {
         
         return owner.attackPower > 0
     }
-}
+}*/

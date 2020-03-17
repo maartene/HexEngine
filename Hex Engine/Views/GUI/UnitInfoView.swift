@@ -25,7 +25,7 @@ struct UnitInfoView: View {
             return "unknown unit"
         }
         
-        if let player = world.players[unit.owningPlayer] {
+        if let player = world.players[unit.owningPlayerID] {
             return player.name
         } else {
             return "unknown owning player"
@@ -45,22 +45,22 @@ struct UnitInfoView: View {
                                     Button(self.unit!.possibleCommands[number].title) {
                                         if let ttc = self.unit!.possibleCommands[number] as? TileTargettingCommand {
                                             self.hexMapController.uiState = UI_State.selectTargetTile
-                                            self.hexMapController.queuedCommands[self.unit!.owningPlayer] = ttc
+                                            self.hexMapController.queuedCommands[self.unit!.owningPlayerID] = ttc
                                         } else {
                                             self.world.executeCommand(self.unit!.possibleCommands[number])
                                         }
                                     }.overlay(Capsule().stroke(lineWidth: 1))
-                                        .disabled(self.unit!.possibleCommands[number].canExecute(in: self.world) == false || self.unit?.owningPlayer != self.hexMapController.guiPlayer)
+                                        .disabled(self.unit!.possibleCommands[number].canExecute(in: self.world) == false || self.unit?.owningPlayerID != self.hexMapController.guiPlayer)
                                 }
                             }
                         }
                         Text("""
                             Unit: \(unit!.name) (\(unit!.id))
-                            Owner: \(owningPlayerName) (\(unit!.owningPlayer))
+                            Owner: \(owningPlayerName) (\(unit!.owningPlayerID))
                             Position: \(unit!.position.description)
-                            Movement: \(unit!.movementLeft.oneDecimal)/\(unit!.movement)
-                            Health: \(unit!.currentHitPoints.oneDecimal)/\(unit!.maxHitPoints.oneDecimal)
-                            Attack: \(unit!.attackPower.oneDecimal) Defense: \(unit!.defencePower.oneDecimal)
+                            Movement: (unit!.movementLeft.oneDecimal)/(unit!.movement)
+                            Health: (unit!.currentHitPoints.oneDecimal)/(unit!.maxHitPoints.oneDecimal)
+                            Attack: (unit!.attackPower.oneDecimal) Defense: (unit!.defencePower.oneDecimal)
                         """)
                     }.padding()
                     .background(Color.gray.opacity(0.5)).clipShape(RoundedRectangle(cornerRadius: 10))

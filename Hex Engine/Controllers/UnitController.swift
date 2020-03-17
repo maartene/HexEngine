@@ -46,7 +46,7 @@ final class UnitController: ObservableObject {
     func onUnitCreate(unit: Unit) {
         print("Creating sprite for unit \(unit)")
         // find a resource for the unit
-        let color = getColorForPlayerFunction?(unit.owningPlayer) ?? SKColor.white
+        let color = getColorForPlayerFunction?(unit.owningPlayerID) ?? SKColor.white
         
         let sprite = UnitSprite(unit: unit, playerColor: color)
         
@@ -94,11 +94,11 @@ final class UnitController: ObservableObject {
         
         if let sprite = unitSpriteMap[unit.id] {
             sprite.select()
-            if unit.path.count > 0 {
+            /*if unit.path.count > 0 {
                 drawPath(for: unit)
             } else {
                 pathIndicator = nil
-            }
+            }*/
         }
         
         selectedUnit = unit.id
@@ -119,7 +119,7 @@ final class UnitController: ObservableObject {
     }
     
     func drawPath(for unit: Unit) {
-        var points = unit.path.map { coord in
+        /*var points = unit.path.map { coord in
             HexMapController.hexToPixel(coord, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
         }
         pathIndicator = SKShapeNode(points: &points, count: points.count)
@@ -127,6 +127,7 @@ final class UnitController: ObservableObject {
         pathIndicator?.zPosition = 1
         pathIndicator?.strokeColor = SKColor.blue
         scene.addChild(pathIndicator!)
+         */
     }
     
     func showHideUnits(in world: World, visibilityMap: [AxialCoord: TileVisibility]) {

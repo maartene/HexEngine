@@ -10,6 +10,7 @@
 		DE0CE0D0238049190009B3A1 /* PlayersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0CE0CF238049190009B3A1 /* PlayersView.swift */; };
 		DE0DE0672420E38F0077D5EE /* MovementComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0DE0662420E38F0077D5EE /* MovementComponent.swift */; };
 		DE0DE0692420E5F80077D5EE /* Component.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0DE0682420E5F80077D5EE /* Component.swift */; };
+		DE0DE06B2420FCEF0077D5EE /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0DE06A2420FCEF0077D5EE /* Entity.swift */; };
 		DE12FB432392928A00A58357 /* AI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE12FB422392928A00A58357 /* AI.swift */; };
 		DE13AD072257DF5600136AFE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE13AD062257DF5600136AFE /* AppDelegate.swift */; };
 		DE13AD0D2257DF5600136AFE /* HexMapScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE13AD0C2257DF5600136AFE /* HexMapScene.swift */; };
@@ -63,6 +64,7 @@
 		DE0CE0CF238049190009B3A1 /* PlayersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayersView.swift; sourceTree = "<group>"; };
 		DE0DE0662420E38F0077D5EE /* MovementComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementComponent.swift; sourceTree = "<group>"; };
 		DE0DE0682420E5F80077D5EE /* Component.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Component.swift; sourceTree = "<group>"; };
+		DE0DE06A2420FCEF0077D5EE /* Entity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
 		DE12FB422392928A00A58357 /* AI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AI.swift; sourceTree = "<group>"; };
 		DE13AD032257DF5600136AFE /* Hex Engine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hex Engine.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE13AD062257DF5600136AFE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -125,13 +127,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		DE0DE0652420E3620077D5EE /* Components */ = {
+		DE0DE0652420E3620077D5EE /* ECS */ = {
 			isa = PBXGroup;
 			children = (
 				DE0DE0662420E38F0077D5EE /* MovementComponent.swift */,
 				DE0DE0682420E5F80077D5EE /* Component.swift */,
+				DE0DE06A2420FCEF0077D5EE /* Entity.swift */,
 			);
-			path = Components;
+			path = ECS;
 			sourceTree = "<group>";
 		};
 		DE13ACFA2257DF5600136AFE = {
@@ -218,7 +221,7 @@
 		DE6FEBB92257EA9000F1E495 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				DE0DE0652420E3620077D5EE /* Components */,
+				DE0DE0652420E3620077D5EE /* ECS */,
 				DE75E360235A44ED0018F1F9 /* Commands */,
 				DE6BE6262257E0F20027380C /* HexMap.swift */,
 				DEB0A9A0226218AB005770B2 /* WorldFactory.swift */,
@@ -388,6 +391,7 @@
 				DEB0A9A1226218AB005770B2 /* WorldFactory.swift in Sources */,
 				DEF661EE2365E6D400EDF9BB /* TileInfoLabel.swift in Sources */,
 				DEF661EC2365E69700EDF9BB /* CityInfoView.swift in Sources */,
+				DE0DE06B2420FCEF0077D5EE /* Entity.swift in Sources */,
 				DE64F7B2237EDE2000C921ED /* Player.swift in Sources */,
 				DEFFE28122587EDE00D9AE5A /* HexMapController.swift in Sources */,
 				DE13AD072257DF5600136AFE /* AppDelegate.swift in Sources */,

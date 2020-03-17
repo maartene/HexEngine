@@ -37,7 +37,7 @@ struct Player: Identifiable, Hashable, Equatable {
             }
         }
         
-        for unit in world.units.values.filter({$0.owningPlayer == self.id }) {
+        for unit in world.units.values.filter({$0.owningPlayerID == self.id }) {
             newVisibilityMap[unit.position] = .visible
             let visibleNeighbours = HexMap.coordinatesWithinRange(from: unit.position, range: unit.visibility)
             for neighbour in visibleNeighbours {
