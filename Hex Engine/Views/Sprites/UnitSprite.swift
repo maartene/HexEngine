@@ -15,6 +15,7 @@ class UnitSprite: SKSpriteNode {
     
     
     init(unit: Unit, playerColor: SKColor = SKColor.white) {
+        print("Looking for texture for \(unit.name)")
         let texture = SKTexture(imageNamed: unit.name)
                 
         // add "selection indicator"

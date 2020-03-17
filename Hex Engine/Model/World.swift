@@ -52,6 +52,9 @@ class World: ObservableObject {
         let unit = Unit.Snake(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
         units[unit.id] = unit
         
+        let narwhal = Unit.Narwhal(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 2, r: 1))
+        units[narwhal.id] = narwhal
+	        
         if playerCount > 1 {
             // TESTING only: add another rabbit (with a different owner to the map
             let anotherUnit = Unit.Rabbit(owningPlayer: playerTurnSequence[1], startPosition: AxialCoord(q: -1, r: -1))
@@ -153,12 +156,12 @@ class World: ObservableObject {
         do {
             try command.execute(in: self)
             try executedCommands.append(CommandWrapper.wrapperFor(command: command))
-            /*let encoder = JSONEncoder()
+            let encoder = JSONEncoder()
             encoder.outputFormatting = .prettyPrinted
             let data = try encoder.encode(executedCommands)
             let url = URL(fileURLWithPath: "world.json")
             print(url)
-            try data.write(to: url)*/
+            try data.write(to: url)
         } catch {
             print("An error of type '\(error)' occored.")
         }

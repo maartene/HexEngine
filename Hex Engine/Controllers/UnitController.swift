@@ -40,6 +40,7 @@ final class UnitController: ObservableObject {
         
         Unit.onUnitCreate = onUnitCreate
         Unit.onUnitChanged = onUnitChanged
+        Unit.onUnitDies = onUnitRemoved
     }
     
     func onUnitCreate(unit: Unit) {

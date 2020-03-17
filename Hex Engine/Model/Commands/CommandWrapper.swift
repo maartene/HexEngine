@@ -22,6 +22,8 @@ enum CommandWrapper: Encodable {
     case buildCityCommand(value: BuildCityCommand)
     case moveUnitCommand(value: MoveUnitCommand)
     case queueBuildRabbitCommand(value: QueueBuildRabbitCommand)
+    case queueBuildSnakeCommand(value: QueueBuildSnakeCommand)
+    case queueBuildNarwhalCommand(value: QueueBuildNarwhalCommand)
     case nextTurnCommand(value: NextTurnCommand)
     case attackTileCommand(value: AttackCommand)
     
@@ -43,6 +45,12 @@ enum CommandWrapper: Encodable {
         case .queueBuildRabbitCommand(let value):
             try container.encode("queueBuildRabbitCommand", forKey: .type)
             try container.encode(value, forKey: .value)
+        case .queueBuildSnakeCommand(let value):
+            try container.encode("queueBuildSnakeCommand", forKey: .type)
+            try container.encode(value, forKey: .value)
+        case .queueBuildNarwhalCommand(let value):
+            try container.encode("queueBuildNarwhalCommand", forKey: .type)
+            try container.encode(value, forKey: .value)
         case .nextTurnCommand(let value):
             try container.encode("nextTurnCommand", forKey: .type)
             try container.encode(value, forKey: .value)
@@ -58,6 +66,10 @@ enum CommandWrapper: Encodable {
             return .moveUnitCommand(value: c)
         } else if let c = command as? QueueBuildRabbitCommand {
             return .queueBuildRabbitCommand(value: c)
+        } else if let c = command as? QueueBuildSnakeCommand {
+            return .queueBuildSnakeCommand(value: c)
+        } else if let c = command as? QueueBuildNarwhalCommand {
+            return .queueBuildNarwhalCommand(value: c)	
         } else if let c = command as? NextTurnCommand {
             return .nextTurnCommand(value: c)
         } else if let c = command as? AttackCommand {

@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct City: Builder {
+struct City: Builder, Entity {
     var possibleCommands = [Command]()
     
     var buildQueue = [BuildCommand]()
@@ -32,6 +32,7 @@ struct City: Builder {
         self.position = position
         possibleCommands.append(QueueBuildRabbitCommand(ownerID: id))
         possibleCommands.append(QueueBuildSnakeCommand(ownerID: id))
+        possibleCommands.append(QueueBuildNarwhalCommand(ownerID: id))
         
         Self.onCityCreate?(self)
     }

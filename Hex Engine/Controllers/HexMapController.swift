@@ -12,8 +12,7 @@ import SwiftUI
 
 enum UI_State {
     case map
-    case selectMoveTargetTile
-    case selectAttackTargetTile
+    case selectTargetTile
 }
 
 class HexMapController: ObservableObject {
@@ -34,6 +33,7 @@ class HexMapController: ObservableObject {
     var tileBecameDeselected: ((AxialCoord) -> Void)?
     
     @Published var uiState = UI_State.map
+    var queuedCommands = [UUID: Command]()
     
     @Published var selectedTile: AxialCoord? {
         didSet {
@@ -88,6 +88,7 @@ class HexMapController: ObservableObject {
         
         self.world.onUnitRemoved = unitController.onUnitRemoved
         self.world.onVisibilityMapUpdated = showHideTiles
+        Unit.onUnitDies = world.removeUnit
         
         highlighter.lineWidth = 2
         
@@ -165,60 +166,74 @@ class HexMapController: ObservableObject {
         return hexToPixel(AxialCoord(q: 0, r: 0))
     }
     
-    func clickedNode(_ node: SKSpriteNode) {
-        deselectAll()
-        print("clickedNode: \(node)")
-        // first, determine what kind of node this is.
-        // is it a city?
+    func coordOfNode(_ node: SKSpriteNode) -> AxialCoord? {
         if let cityNode = node as? CitySprite {
-            print("Clicked city node: \(node)")
-            if let cityID = cityController.getCityForNode(node) {
-                if (try? world.getCityWithID(cityID)) != nil {
-                    cityNode.select()
-                    cityController.selectedCity = cityID
+            if let cityID = cityController.getCityForNode(cityNode) {
+                if let city = try?world.getCityWithID(cityID) {
+                    return city.position
                 }
             }
-        }
-        // is it a unit?
-        else if let unitNode = node as? UnitSprite {
-            
-            print("Clicked unit node: \(node)")
+        } else if let unitNode = node as? UnitSprite {
             // get unit for the node
             if let unitID = unitController.getUnitForNode(unitNode) {
                 if let unit = try? world.getUnitWithID(unitID) {
-                    unitController.selectUnit(unit)
-                    deselectTile()
-                    print("clicked unit: \(unit)")
+                    return unit.position
                 }
             }
-            
-        } // is it a tile?
-        else if let tileNode = node as? TileSprite {
-            print("Clicked tile at coord \(node.position)", node)
-            selectTile(tileNode.hexPosition)
-            unitController.deselectUnit()
+        } else if let tileNode = node as? TileSprite {
+            return tileNode.hexPosition
         }
+        return nil
+    }
+    
+    func clickedNode(_ node: SKSpriteNode) {
+        deselectAll()
         
         // if we are in a state where we need to select a tile, calculate the path.
-        if uiState == .selectMoveTargetTile {
-            if let unitID = unitController.selectedUnit, let tile = selectedTile {
-                let command = MoveUnitCommand(ownerID: unitID, targetPosition: tile)
-                world.executeCommand(command)
+        if uiState == .selectTargetTile {
+            guard let tile = coordOfNode(node) else {
+                return
             }
-            uiState = .map
-        }
-        
-        if uiState == .selectAttackTargetTile {
-            if let unitID = unitController.selectedUnit, let tile = selectedTile {
-                let command = AttackCommand(ownerID: unitID, targetPosition: tile)
-                if command.canExecute(in: world) {
-                    world.executeCommand(command)
-                } else {
-                    print("Unit \(unitID) cannot exectute 'ATTACK' command.")
+            if let command = queuedCommands[guiPlayer] {
+                if var ttc = command as? TileTargettingCommand {
+                    ttc.targetTile = tile
+                    world.executeCommand(ttc)
+                    uiState = .map
                 }
             }
-            uiState = .map
+        } else {
+            // first, determine what kind of node this is.
+            // is it a city?
+            if let cityNode = node as? CitySprite {
+                print("Clicked city node: \(node)")
+                if let cityID = cityController.getCityForNode(node) {
+                    if (try? world.getCityWithID(cityID)) != nil {
+                        cityNode.select()
+                        cityController.selectedCity = cityID
+                    }
+                }
+            }
+            // is it a unit?
+            else if let unitNode = node as? UnitSprite {
+                
+                print("Clicked unit node: \(node)")
+                // get unit for the node
+                if let unitID = unitController.getUnitForNode(unitNode) {
+                    if let unit = try? world.getUnitWithID(unitID) {
+                        unitController.selectUnit(unit)
+                        deselectTile()
+                        print("clicked unit: \(unit)")
+                    }
+                }
+                
+            } // is it a tile?
+            else if let tileNode = node as? TileSprite {
+                print("Clicked tile at coord \(node.position)", node)
+                selectTile(tileNode.hexPosition)
+                unitController.deselectUnit()
+            }
         }
+        
     }
     
     func deselectAll() {
@@ -232,9 +247,7 @@ class HexMapController: ObservableObject {
         switch uiState {
         case .map:
             highlighter.strokeColor = SKColor.gray
-        case .selectMoveTargetTile:
-            highlighter.strokeColor = SKColor.green
-        case .selectAttackTargetTile:
+        case .selectTargetTile:
             highlighter.strokeColor = SKColor.red
         }
     }

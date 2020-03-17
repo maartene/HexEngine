@@ -16,6 +16,8 @@ protocol Commander {
 
 enum CommandErrors: Error {
     case cannotExecute
+    case missingTarget          // maybe move to seperate enum for TileTargettingCommands
+    case illegalTarget          // maybe move to seperate enum for TileTargettingCommands
 }
 
 protocol Command {
@@ -43,4 +45,8 @@ extension Command {
 
 protocol BuildCommand: Command {
     var productionRemaining: Double { get set }
+}
+
+protocol TileTargettingCommand: Command {
+    var targetTile: AxialCoord? { get set }
 }

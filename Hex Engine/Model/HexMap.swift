@@ -206,7 +206,7 @@ struct HexMap {
         }
     }
     
-    func reachableFromTile(_ startTile: CubeCoord, movement: Int) -> [CubeCoord] {
+    func reachableFromTile(_ startTile: CubeCoord, movement: Int, movementCosts: [Tile: Double] = Tile.defaultCostsToEnter) -> [CubeCoord] {
         var visited = Set<CubeCoord>()
         visited.insert(startTile)
         var fringes = [Set<CubeCoord>]()
@@ -219,7 +219,7 @@ struct HexMap {
                     let neighbourCube = HexMap.cubeNeighbourCoord(tile: hex, directionIndex: dir)
                     let neighbourHexCoord = neighbourCube.toAxial()
                     let tile = self[neighbourHexCoord.q, neighbourHexCoord.r]
-                    if visited.contains(neighbourCube) == false && tile.blocksMovement == false {
+                    if visited.contains(neighbourCube) == false && movementCosts[tile, default: -1] >=	 0 {
                         visited.insert(neighbourCube)
                         fringes[k].insert(neighbourCube)
                     }
@@ -233,7 +233,7 @@ struct HexMap {
     
     // we use this function to rebuild the pathfinding graph. this is required for instance
     // when terrain changes. 
-    mutating func rebuildPathFindingGraph() {
+    mutating func rebuildPathFindingGraph(movementCosts: [Tile: Double] = Tile.defaultCostsToEnter) {
         // start by clearing out the old pathfinding data
         pathfindingGraph.nodes?.forEach {
             $0.removeConnections(to: $0.connectedNodes, bidirectional: false)
@@ -247,7 +247,7 @@ struct HexMap {
             nodeToTileCoordMap.removeAll()
             
             tiles.forEach {
-                let node = HexGraphNode(costToEnter: $0.value.costToEnter)
+                let node = HexGraphNode(costToEnter: movementCosts[$0.value, default: -1])
                 tileCoordToNodeMap[$0.key] = node
                 nodeToTileCoordMap[node] = $0.key
             }
@@ -260,7 +260,7 @@ struct HexMap {
             let neighbours = HexMap.getAxialNeighbourCoordinates(tile: coord)
             
             neighbours.forEach {
-                if self[$0].blocksMovement == false {
+                if movementCosts[self[$0], default: -1] >= 0 {
                     node.addConnections(to: [tileCoordToNodeMap[$0]!], bidirectional: false)
                 }
             }
@@ -269,7 +269,7 @@ struct HexMap {
         pathfindingGraph.add(Array(nodeToTileCoordMap.keys))
     }
     
-    func findPathFrom(_ tile1: AxialCoord, to tile2: AxialCoord) -> [AxialCoord]? {
+    func findPathFrom(_ tile1: AxialCoord, to tile2: AxialCoord, movementCosts: [Tile: Double] = Tile.defaultCostsToEnter) -> [AxialCoord]? {
         if let node1 = tileCoordToNodeMap[tile1], let node2 = tileCoordToNodeMap[tile2] {
             let nodePath = pathfindingGraph.findPath(from: node1, to: node2)
             
@@ -277,7 +277,7 @@ struct HexMap {
             var cost = 0.0
             nodePath.forEach {
                 let coord = nodeToTileCoordMap[$0]!
-                cost += self[coord].costToEnter
+                cost += movementCosts[self[coord], default: 0]
                 result.append(coord)
             }
             print("calculated path from \(tile1) to \(tile2). Total path cost: \(cost).")
@@ -355,9 +355,9 @@ enum Tile: Int {
     case Forest
     case Mountain
     
-    var blocksMovement: Bool {
-        return costToEnter < 0
-    }
+    //var blocksMovement: Bool {
+    //    return costToEnter < 0
+    //}
     
     var costToEnter: Double {
         switch self {
@@ -370,6 +370,17 @@ enum Tile: Int {
         default:
             return -1
         }
+    }
+    
+    static var defaultCostsToEnter: [Tile: Double] {
+        [
+        .void: -1,
+        .Water: -1,
+        .Sand: 1,
+        .Grass: 1,
+        .Forest: 2,
+        .Mountain: -1
+        ]
     }
     
     var stringValue: String {

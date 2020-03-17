@@ -40,24 +40,17 @@ struct UnitInfoView: View {
                     Text("UNIT").font(Font.custom("American Typewriter", size: 64)).opacity(0.5)
                     VStack(alignment: .leading) {
                         HStack {
-                            Button("Move") {
-                                self.hexMapController.uiState = UI_State.selectMoveTargetTile
-                            }
-                            .overlay(Capsule().stroke(lineWidth: hexMapController.uiState == UI_State.selectMoveTargetTile ? 4 : 1))
-                            .disabled(unit!.movement <= 0 || unit?.owningPlayer != hexMapController.guiPlayer)
-                            
-                            Button("Attack") {
-                                self.hexMapController.uiState = UI_State.selectAttackTargetTile
-                            }
-                            .overlay(Capsule().stroke(lineWidth: hexMapController.uiState == UI_State.selectAttackTargetTile ? 4 : 1))
-                            .disabled(unit!.movement <= 0 || unit?.attackPower ?? 0 <= 0  || unit?.owningPlayer != hexMapController.guiPlayer)
-                            
                             if unit!.possibleCommands.count > 0 {
                                 ForEach(0 ..< unit!.possibleCommands.count) { number in
                                     Button(self.unit!.possibleCommands[number].title) {
-                                    self.world.executeCommand(self.unit!.possibleCommands[number])
+                                        if let ttc = self.unit!.possibleCommands[number] as? TileTargettingCommand {
+                                            self.hexMapController.uiState = UI_State.selectTargetTile
+                                            self.hexMapController.queuedCommands[self.unit!.owningPlayer] = ttc
+                                        } else {
+                                            self.world.executeCommand(self.unit!.possibleCommands[number])
+                                        }
                                     }.overlay(Capsule().stroke(lineWidth: 1))
-                                        .disabled(self.unit!.movement <= 0 || self.unit?.owningPlayer != self.hexMapController.guiPlayer)
+                                        .disabled(self.unit!.possibleCommands[number].canExecute(in: self.world) == false || self.unit?.owningPlayer != self.hexMapController.guiPlayer)
                                 }
                             }
                         }
@@ -65,7 +58,9 @@ struct UnitInfoView: View {
                             Unit: \(unit!.name) (\(unit!.id))
                             Owner: \(owningPlayerName) (\(unit!.owningPlayer))
                             Position: \(unit!.position.description)
-                            Movement: \(unit!.movementLeft)/\(unit!.movement)
+                            Movement: \(unit!.movementLeft.oneDecimal)/\(unit!.movement)
+                            Health: \(unit!.currentHitPoints.oneDecimal)/\(unit!.maxHitPoints.oneDecimal)
+                            Attack: \(unit!.attackPower.oneDecimal) Defense: \(unit!.defencePower.oneDecimal)
                         """)
                     }.padding()
                     .background(Color.gray.opacity(0.5)).clipShape(RoundedRectangle(cornerRadius: 10))
@@ -75,6 +70,16 @@ struct UnitInfoView: View {
         }
     }
 }
+
+extension Double {
+    var oneDecimal: String {
+        if (Double(Int(self)) == self) {
+            return String(Int(self))
+        }
+        return String(format: "%.1f", self)
+    }
+}
+
 /*
 struct UnitInfoView_Previews: PreviewProvider {
     static var previews: some View {

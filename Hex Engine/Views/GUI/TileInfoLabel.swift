@@ -26,7 +26,7 @@ struct TileInfoLabel: View {
             Text("""
                 Tile: \(hexMapController.selectedTile?.description ?? "not a tile")
                 \(selectedTile.stringValue)
-                Movement cost: \(selectedTile.blocksMovement ? "Impassible" : String(selectedTile.costToEnter))
+                Movement cost: \(Tile.defaultCostsToEnter[selectedTile, default: -1] < 0 ? "Impassible" : String(Tile.defaultCostsToEnter[selectedTile, default: -1]))
             """)
             .padding() .background(Color.gray.opacity(0.5)).clipShape(RoundedRectangle(cornerRadius: 10))
                 .overlay(RoundedRectangle(cornerRadius: 10).stroke(lineWidth: 1))

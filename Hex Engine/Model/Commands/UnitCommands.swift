@@ -16,8 +16,6 @@ enum BuildCityCommandErrors: Error {
 
 enum AttackCommandErrors: Error {
     case unitCannotAttack
-    case illegalTarget
-    case noTargetTile
     case notEnoughMovementLeftToAttack
 }
 
@@ -65,19 +63,23 @@ struct BuildCityCommand: Command, Codable {
     }
 }
 
-struct MoveUnitCommand: Command, Codable {
+struct MoveUnitCommand: TileTargettingCommand, Codable {
     let title: String = "Move"
     
     var ownerID: UUID
     
-    var targetPosition: AxialCoord
+    var targetTile: AxialCoord?
     
     func execute(in world: World) throws {
         let owner = try world.getUnitWithID(ownerID)
         
-        world.hexMap.rebuildPathFindingGraph()
+        world.hexMap.rebuildPathFindingGraph(movementCosts: owner.movementCosts)
         
-        guard let path = world.hexMap.findPathFrom(owner.position, to: targetPosition) else {
+        guard let targetPosition = targetTile else {
+            throw CommandErrors.missingTarget
+        }
+        
+        guard let path = world.hexMap.findPathFrom(owner.position, to: targetPosition, movementCosts: owner.movementCosts) else {
             print("No valid path from \(owner.position) to \(targetPosition).")
             return
         }
@@ -85,12 +87,20 @@ struct MoveUnitCommand: Command, Codable {
         print("Calculate path: \(path)")
         world.setPath(for: ownerID, path: path, moveImmediately: true)
     }
+    
+    func canExecute(in world: World) -> Bool {
+        if let owner = try? world.getUnitWithID(ownerID) {
+            return owner.movement > 0
+        }
+        
+        return false
+    }
 }
 
-struct AttackCommand: Command, Codable {
+struct AttackCommand: TileTargettingCommand, Codable {
     let title: String = "Attack"
     var ownerID: UUID
-    var targetPosition: AxialCoord?
+    var targetTile: AxialCoord?
     
     func execute(in world: World) throws {
         let owner = try world.getUnitWithID(ownerID)
@@ -102,13 +112,17 @@ struct AttackCommand: Command, Codable {
             throw AttackCommandErrors.unitCannotAttack
         }
         
-        guard let targetPosition = targetPosition else {
-            throw AttackCommandErrors.noTargetTile
+        guard let targetPosition = targetTile else {
+            throw CommandErrors.missingTarget
         }
         
         // let's see whether there is a unit on the target coord
         let units = world.getUnitsOnTile(targetPosition)
         if var attackedUnit = units.first {
+            guard attackedUnit.owningPlayer != owner.owningPlayer else {
+                print("You're on the same team!")
+                return
+            }
             // we're attacking a unit
             print("attacking unit \(attackedUnit.name)")
             attackedUnit.takeDamage(owner.attackPower)
@@ -116,10 +130,6 @@ struct AttackCommand: Command, Codable {
             changedOwner.movementLeft = 0
             world.replace(changedOwner)
             world.replace(attackedUnit)
-            
-            if attackedUnit.currentHitPoints <= 0 {
-                world.removeUnit(attackedUnit)
-            }
             return
         }
         
@@ -129,7 +139,7 @@ struct AttackCommand: Command, Codable {
             return
         }
         
-        throw AttackCommandErrors.illegalTarget
+        throw CommandErrors.illegalTarget
     }
     
     func canExecute(in world: World) -> Bool {
