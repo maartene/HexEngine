@@ -98,7 +98,7 @@ class HexMapTests: XCTestCase {
         var i = 0
         let tileCoords = hexMap.getTileCoordinates()
         while tile1 == nil && i < tileCoords.count {
-            if hexMap[tileCoords[i]].blocksMovement == false {
+            if Tile.defaultCostsToEnter[hexMap[tileCoords[i]], default: -1] >= 0 {
                 tile1 = tileCoords[i]
             }
             i += 1
@@ -107,7 +107,7 @@ class HexMapTests: XCTestCase {
         var tile2: AxialCoord?
         i = tileCoords.count - 1
         while tile2 == nil && i >= 0 {
-            if hexMap[tileCoords[i]].blocksMovement == false {
+            if Tile.defaultCostsToEnter[hexMap[tileCoords[i]], default: -1] >= 0 {
                 tile2 = tileCoords[i]
             }
             i -= 1
@@ -116,9 +116,12 @@ class HexMapTests: XCTestCase {
         if let tile1 = tile1, let tile2 = tile2 {
             assert(tile1 != tile2)
             
-            hexMap.rebuildPathFindingGraph()
+            let pathfindingResult = hexMap.rebuildPathFindingGraph()
             
-            if let path = hexMap.findPathFrom(tile1, to: tile2) {
+            if let path = hexMap.findPathFrom(tile1, to: tile2,
+                                              pathfindingGraph: pathfindingResult.graph,
+                                              tileCoordToNodeMap: pathfindingResult.tileCoordToNodeMap,
+                                              nodeToTileCoordMap: pathfindingResult.nodeToTileCoordMap) {
                 path.forEach {
                     print ("Coord: \($0) Terrain: \(hexMap[$0])")
                 }                

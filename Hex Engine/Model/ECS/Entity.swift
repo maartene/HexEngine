@@ -8,6 +8,10 @@
 
 import Foundation
 
+enum EntityErrors: Error {
+    case componentNotFound(componentName: String)
+}
+
 protocol Entity {
     var id: UUID { get }
     var name: String { get }
@@ -37,5 +41,13 @@ extension Entity {
             result.append(contentsOf: component.possibleCommands)
         }
         return result
+    }
+    
+    func step(in world: World) {
+        print("step for entity \(self)")
+        
+        for component in components {
+            component.step(in: world)
+        }
     }
 }

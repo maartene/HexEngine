@@ -58,7 +58,7 @@ class CommandTests: XCTestCase {
             func execute(in world: World) throws {
                 // flip a single tile from "enterable" to "blocks movement" or vice versa
                 print("Before: Tile at 0,0: \(world.hexMap[0,0])")
-                world.hexMap[0,0] = world.hexMap[0,0].blocksMovement ? Tile.Forest : Tile.Water
+                world.hexMap[0,0] = Tile.defaultCostsToEnter[world.hexMap[0,0], default: -1] < 0 ? Tile.Forest : Tile.Water
                 print("After: Tile at 0,0: \(world.hexMap[0,0])")
                 return
             }

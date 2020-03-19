@@ -41,33 +41,42 @@ struct UnitInfoView: View {
                     VStack(alignment: .leading) {
                         HStack {
                             if unit!.possibleCommands.count > 0 {
-                                ForEach(0 ..< unit!.possibleCommands.count) { number in
-                                    Button(self.unit!.possibleCommands[number].title) {
-                                        if let ttc = self.unit!.possibleCommands[number] as? TileTargettingCommand {
+                                ForEach(unit!.possibleCommands, id: \Command.title) { command in
+                                    Button(command.title) {
+                                        if let ttc = command as? TileTargettingCommand {
                                             self.hexMapController.uiState = UI_State.selectTargetTile
                                             self.hexMapController.queuedCommands[self.unit!.owningPlayerID] = ttc
                                         } else {
-                                            self.world.executeCommand(self.unit!.possibleCommands[number])
+                                            self.world.executeCommand(command)
                                         }
                                     }.overlay(Capsule().stroke(lineWidth: 1))
-                                        .disabled(self.unit!.possibleCommands[number].canExecute(in: self.world) == false || self.unit?.owningPlayerID != self.hexMapController.guiPlayer)
+                                        .disabled(command.canExecute(in: self.world) == false || self.unit?.owningPlayerID != self.hexMapController.guiPlayer)
                                 }
                             }
                         }
-                        Text("""
-                            Unit: \(unit!.name) (\(unit!.id))
-                            Owner: \(owningPlayerName) (\(unit!.owningPlayerID))
-                            Position: \(unit!.position.description)
-                            Movement: (unit!.movementLeft.oneDecimal)/(unit!.movement)
-                            Health: (unit!.currentHitPoints.oneDecimal)/(unit!.maxHitPoints.oneDecimal)
-                            Attack: (unit!.attackPower.oneDecimal) Defense: (unit!.defencePower.oneDecimal)
-                        """)
+                        Text(unitInfoString())
                     }.padding()
                     .background(Color.gray.opacity(0.5)).clipShape(RoundedRectangle(cornerRadius: 10))
                         .overlay(RoundedRectangle(cornerRadius: 10).stroke(lineWidth: 1))
                 }
             }
         }
+    }
+    
+    func unitInfoString() -> String {
+        var result = ""
+        if let unit = unit {
+            result += "Unit: \(unit.name) (\(unit.id))\n"
+            result += "Owner: \(owningPlayerName) (\(unit.owningPlayerID))\n"
+            result += "Position: \(unit.position.description)\n"
+            result += "Actions: \(unit.actionsRemaining.oneDecimal)/2\n"
+            if let defenseComponent = unit.getComponent(HealthComponent.self) {
+                result += "Health: \(defenseComponent.currentHitPoints)/\(defenseComponent.maxHitPoints)\n"
+            }
+        } else {
+            result = "No unit selected"
+        }
+        return result
     }
 }
 

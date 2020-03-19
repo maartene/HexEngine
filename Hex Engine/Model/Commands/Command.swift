@@ -10,7 +10,7 @@ import Foundation
 
 protocol Commander {
     var id: UUID { get }
-    var owningPlayer: UUID { get }
+    var owningPlayerID: UUID { get }
     var position: AxialCoord { get set }
 }
 

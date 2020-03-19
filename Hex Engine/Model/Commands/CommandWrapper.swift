@@ -18,63 +18,51 @@ enum CommandWrapper: Encodable {
         case value
     }
     
-    //case addProductionCommand(value: AddProductionCommand)
-    case buildCityCommand(value: BuildCityCommand)
+    case foundCityCommand(value: FoundCityCommand)
     case moveUnitCommand(value: MoveUnitCommand)
-    case queueBuildRabbitCommand(value: QueueBuildRabbitCommand)
-    //case queueBuildSnakeCommand(value: QueueBuildSnakeCommand)
-    //case queueBuildNarwhalCommand(value: QueueBuildNarwhalCommand)
+    case queueBuildUnitCommand(value: QueueBuildUnitCommand)
     case nextTurnCommand(value: NextTurnCommand)
-    //case attackTileCommand(value: AttackCommand)
+    case attackTileCommand(value: AttackCommand)
+    case removeFromBuildQueueCommand(value: RemoveFromBuildQueueCommand)
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         switch self {
-        /*case .addProductionCommand(value: let value):
-            try container.encode("addProductionCommand", forKey: .type)
-            try container.encode(value, forKey: .value)*/
-        case .buildCityCommand(let value):
-            try container.encode("buildCityCommand", forKey: .type)
+        case .foundCityCommand(let value):
+            try container.encode("foundCityCommand", forKey: .type)
             try container.encode(value, forKey: .value)
         case .moveUnitCommand(let value):
             try container.encode("moveUnitCommand", forKey: .type)
             try container.encode(value, forKey: .value)
-        /*case .attackTileCommand(let value):
-            try container.encode("attackCommand", forKey: .type)
-            try container.encode(value, forKey: .value)*/
-        case .queueBuildRabbitCommand(let value):
-            try container.encode("queueBuildRabbitCommand", forKey: .type)
+        case .queueBuildUnitCommand(let value):
+            try container.encode("queueBuildUnitCommand", forKey: .type)
             try container.encode(value, forKey: .value)
-        /*case .queueBuildSnakeCommand(let value):
-            try container.encode("queueBuildSnakeCommand", forKey: .type)
-            try container.encode(value, forKey: .value)
-        case .queueBuildNarwhalCommand(let value):
-            try container.encode("queueBuildNarwhalCommand", forKey: .type)
-            try container.encode(value, forKey: .value)*/
         case .nextTurnCommand(let value):
             try container.encode("nextTurnCommand", forKey: .type)
+            try container.encode(value, forKey: .value)
+        case .attackTileCommand(let value):
+            try container.encode("attackTileCommand", forKey: .type)
+            try container.encode(value, forKey: .value)
+        case .removeFromBuildQueueCommand(let value):
+            try container.encode("removeFromBuildQueueCommand", forKey: .type)
             try container.encode(value, forKey: .value)
         }
     }
 
     static func wrapperFor(command: Command) throws -> CommandWrapper {
-        /*if let c = command as? AddProductionCommand {
-            return .addProductionCommand(value: c)
-        } else */if let c = command as? BuildCityCommand {
-            return .buildCityCommand(value: c)
+        if let c = command as? FoundCityCommand {
+            return .foundCityCommand(value: c)
         } else if let c = command as? MoveUnitCommand {
             return .moveUnitCommand(value: c)
-        } else if let c = command as? QueueBuildRabbitCommand {
-            return .queueBuildRabbitCommand(value: c)
-        } /*else if let c = command as? QueueBuildSnakeCommand {
-            return .queueBuildSnakeCommand(value: c)
-        } else if let c = command as? QueueBuildNarwhalCommand {
-            return .queueBuildNarwhalCommand(value: c)	
-        } */else if let c = command as? NextTurnCommand {
+        } else if let c = command as? QueueBuildUnitCommand {
+            return .queueBuildUnitCommand(value: c)
+        } else if let c = command as? NextTurnCommand {
             return .nextTurnCommand(value: c)
-        } /*else if let c = command as? AttackCommand {
+        } else if let c = command as? AttackCommand {
             return .attackTileCommand(value: c)
-        } */else {
+        } else if let c = command as? RemoveFromBuildQueueCommand {
+            return .removeFromBuildQueueCommand(value: c)
+        } else {
             throw CommandWrapperErrors.cannotConvertCommandError
         }
     }

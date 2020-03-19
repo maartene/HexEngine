@@ -49,11 +49,11 @@ class World: ObservableObject {
         
         // TESTING only: add a rabbit to the map
         //let unit = Unit.Rabbit(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
-        let unit = Unit.Rabbit(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
+        let unit = Unit.Snake(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
         units[unit.id] = unit
         
-        //let narwhal = Unit.Narwhal(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 2, r: 1))
-        //units[narwhal.id] = narwhal
+        let narwhal = Unit.Narwhal(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 2, r: 1))
+        units[narwhal.id] = narwhal
 	        
         if playerCount > 1 {
             // TESTING only: add another rabbit (with a different owner to the map
@@ -100,13 +100,20 @@ class World: ObservableObject {
         nextPlayer()
         // process current player
         if let player = currentPlayer {
+            // gives units new action points
+            for unit in units.values.filter({$0.owningPlayerID == player.id}) {
+                var changedUnit = unit
+                changedUnit.actionsRemaining = 2.0
+                replace(changedUnit)
+            }
+            
             for unit in units.values.filter({$0.owningPlayerID == player.id}) {
                     unit.step(in: self)
                 }
             
-            for city in cities.values.filter({$0.owningPlayer == player.id}) {
+            for city in cities.values.filter({$0.owningPlayerID == player.id}) {
                     do {
-                        try city.build(in: self, production: 5)
+                        try city.step(in: self)
                     } catch {
                         print(error)
                     }
@@ -180,10 +187,13 @@ class World: ObservableObject {
     
     func removeUnit(_ unit: Unit) {
         print("Removing unit \(units.removeValue(forKey: unit.id).debugDescription)")
+        if let owningPlayer = players[unit.owningPlayerID] {
+            updateVisibilityForPlayer(player: owningPlayer)
+        }
         onUnitRemoved?(unit)
     }
     
-    func replaceBuilder(_ newBuilder: Builder) {
+    /*func replaceBuilder(_ newBuilder: Builder) {
         guard let city = cities[newBuilder.id] else {
             print("Unknown city \(newBuilder)")
             return
@@ -195,7 +205,7 @@ class World: ObservableObject {
         }
         
         cities[city.id] = builder
-    }
+    }*/
     
     func replace(_ city: City) {
         guard cities[city.id] != nil else {
@@ -213,5 +223,9 @@ class World: ObservableObject {
         }
         
         units[unit.id] = unit
+        
+        if let owningPlayer = players[unit.owningPlayerID] {
+            updateVisibilityForPlayer(player: owningPlayer)
+        }
     }
 }

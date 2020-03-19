@@ -36,7 +36,11 @@ struct CityInfoView: View {
             return result
         }
         
-        for enumarated in city.buildQueue.enumerated() {
+        guard let buildComponent = city.getComponent(BuildComponent.self) else {
+            return result
+        }
+        
+        for enumarated in buildComponent.buildQueue.enumerated() {
             result.append(BuildQueueEntry(id: enumarated.offset, command: enumarated.element))
         }
         
@@ -56,18 +60,18 @@ struct CityInfoView: View {
                                 Button(self.city?.possibleCommands[number].title ?? "") {
                                     self.executeBuildCommand(number: number, city: self.city)
                                 }.overlay(Capsule().stroke(lineWidth: 1))
-                                    .disabled(self.city?.owningPlayer != self.hexMapController.guiPlayer)
+                                    .disabled(self.city?.owningPlayerID != self.hexMapController.guiPlayer)
                             }
                         }
                         
                         Text("""
                             City: \(city?.name ?? "nil")
-                            Owning player: \(city!.owningPlayer)
+                            Owning player: \(city!.owningPlayerID)
                         """)
                         
                         HStack {
                             Text("Build queue: ")
-                            if city?.buildQueue.count ?? 0 == 0 {
+                            if city?.getComponent(BuildComponent.self)?.buildQueue.count ?? 0 == 0 {
                                 Text("empty")
                             } else {
                                 ForEach(buildQueue) { buildQueueEntry in

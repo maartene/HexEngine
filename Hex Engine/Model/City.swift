@@ -8,32 +8,26 @@
 
 import Foundation
 
-struct City: Builder {
-    var possibleCommands = [Command]()
-    
-    var buildQueue = [BuildCommand]()
-    
+struct City: Entity {
     let id = UUID()
-    
+    var owningPlayerID: UUID
     var position: AxialCoord
-    var owningPlayer: UUID
     
     let name: String
-    
-    var visibility: Int {
-        return 2
-    }
+    var components = [Component]()
+    var visibility = 2
     
     static var onCityCreate: ((City) -> Void)?
     
     init(owningPlayer: UUID, name: String, position: AxialCoord) {
-        self.owningPlayer = owningPlayer
+        self.owningPlayerID = owningPlayer
         self.name = name
         self.position = position
-        possibleCommands.append(QueueBuildRabbitCommand(ownerID: id))
-        //possibleCommands.append(QueueBuildSnakeCommand(ownerID: id))
-        //possibleCommands.append(QueueBuildNarwhalCommand(ownerID: id))
+        
+        components = [BuildComponent(ownerID: id)]
         
         Self.onCityCreate?(self)
     }
+    
+    mutating func step(in world: World) {}
 }

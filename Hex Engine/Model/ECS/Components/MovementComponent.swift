@@ -12,8 +12,6 @@ import GameplayKit
 struct MovementComponent : Component {
     let ownerID: UUID
     let movementCosts: [Tile: Double]
-    let movement: Double
-    var remainingMovement: Double
     
     // patchfinding stuff
     var pathfindingGraph = GKGraph()                            // every entity with a movement component has its own pathfinding graph
@@ -26,8 +24,6 @@ struct MovementComponent : Component {
     init(ownerID: UUID, movementCosts: [Tile: Double] = Tile.defaultCostsToEnter, movement: Double = 2) {
         self.ownerID = ownerID
         self.movementCosts = movementCosts
-        self.movement = movement
-        self.remainingMovement = movement
         
         self.possibleCommands = [MoveUnitCommand(ownerID: ownerID, targetTile: nil)]
     }
@@ -36,7 +32,7 @@ struct MovementComponent : Component {
         var owner = try world.getUnitWithID(ownerID)
         var updatedComponent = self
         
-        while updatedComponent.remainingMovement > 0 && updatedComponent.path.count > 0 {
+        while owner.actionsRemaining > 0 && updatedComponent.path.count > 0 {
             if updatedComponent.path.first! == owner.position {
                 updatedComponent.path.remove(at: 0)
             }
@@ -44,9 +40,9 @@ struct MovementComponent : Component {
                 let nextStep = updatedComponent.path.removeFirst()
                 let tile = world.hexMap[nextStep]
                 if movementCosts[tile, default: -1] < 0 {
-                    updatedComponent.remainingMovement = 0
+                    owner.actionsRemaining = 0
                 } else {
-                    updatedComponent.remainingMovement -= updatedComponent.movementCosts[tile, default: 0]
+                    owner.actionsRemaining -= updatedComponent.movementCosts[tile, default: 0]
                 }
                 owner.position = nextStep
             }
@@ -58,7 +54,7 @@ struct MovementComponent : Component {
     
     func step(in world: World) {
         var updatedComponent = self
-        updatedComponent.remainingMovement = movement
+//        updatedComponent.remainingMovement = movement
         if let updatedUnit = try? updatedComponent.move(in: world) {
             world.replace(updatedUnit)
         }
@@ -81,15 +77,26 @@ struct MoveUnitCommand: TileTargettingCommand, Codable {
             return
         }
         
-        print(moveComponent)
+        //print(moveComponent)
         
-        world.hexMap.rebuildPathFindingGraph(movementCosts: moveComponent.movementCosts)
+        let friendlyCities = world.allCities.filter { city in
+            city.owningPlayerID == owner.owningPlayerID
+        }
+        
+        let friendlyCityLocations = friendlyCities.map { city in
+            city.position
+        }
+        
+        let pathfindingResult = world.hexMap.rebuildPathFindingGraph(movementCosts: moveComponent.movementCosts, additionalEnterableTiles: friendlyCityLocations)
+        moveComponent.pathfindingGraph = pathfindingResult.graph
+        moveComponent.nodeToTileCoordMap = pathfindingResult.nodeToTileCoordMap
+        moveComponent.tileCoordToNodeMap = pathfindingResult.tileCoordToNodeMap
         
         guard let targetPosition = targetTile else {
             throw CommandErrors.missingTarget
         }
         
-        guard let path = world.hexMap.findPathFrom(owner.position, to: targetPosition, movementCosts: moveComponent.movementCosts) else {
+        guard let path = world.hexMap.findPathFrom(owner.position, to: targetPosition, pathfindingGraph: moveComponent.pathfindingGraph, tileCoordToNodeMap: moveComponent.tileCoordToNodeMap, nodeToTileCoordMap: moveComponent.nodeToTileCoordMap, movementCosts: moveComponent.movementCosts) else {
             print("No valid path from \(owner.position) to \(targetPosition).")
             return
         }
@@ -103,6 +110,8 @@ struct MoveUnitCommand: TileTargettingCommand, Codable {
         world.replace(owner)
         //world.setPath(for: ownerID, path: path, moveImmediately: true)
     }
+    
+    
     
     /*
     func setPath(for unitID: UUID, path: [AxialCoord], moveImmediately: Bool = false) {
@@ -124,9 +133,8 @@ struct MoveUnitCommand: TileTargettingCommand, Codable {
     
     func canExecute(in world: World) -> Bool {
         if let owner = try? world.getUnitWithID(ownerID) {
-            if let component = owner.getComponent(MovementComponent.self) {
-            return component.movement > 0
-            }
+            return owner.getComponent(MovementComponent.self) != nil
+            //return owner.actionsRemaining > 0
         }
         
         return false
