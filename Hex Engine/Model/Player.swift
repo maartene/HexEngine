@@ -23,7 +23,7 @@ struct Player: Identifiable, Hashable, Equatable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
-    
+    	
     func processTurn(in world: World) {
         
     }
@@ -37,7 +37,7 @@ struct Player: Identifiable, Hashable, Equatable {
             }
         }
         
-        for unit in world.units.values.filter({$0.owningPlayer == self.id }) {
+        for unit in world.units.values.filter({$0.owningPlayerID == self.id }) {
             newVisibilityMap[unit.position] = .visible
             let visibleNeighbours = HexMap.coordinatesWithinRange(from: unit.position, range: unit.visibility)
             for neighbour in visibleNeighbours {
@@ -45,7 +45,7 @@ struct Player: Identifiable, Hashable, Equatable {
             }
         }
         
-        for city in world.cities.values.filter({$0.owningPlayer == self.id }) {
+        for city in world.cities.values.filter({$0.owningPlayerID == self.id }) {
             newVisibilityMap[city.position] = .visible
             let visibleNeighbours = HexMap.coordinatesWithinRange(from: city.position, range: city.visibility)
             for neighbour in visibleNeighbours {
@@ -59,7 +59,7 @@ struct Player: Identifiable, Hashable, Equatable {
     }
 }
 
-enum TileVisibility {
+enum TileVisibility: Int {
     case unvisited
     case visited
     case visible

@@ -8,14 +8,16 @@
 
 import Foundation
 
-protocol Commander {
+/*protocol Commander {
     var id: UUID { get }
-    var owningPlayer: UUID { get }
+    var owningPlayerID: UUID { get }
     var position: AxialCoord { get set }
-}
+}*/
 
 enum CommandErrors: Error {
     case cannotExecute
+    case missingTarget          // maybe move to seperate enum for TileTargettingCommands
+    case illegalTarget          // maybe move to seperate enum for TileTargettingCommands
 }
 
 protocol Command {
@@ -43,4 +45,8 @@ extension Command {
 
 protocol BuildCommand: Command {
     var productionRemaining: Double { get set }
+}
+
+protocol TileTargettingCommand: Command {
+    var targetTile: AxialCoord? { get set }
 }

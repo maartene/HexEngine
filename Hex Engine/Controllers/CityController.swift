@@ -38,7 +38,7 @@ final class CityController: ObservableObject {
         
         print("Creating sprite for city \(city)")
         // find a resource for the unit
-        let color = getColorForPlayerFunction?(city.owningPlayer) ?? SKColor.white
+        let color = getColorForPlayerFunction?(city.owningPlayerID) ?? SKColor.white
         let sprite = CitySprite(city: city, playerColor: color)
         
         sprite.zPosition = 1
@@ -65,5 +65,15 @@ final class CityController: ObservableObject {
             return
         }
         citySpriteMap[cityID]?.deselect()
+        selectedCity = nil
+    }
+    
+    func reset() {
+        for citySprite in citySpriteMap.values {
+            citySprite.removeAllChildren()
+            citySprite.removeFromParent()
+        }
+        
+        citySpriteMap.removeAll()
     }
 }

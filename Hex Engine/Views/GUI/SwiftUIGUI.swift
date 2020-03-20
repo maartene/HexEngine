@@ -15,6 +15,12 @@ struct SwiftUIGUI: View {
     @ObservedObject var unitController: UnitController
     @ObservedObject var hexMapController: HexMapController
     
+    init(unitController: UnitController, hexMapController: HexMapController) {
+        self.hexMapController = hexMapController
+        self.unitController = unitController
+        self.world = hexMapController.world
+    }
+    
     var body: some View {
         VStack {
             HStack(alignment: .top) {

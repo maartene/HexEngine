@@ -16,7 +16,6 @@ enum IDArrayError: Error {
 
 class World: ObservableObject {
     var hexMap: HexMap
-    var executedCommands = [CommandWrapper]()
     
     @Published var units = [UUID: Unit]()
     @Published var cities = [UUID: City]()
@@ -33,6 +32,9 @@ class World: ObservableObject {
         return players[playerTurnSequence[currentPlayerIndex]]
     }
     
+    var processAI = true
+    var executedCommands = [CommandWrapper]()
+    
     init(playerCount: Int, width: Int, height: Int, hexMapFactory: (Int, Int) -> HexMap) {
         self.hexMap = hexMapFactory(width, height)
         
@@ -48,10 +50,13 @@ class World: ObservableObject {
         }
         
         // TESTING only: add a rabbit to the map
-        //let unit = Unit.Rabbit(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
-        let unit = Unit.Snake(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
+        let unit = Unit.Rabbit(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
+        //let unit = Unit.Snake(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
         units[unit.id] = unit
         
+        let narwhal = Unit.Narwhal(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 2, r: 1))
+        units[narwhal.id] = narwhal
+	        
         if playerCount > 1 {
             // TESTING only: add another rabbit (with a different owner to the map
             let anotherUnit = Unit.Rabbit(owningPlayer: playerTurnSequence[1], startPosition: AxialCoord(q: -1, r: -1))
@@ -97,24 +102,35 @@ class World: ObservableObject {
         nextPlayer()
         // process current player
         if let player = currentPlayer {
-            for unit in units.values.filter({$0.owningPlayer == player.id}) {
-                    units[unit.id] = unit.step(hexMap: hexMap)
+            // gives units new action points
+            for unit in units.values.filter({$0.owningPlayerID == player.id}) {
+                var changedUnit = unit
+                changedUnit.actionsRemaining = 2.0
+                replace(changedUnit)
+            }
+            
+            for unit in units.values.filter({$0.owningPlayerID == player.id}) {
+                    unit.step(in: self)
                 }
             
-            for city in cities.values.filter({$0.owningPlayer == player.id}) {
-                    do {
-                        try city.build(in: self, production: 5)
-                    } catch {
-                        print(error)
-                    }
+            for unit in units.values {
+                if unit.getComponent(HealthComponent.self)?.isDead ?? false {
+                    removeUnit(unit)
+                }
+            }
+            
+            for city in cities.values.filter({$0.owningPlayerID == player.id}) {
+                    city.step(in: self)
                 }
             
             players[player.id] = player.calculateVisibility(in: self)
             
-            
-            // if it's an AI, do something
             if let ai = player.ai {
-                ai.performTurn(for: player.id, in: self)
+                if processAI {
+                    ai.performTurn(for: player.id, in: self)
+                } else {
+                    nextTurn()
+                }
             }
         }
         
@@ -124,23 +140,6 @@ class World: ObservableObject {
     func nextPlayer() {
         currentPlayerIndex += 1
         currentPlayerIndex = currentPlayerIndex % players.count
-    }
-    
-    func setPath(for unitID: UUID, path: [AxialCoord], moveImmediately: Bool = false) {
-        guard var unit = units[unitID] else {
-            print("unit with id \(unitID) not found.")
-            return
-        }
-        
-        unit.path = path
-        
-        if moveImmediately {
-            unit.move(hexMap: hexMap)
-        }
-        
-        units[unit.id] = unit
-        
-        updateVisibilityForPlayer(player: currentPlayer!)
     }
     
     func updateVisibilityForPlayer(player: Player) {
@@ -153,12 +152,12 @@ class World: ObservableObject {
         do {
             try command.execute(in: self)
             try executedCommands.append(CommandWrapper.wrapperFor(command: command))
-            /*let encoder = JSONEncoder()
+            let encoder = JSONEncoder()
             encoder.outputFormatting = .prettyPrinted
             let data = try encoder.encode(executedCommands)
             let url = URL(fileURLWithPath: "world.json")
             print(url)
-            try data.write(to: url)*/
+            try data.write(to: url)
         } catch {
             print("An error of type '\(error)' occored.")
         }
@@ -194,10 +193,13 @@ class World: ObservableObject {
     
     func removeUnit(_ unit: Unit) {
         print("Removing unit \(units.removeValue(forKey: unit.id).debugDescription)")
+        if let owningPlayer = players[unit.owningPlayerID] {
+            updateVisibilityForPlayer(player: owningPlayer)
+        }
         onUnitRemoved?(unit)
     }
     
-    func replaceBuilder(_ newBuilder: Builder) {
+    /*func replaceBuilder(_ newBuilder: Builder) {
         guard let city = cities[newBuilder.id] else {
             print("Unknown city \(newBuilder)")
             return
@@ -209,7 +211,7 @@ class World: ObservableObject {
         }
         
         cities[city.id] = builder
-    }
+    }*/
     
     func replace(_ city: City) {
         guard cities[city.id] != nil else {
@@ -227,5 +229,20 @@ class World: ObservableObject {
         }
         
         units[unit.id] = unit
+        
+        if let owningPlayer = players[unit.owningPlayerID] {
+            updateVisibilityForPlayer(player: owningPlayer)
+        }
+    }
+}
+
+// MARK: Commands
+struct NextTurnCommand: Command, Codable {
+    let title = "Next turn"
+    
+    var ownerID: UUID
+    
+    func execute(in world: World) throws {
+        world.nextTurn()
     }
 }

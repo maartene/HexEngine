@@ -25,7 +25,7 @@ struct UnitInfoView: View {
             return "unknown unit"
         }
         
-        if let player = world.players[unit.owningPlayer] {
+        if let player = world.players[unit.owningPlayerID] {
             return player.name
         } else {
             return "unknown owning player"
@@ -40,33 +40,21 @@ struct UnitInfoView: View {
                     Text("UNIT").font(Font.custom("American Typewriter", size: 64)).opacity(0.5)
                     VStack(alignment: .leading) {
                         HStack {
-                            Button("Move") {
-                                self.hexMapController.uiState = UI_State.selectMoveTargetTile
-                            }
-                            .overlay(Capsule().stroke(lineWidth: hexMapController.uiState == UI_State.selectMoveTargetTile ? 4 : 1))
-                            .disabled(unit!.movement <= 0 || unit?.owningPlayer != hexMapController.guiPlayer)
-                            
-                            Button("Attack") {
-                                self.hexMapController.uiState = UI_State.selectAttackTargetTile
-                            }
-                            .overlay(Capsule().stroke(lineWidth: hexMapController.uiState == UI_State.selectAttackTargetTile ? 4 : 1))
-                            .disabled(unit!.movement <= 0 || unit?.attackPower ?? 0 <= 0  || unit?.owningPlayer != hexMapController.guiPlayer)
-                            
                             if unit!.possibleCommands.count > 0 {
-                                ForEach(0 ..< unit!.possibleCommands.count) { number in
-                                    Button(self.unit!.possibleCommands[number].title) {
-                                    self.world.executeCommand(self.unit!.possibleCommands[number])
+                                ForEach(unit!.possibleCommands, id: \Command.title) { command in
+                                    Button(command.title) {
+                                        if let ttc = command as? TileTargettingCommand {
+                                            self.hexMapController.uiState = UI_State.selectTargetTile
+                                            self.hexMapController.queuedCommands[self.unit!.owningPlayerID] = ttc
+                                        } else {
+                                            self.world.executeCommand(command)
+                                        }
                                     }.overlay(Capsule().stroke(lineWidth: 1))
-                                        .disabled(self.unit!.movement <= 0 || self.unit?.owningPlayer != self.hexMapController.guiPlayer)
+                                        .disabled(command.canExecute(in: self.world) == false || self.unit?.owningPlayerID != self.hexMapController.guiPlayer)
                                 }
                             }
                         }
-                        Text("""
-                            Unit: \(unit!.name) (\(unit!.id))
-                            Owner: \(owningPlayerName) (\(unit!.owningPlayer))
-                            Position: \(unit!.position.description)
-                            Movement: \(unit!.movementLeft)/\(unit!.movement)
-                        """)
+                        Text(unitInfoString())
                     }.padding()
                     .background(Color.gray.opacity(0.5)).clipShape(RoundedRectangle(cornerRadius: 10))
                         .overlay(RoundedRectangle(cornerRadius: 10).stroke(lineWidth: 1))
@@ -74,7 +62,33 @@ struct UnitInfoView: View {
             }
         }
     }
+    
+    func unitInfoString() -> String {
+        var result = ""
+        if let unit = unit {
+            result += "Unit: \(unit.name) (\(unit.id))\n"
+            result += "Owner: \(owningPlayerName) (\(unit.owningPlayerID))\n"
+            result += "Position: \(unit.position.description)\n"
+            result += "Actions: \(unit.actionsRemaining.oneDecimal)/2\n"
+            if let defenseComponent = unit.getComponent(HealthComponent.self) {
+                result += "Health: \(defenseComponent.currentHitPoints)/\(defenseComponent.maxHitPoints)\n"
+            }
+        } else {
+            result = "No unit selected"
+        }
+        return result
+    }
 }
+
+extension Double {
+    var oneDecimal: String {
+        if (Double(Int(self)) == self) {
+            return String(Int(self))
+        }
+        return String(format: "%.1f", self)
+    }
+}
+
 /*
 struct UnitInfoView_Previews: PreviewProvider {
     static var previews: some View {
