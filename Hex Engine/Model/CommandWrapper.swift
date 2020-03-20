@@ -12,7 +12,7 @@ enum CommandWrapperErrors: Error {
     case cannotConvertCommandError
 }
 
-enum CommandWrapper: Encodable {
+enum CommandWrapper: Codable {
     enum CodingKeys: CodingKey {
         case type
         case value
@@ -48,6 +48,33 @@ enum CommandWrapper: Encodable {
             try container.encode(value, forKey: .value)
         }
     }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        let type = try values.decode(String.self, forKey: .type)
+        switch type {
+        case "foundCityCommand":
+            let value = try values.decode(FoundCityCommand.self, forKey: .value)
+            self = .foundCityCommand(value: value)
+        case "moveUnitCommand":
+            let value = try values.decode(MoveUnitCommand.self, forKey: .value)
+            self = .moveUnitCommand(value: value)
+        case "queueBuildUnitCommand":
+            let value = try values.decode(QueueBuildUnitCommand.self, forKey: .value)
+            self = .queueBuildUnitCommand(value: value)
+        case "nextTurnCommand":
+            let value = try values.decode(NextTurnCommand.self, forKey: .value)
+            self = .nextTurnCommand(value: value)
+        case "attackTileCommand":
+            let value = try values.decode(AttackCommand.self, forKey: .value)
+            self = .attackTileCommand(value: value)
+        case "removeFromBuildQueueCommand":
+            let value = try values.decode(RemoveFromBuildQueueCommand.self, forKey: .value)
+            self = .removeFromBuildQueueCommand(value: value)
+        default:
+            throw CommandWrapperErrors.cannotConvertCommandError
+        }
+    }
 
     static func wrapperFor(command: Command) throws -> CommandWrapper {
         if let c = command as? FoundCityCommand {
@@ -64,6 +91,23 @@ enum CommandWrapper: Encodable {
             return .removeFromBuildQueueCommand(value: c)
         } else {
             throw CommandWrapperErrors.cannotConvertCommandError
+        }
+    }
+    
+    func command() throws -> Command {
+        switch self {
+        case .foundCityCommand(let value):
+            return value
+        case .moveUnitCommand(let value):
+            return value
+        case .queueBuildUnitCommand(let value):
+            return value
+        case .nextTurnCommand(let value):
+            return value
+        case .attackTileCommand(let value):
+            return value
+        case .removeFromBuildQueueCommand(let value):
+            return value
         }
     }
 }

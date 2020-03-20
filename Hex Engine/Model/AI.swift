@@ -34,7 +34,7 @@ extension AI {
     }
     
     func decide(for player: Player, in world: World) {
-        sleep(1)
+        //sleep(1)
     }
 }
 

@@ -23,7 +23,7 @@ struct Player: Identifiable, Hashable, Equatable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
-    
+    	
     func processTurn(in world: World) {
         
     }
@@ -59,7 +59,7 @@ struct Player: Identifiable, Hashable, Equatable {
     }
 }
 
-enum TileVisibility {
+enum TileVisibility: Int {
     case unvisited
     case visited
     case visible

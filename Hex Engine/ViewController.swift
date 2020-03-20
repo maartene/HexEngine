@@ -22,6 +22,7 @@ class ViewController: NSViewController {
         super.viewDidLoad()
         hexMapScene = HexMapScene(size: CGSize(width: skView.bounds.width, height: skView.bounds.height))
         hexMapScene.scaleMode = .aspectFill
+        hexMapScene.vc = self
         
         // Present the scene
         skView.allowsTransparency = true

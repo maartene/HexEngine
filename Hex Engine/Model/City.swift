@@ -28,6 +28,4 @@ struct City: Entity {
         
         Self.onCityCreate?(self)
     }
-    
-    mutating func step(in world: World) {}
 }

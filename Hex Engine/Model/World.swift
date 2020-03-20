@@ -16,7 +16,6 @@ enum IDArrayError: Error {
 
 class World: ObservableObject {
     var hexMap: HexMap
-    var executedCommands = [CommandWrapper]()
     
     @Published var units = [UUID: Unit]()
     @Published var cities = [UUID: City]()
@@ -33,6 +32,9 @@ class World: ObservableObject {
         return players[playerTurnSequence[currentPlayerIndex]]
     }
     
+    var processAI = true
+    var executedCommands = [CommandWrapper]()
+    
     init(playerCount: Int, width: Int, height: Int, hexMapFactory: (Int, Int) -> HexMap) {
         self.hexMap = hexMapFactory(width, height)
         
@@ -48,8 +50,8 @@ class World: ObservableObject {
         }
         
         // TESTING only: add a rabbit to the map
-        //let unit = Unit.Rabbit(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
-        let unit = Unit.Snake(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
+        let unit = Unit.Rabbit(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
+        //let unit = Unit.Snake(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
         units[unit.id] = unit
         
         let narwhal = Unit.Narwhal(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 2, r: 1))
@@ -111,20 +113,24 @@ class World: ObservableObject {
                     unit.step(in: self)
                 }
             
+            for unit in units.values {
+                if unit.getComponent(HealthComponent.self)?.isDead ?? false {
+                    removeUnit(unit)
+                }
+            }
+            
             for city in cities.values.filter({$0.owningPlayerID == player.id}) {
-                    do {
-                        try city.step(in: self)
-                    } catch {
-                        print(error)
-                    }
+                    city.step(in: self)
                 }
             
             players[player.id] = player.calculateVisibility(in: self)
             
-            
-            // if it's an AI, do something
             if let ai = player.ai {
-                ai.performTurn(for: player.id, in: self)
+                if processAI {
+                    ai.performTurn(for: player.id, in: self)
+                } else {
+                    nextTurn()
+                }
             }
         }
         
@@ -227,5 +233,16 @@ class World: ObservableObject {
         if let owningPlayer = players[unit.owningPlayerID] {
             updateVisibilityForPlayer(player: owningPlayer)
         }
+    }
+}
+
+// MARK: Commands
+struct NextTurnCommand: Command, Codable {
+    let title = "Next turn"
+    
+    var ownerID: UUID
+    
+    func execute(in world: World) throws {
+        world.nextTurn()
     }
 }

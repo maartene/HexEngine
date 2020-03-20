@@ -104,7 +104,7 @@ struct BuildUnitCommand: BuildCommand, Codable {
     
     init(ownerID: UUID, unitToBuildName: String, productionRequired: Double) {
         self.ownerID = ownerID
-        self.productionRemaining = productionRequired
+        self.productionRemaining = Unit.unitProductionRequirements[unitToBuildName, default: 9999999]
         self.unitToBuildName = unitToBuildName
         title = "Build \(unitToBuildName)"
     }

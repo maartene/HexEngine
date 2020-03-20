@@ -21,6 +21,8 @@ class HexMapScene: SKScene {
     var hexMapController: HexMapController!
     var uiState = UI_State.map
     
+    var vc: ViewController!
+    
     override func sceneDidLoad() {
         let world = World(playerCount: 4, width: 84, height: 54, hexMapFactory: WorldFactory.CreateWorld)
     
@@ -69,6 +71,8 @@ class HexMapScene: SKScene {
             node = nodesToCheck.first
         }
         
+        
+        
         return node
     }
     
@@ -100,6 +104,47 @@ class HexMapScene: SKScene {
         }
         
         camera?.setScale(cameraScale)
+    }
+    
+    
+    func load() {
+        print("HexMapScene:load")
+        do {
+            hexMapController.reset()
+            
+            let world = World(playerCount: 4, width: 84, height: 54, hexMapFactory: WorldFactory.CreateWorld)
+            world.processAI = false
+            let decoder = JSONDecoder()
+            let url = URL(fileURLWithPath: "world.json")
+            let data = try Data(contentsOf: url)
+            
+            let wrappedCommands = try decoder.decode([CommandWrapper].self, from: data)
+            for wrappedCommand in wrappedCommands {
+                print(wrappedCommand)
+                try world.executeCommand(wrappedCommand.command())
+            }
+            
+            hexMapController = HexMapController(scene: self, world: world, tileWidth: 120.0, tileHeight: 140.0, tileYOffsetFactor: 0.74)
+            
+            hexMapController.showMap()
+            
+            
+            vc.guiView.removeFromSuperview()
+            vc.guiView = nil
+            vc.guiView = hexMapController.setupUI(in: view!)
+            
+            world.processAI = true
+            print("World loaded succesfully")
+            } catch {
+            print("An error of type '\(error)' occored.")
+        }
+    }
+    
+    override func keyDown(with event: NSEvent) {
+        print(event)
+        if event.keyCode == 37 {
+            load()
+        }
     }
     
     override func mouseUp(with event: NSEvent) {

@@ -65,5 +65,15 @@ final class CityController: ObservableObject {
             return
         }
         citySpriteMap[cityID]?.deselect()
+        selectedCity = nil
+    }
+    
+    func reset() {
+        for citySprite in citySpriteMap.values {
+            citySprite.removeAllChildren()
+            citySprite.removeFromParent()
+        }
+        
+        citySpriteMap.removeAll()
     }
 }

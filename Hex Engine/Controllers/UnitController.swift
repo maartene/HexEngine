@@ -94,11 +94,11 @@ final class UnitController: ObservableObject {
         
         if let sprite = unitSpriteMap[unit.id] {
             sprite.select()
-            /*if unit.path.count > 0 {
+            if unit.getComponent(MovementComponent.self)?.path.count ?? 0 > 0 {
                 drawPath(for: unit)
             } else {
                 pathIndicator = nil
-            }*/
+            }
         }
         
         selectedUnit = unit.id
@@ -113,21 +113,27 @@ final class UnitController: ObservableObject {
             unitBecameDeselected?(selectedUnitID)
             if let previousSelectedUnit = unitSpriteMap[selectedUnitID] {
                 previousSelectedUnit.deselect()
-                //if uiState == .map { selectedUnit = nil }
+                if uiState == .map { selectedUnit = nil }
             }
         }
     }
     
     func drawPath(for unit: Unit) {
-        /*var points = unit.path.map { coord in
+        guard let moveComponent = unit.getComponent(MovementComponent.self) else {
+            return
+        }
+        
+        var points = [HexMapController.hexToPixel(unit.position, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)]
+        let pointsToAdd = moveComponent.path.map { coord in
             HexMapController.hexToPixel(coord, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
         }
+        points.append(contentsOf: pointsToAdd)
+        
         pathIndicator = SKShapeNode(points: &points, count: points.count)
         pathIndicator?.lineWidth = 4.0
         pathIndicator?.zPosition = 1
         pathIndicator?.strokeColor = SKColor.blue
         scene.addChild(pathIndicator!)
-         */
     }
     
     func showHideUnits(in world: World, visibilityMap: [AxialCoord: TileVisibility]) {
@@ -141,4 +147,14 @@ final class UnitController: ObservableObject {
             }
         }
     }
+    
+    func reset() {
+        for unitSprite in unitSpriteMap.values {
+            unitSprite.removeAllChildren()
+            unitSprite.removeFromParent()
+        }
+        
+        unitSpriteMap.removeAll()
+    }
+        
 }

@@ -13,7 +13,7 @@ struct MovementComponent : Component {
     let ownerID: UUID
     let movementCosts: [Tile: Double]
     
-    // patchfinding stuff
+    // pathfinding stuff
     var pathfindingGraph = GKGraph()                            // every entity with a movement component has its own pathfinding graph
     var nodeToTileCoordMap = [GKGraphNode: AxialCoord]()
     var tileCoordToNodeMap = [AxialCoord : GKGraphNode]()
@@ -53,9 +53,7 @@ struct MovementComponent : Component {
     }
     
     func step(in world: World) {
-        var updatedComponent = self
-//        updatedComponent.remainingMovement = movement
-        if let updatedUnit = try? updatedComponent.move(in: world) {
+        if let updatedUnit = try? move(in: world) {
             world.replace(updatedUnit)
         }
     }
@@ -108,33 +106,11 @@ struct MoveUnitCommand: TileTargettingCommand, Codable {
         owner.replaceComponent(component: moveComponent)
         owner = try moveComponent.move(in: world)
         world.replace(owner)
-        //world.setPath(for: ownerID, path: path, moveImmediately: true)
     }
-    
-    
-    
-    /*
-    func setPath(for unitID: UUID, path: [AxialCoord], moveImmediately: Bool = false) {
-        guard var unit = units[unitID] else {
-            print("unit with id \(unitID) not found.")
-            return
-        }
-        
-        //unit.path = path
-        
-        if moveImmediately {
-        //    unit.move(hexMap: hexMap)
-        }
-        
-        units[unit.id] = unit
-        
-        updateVisibilityForPlayer(player: currentPlayer!)
-    }*/
     
     func canExecute(in world: World) -> Bool {
         if let owner = try? world.getUnitWithID(ownerID) {
             return owner.getComponent(MovementComponent.self) != nil
-            //return owner.actionsRemaining > 0
         }
         
         return false

@@ -48,7 +48,7 @@ struct Unit: Entity {
     
     static func Snake(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
         var newSnake = Unit(owningPlayer: owningPlayer, name: "Snake", startPosition: startPosition)
-        newSnake.components = [MovementComponent(ownerID: newSnake.id), HealthComponent(ownerID: newSnake.id), AttackComponent(ownerID: newSnake.id, attackPower: 4)]
+        newSnake.components = [MovementComponent(ownerID: newSnake.id), HealthComponent(ownerID: newSnake.id), AttackComponent(ownerID: newSnake.id, attackPower: 8)]
         return newSnake
     }
     
@@ -64,4 +64,5 @@ struct Unit: Entity {
     }
     
     static let allUnits = ["Narwhal": Unit.Narwhal, "Rabbit": Unit.Rabbit, "Snake": Unit.Snake]
+    static let unitProductionRequirements: [String: Double] = ["Narwhal": 15, "Rabbit": 10, "Snake": 5]
 }

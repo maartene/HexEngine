@@ -31,12 +31,10 @@
 		DE67A87223605CC400A858D0 /* SKNode+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE67A87123605CC400A858D0 /* SKNode+Extension.swift */; };
 		DE6BE6272257E0F20027380C /* HexMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6BE6262257E0F20027380C /* HexMap.swift */; };
 		DE75E35F235A3D0A0018F1F9 /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE75E35D235A376B0018F1F9 /* Command.swift */; };
-		DE75E362235A450F0018F1F9 /* UnitCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE75E361235A450F0018F1F9 /* UnitCommands.swift */; };
 		DE75E384235B41490018F1F9 /* WorldTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE75E383235B41490018F1F9 /* WorldTests.swift */; };
 		DE75E386235B416F0018F1F9 /* CommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE75E385235B416F0018F1F9 /* CommandTests.swift */; };
 		DE78AD9024222F5700A45C01 /* BuildComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE78AD8F24222F5700A45C01 /* BuildComponent.swift */; };
 		DEB0A9A1226218AB005770B2 /* WorldFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0A9A0226218AB005770B2 /* WorldFactory.swift */; };
-		DEB540FA236DAF9A00D03062 /* GameCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB540F9236DAF9A00D03062 /* GameCommands.swift */; };
 		DEB540FC236DC08E00D03062 /* CommandWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB540FB236DC08E00D03062 /* CommandWrapper.swift */; };
 		DECCAD8422665E7C002D820E /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECCAD8322665E7C002D820E /* Double+Extension.swift */; };
 		DEEDE7AD23816193005E7613 /* PlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEDE7AC23816193005E7613 /* PlayerTests.swift */; };
@@ -92,12 +90,10 @@
 		DE67A87123605CC400A858D0 /* SKNode+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SKNode+Extension.swift"; sourceTree = "<group>"; };
 		DE6BE6262257E0F20027380C /* HexMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMap.swift; sourceTree = "<group>"; };
 		DE75E35D235A376B0018F1F9 /* Command.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Command.swift; sourceTree = "<group>"; };
-		DE75E361235A450F0018F1F9 /* UnitCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitCommands.swift; sourceTree = "<group>"; };
 		DE75E383235B41490018F1F9 /* WorldTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldTests.swift; sourceTree = "<group>"; };
 		DE75E385235B416F0018F1F9 /* CommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandTests.swift; sourceTree = "<group>"; };
 		DE78AD8F24222F5700A45C01 /* BuildComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildComponent.swift; sourceTree = "<group>"; };
 		DEB0A9A0226218AB005770B2 /* WorldFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldFactory.swift; sourceTree = "<group>"; };
-		DEB540F9236DAF9A00D03062 /* GameCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCommands.swift; sourceTree = "<group>"; };
 		DEB540FB236DC08E00D03062 /* CommandWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandWrapper.swift; sourceTree = "<group>"; };
 		DECCAD8322665E7C002D820E /* Double+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extension.swift"; sourceTree = "<group>"; };
 		DEEDE7AC23816193005E7613 /* PlayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerTests.swift; sourceTree = "<group>"; };
@@ -238,27 +234,17 @@
 			isa = PBXGroup;
 			children = (
 				DE0DE0652420E3620077D5EE /* ECS */,
-				DE75E360235A44ED0018F1F9 /* Commands */,
-				DE6BE6262257E0F20027380C /* HexMap.swift */,
-				DEB0A9A0226218AB005770B2 /* WorldFactory.swift */,
-				DEF58EFE22874CCD0020B473 /* Unit.swift */,
-				DEF58F0122874D7C0020B473 /* World.swift */,
-				DE67A86F2360536200A858D0 /* City.swift */,
-				DE64F7B1237EDE2000C921ED /* Player.swift */,
 				DE12FB422392928A00A58357 /* AI.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
-		DE75E360235A44ED0018F1F9 /* Commands */ = {
-			isa = PBXGroup;
-			children = (
+				DE67A86F2360536200A858D0 /* City.swift */,
 				DE75E35D235A376B0018F1F9 /* Command.swift */,
 				DEB540FB236DC08E00D03062 /* CommandWrapper.swift */,
-				DE75E361235A450F0018F1F9 /* UnitCommands.swift */,
-				DEB540F9236DAF9A00D03062 /* GameCommands.swift */,
+				DE6BE6262257E0F20027380C /* HexMap.swift */,
+				DE64F7B1237EDE2000C921ED /* Player.swift */,
+				DEF58EFE22874CCD0020B473 /* Unit.swift */,
+				DEF58F0122874D7C0020B473 /* World.swift */,
+				DEB0A9A0226218AB005770B2 /* WorldFactory.swift */,
 			);
-			path = Commands;
+			path = Model;
 			sourceTree = "<group>";
 		};
 		DEA62F6E2348C2A7004BCF8B /* Views */ = {
@@ -399,7 +385,6 @@
 				DE67A86E236052D500A858D0 /* CityController.swift in Sources */,
 				DE75E35F235A3D0A0018F1F9 /* Command.swift in Sources */,
 				DEF58EFF22874CCD0020B473 /* Unit.swift in Sources */,
-				DE75E362235A450F0018F1F9 /* UnitCommands.swift in Sources */,
 				DE0DE0672420E38F0077D5EE /* MovementComponent.swift in Sources */,
 				DEF487362364B48F001E47A5 /* SwiftUIGUI.swift in Sources */,
 				DE19C3B6238AB40C00BC4034 /* CitySprite.swift in Sources */,
@@ -413,7 +398,6 @@
 				DE13AD072257DF5600136AFE /* AppDelegate.swift in Sources */,
 				DE0CE0D0238049190009B3A1 /* PlayersView.swift in Sources */,
 				DEEDE7AF23817888005E7613 /* TitleScreenView.swift in Sources */,
-				DEB540FA236DAF9A00D03062 /* GameCommands.swift in Sources */,
 				DEF58F0422874FA50020B473 /* UnitController.swift in Sources */,
 				DE67A8702360536200A858D0 /* City.swift in Sources */,
 				DEB540FC236DC08E00D03062 /* CommandWrapper.swift in Sources */,

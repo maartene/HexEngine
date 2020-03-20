@@ -18,7 +18,7 @@ enum UI_State {
 class HexMapController: ObservableObject {
     static var instance: HexMapController!
     
-    @State var world: World
+    @Published var world: World
 
     let scene: SKScene
     let tileWidth: Double           // in points
@@ -106,7 +106,7 @@ class HexMapController: ObservableObject {
     }
     
     func setupUI(in view: SKView) -> some NSView {
-        let gui = SwiftUIGUI(world: world, unitController: unitController, hexMapController: self).zIndex(4)
+        let gui = SwiftUIGUI(unitController: unitController, hexMapController: self).zIndex(4)
         let guiView = NSHostingView(rootView: gui)
         guiView.frame = scene.view!.frame
         view.addSubview(guiView)
@@ -138,6 +138,18 @@ class HexMapController: ObservableObject {
         
         return cubeCoord.toAxial()
     }*/
+    
+    func reset() {
+        unitController.reset()
+        cityController.reset()
+        
+        for tileSprite in tileSKSpriteNodeMap.values {
+            tileSprite.removeAllChildren()
+            tileSprite.removeFromParent()
+        }
+        
+        tileSKSpriteNodeMap.removeAll()
+    }
     
     func showMap() {
         for coord in world.hexMap.getTileCoordinates() {

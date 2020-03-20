@@ -60,4 +60,8 @@ class CitySprite: SKSpriteNode {
             selectionIndicator.isHidden = true
         }
         
+    deinit {
+        print("Deallocating city: \(self)")
+    }
+    
     }

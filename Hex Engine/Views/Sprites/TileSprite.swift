@@ -79,4 +79,8 @@ class TileSprite: SKSpriteNode {
     func deselect() {
         //selectionIndicator.isHidden = true
     }
+    
+    deinit {
+        // print("Removing tilesprite: \(self)")
+    }
 }
