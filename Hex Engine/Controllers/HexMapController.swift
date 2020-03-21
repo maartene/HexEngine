@@ -234,7 +234,7 @@ class HexMapController: ObservableObject {
                     if let unit = try? world.getUnitWithID(unitID) {
                         unitController.selectUnit(unit)
                         deselectTile()
-                        print("clicked unit: \(unit)")
+                        print("clicked unit: \(unit.name)")
                     }
                 }
                 

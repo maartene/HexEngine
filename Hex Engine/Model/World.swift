@@ -31,10 +31,7 @@ class World: ObservableObject {
     var currentPlayer: Player? {
         return players[playerTurnSequence[currentPlayerIndex]]
     }
-    
-    var processAI = true
-    var executedCommands = [CommandWrapper]()
-    
+        
     init(playerCount: Int, width: Int, height: Int, hexMapFactory: (Int, Int) -> HexMap) {
         self.hexMap = hexMapFactory(width, height)
         
@@ -43,7 +40,7 @@ class World: ObservableObject {
             
             // add a "brain" to all other players.
             if i > 0 {
-                newPlayer.ai = TurnSkipAI()
+                newPlayer.aiName = "turnSkipAI"
             }
             players[newPlayer.id] = newPlayer
             playerTurnSequence.append(newPlayer.id)
@@ -126,11 +123,7 @@ class World: ObservableObject {
             players[player.id] = player.calculateVisibility(in: self)
             
             if let ai = player.ai {
-                if processAI {
-                    ai.performTurn(for: player.id, in: self)
-                } else {
-                    nextTurn()
-                }
+                ai.performTurn(for: player.id, in: self)
             }
         }
         
@@ -151,13 +144,6 @@ class World: ObservableObject {
     func executeCommand(_ command: Command) {
         do {
             try command.execute(in: self)
-            try executedCommands.append(CommandWrapper.wrapperFor(command: command))
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = .prettyPrinted
-            let data = try encoder.encode(executedCommands)
-            let url = URL(fileURLWithPath: "world.json")
-            print(url)
-            try data.write(to: url)
         } catch {
             print("An error of type '\(error)' occored.")
         }

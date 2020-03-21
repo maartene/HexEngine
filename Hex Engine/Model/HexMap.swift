@@ -228,28 +228,28 @@ struct HexMap {
     
     // we use this function to rebuild the pathfinding graph. this is required for instance
     // when terrain changes. 
-    func rebuildPathFindingGraph(movementCosts: [Tile: Double] = Tile.defaultCostsToEnter, additionalEnterableTiles: [AxialCoord] = []) -> (graph: GKGraph, nodeToTileCoordMap : [GKGraphNode: AxialCoord], tileCoordToNodeMap: [AxialCoord : GKGraphNode]) {
+    func rebuildPathFindingGraph(movementCosts: [Tile: Double] = Tile.defaultCostsToEnter, additionalEnterableTiles: [AxialCoord] = []) -> (graph: GKGraph, tileCoordToNodeMap: [AxialCoord : HexGraphNode]) {
         
         let pathfindingGraph = GKGraph()
-        var nodeToTileCoordMap = [GKGraphNode: AxialCoord]()
-        var tileCoordToNodeMap = [AxialCoord : GKGraphNode]()
+        var tileCoordToNodeMap = [AxialCoord : HexGraphNode]()
+        var nodes = [HexGraphNode]()
         
-        // transform between nodes and tiles using dictionaries
-        // mapping between nodes and coordinates needs to be set up only once
+        // transform between tiles and nodes using dictionary
+        // nodes can know what coordinate they apply to.
         tiles.forEach {
             let node: HexGraphNode
             if additionalEnterableTiles.contains($0.key) {
-                node = HexGraphNode(costToEnter: 0.5)
+                node = HexGraphNode(hexMapCoordinate: $0.key, costToEnter: 0.5)
             } else {
-                node = HexGraphNode(costToEnter: movementCosts[$0.value, default: -1])
+                node = HexGraphNode(hexMapCoordinate: $0.key,costToEnter: movementCosts[$0.value, default: -1])
             }
             tileCoordToNodeMap[$0.key] = node
-            nodeToTileCoordMap[node] = $0.key
+            nodes.append(node)
         }
     
-        nodeToTileCoordMap.forEach {
-            let node = $0.key
-            let coord = $0.value
+        nodes.forEach {
+            let node = $0
+            let coord = $0.hexMapCoordinate
             
             let neighbours = HexMap.getAxialNeighbourCoordinates(tile: coord)
             
@@ -260,19 +260,19 @@ struct HexMap {
             }
         }
         
-        pathfindingGraph.add(Array(nodeToTileCoordMap.keys))
+        pathfindingGraph.add(nodes)
         
-        return (pathfindingGraph, nodeToTileCoordMap, tileCoordToNodeMap)
+        return (pathfindingGraph, tileCoordToNodeMap)
     }
     
-    func findPathFrom(_ tile1: AxialCoord, to tile2: AxialCoord, pathfindingGraph: GKGraph, tileCoordToNodeMap: [AxialCoord : GKGraphNode], nodeToTileCoordMap: [GKGraphNode: AxialCoord], movementCosts: [Tile: Double] = Tile.defaultCostsToEnter) -> [AxialCoord]? {
+    func findPathFrom(_ tile1: AxialCoord, to tile2: AxialCoord, pathfindingGraph: GKGraph, tileCoordToNodeMap: [AxialCoord : HexGraphNode], movementCosts: [Tile: Double] = Tile.defaultCostsToEnter) -> [AxialCoord]? {
         if let node1 = tileCoordToNodeMap[tile1], let node2 = tileCoordToNodeMap[tile2] {
             let nodePath = pathfindingGraph.findPath(from: node1, to: node2)
             
             var result = [AxialCoord]()
             var cost = 0.0
             nodePath.forEach {
-                let coord = nodeToTileCoordMap[$0]!
+                let coord = ($0 as! HexGraphNode).hexMapCoordinate
                 cost += movementCosts[self[coord], default: 0]
                 result.append(coord)
             }
@@ -399,8 +399,10 @@ enum Tile: Int {
 
 class HexGraphNode: GKGraphNode {
     let cost: Double
+    let hexMapCoordinate: AxialCoord
     
-    init(costToEnter: Double = 1.0) {
+    init(hexMapCoordinate: AxialCoord, costToEnter: Double = 1.0) {
+        self.hexMapCoordinate = hexMapCoordinate
         cost = costToEnter
         super.init()
     }

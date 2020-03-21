@@ -113,7 +113,6 @@ class HexMapScene: SKScene {
             hexMapController.reset()
             
             let world = World(playerCount: 4, width: 84, height: 54, hexMapFactory: WorldFactory.CreateWorld)
-            world.processAI = false
             let decoder = JSONDecoder()
             let url = URL(fileURLWithPath: "world.json")
             let data = try Data(contentsOf: url)
@@ -133,7 +132,6 @@ class HexMapScene: SKScene {
             vc.guiView = nil
             vc.guiView = hexMapController.setupUI(in: view!)
             
-            world.processAI = true
             print("World loaded succesfully")
             } catch {
             print("An error of type '\(error)' occored.")
