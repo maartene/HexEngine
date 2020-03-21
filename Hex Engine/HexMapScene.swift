@@ -119,7 +119,7 @@ class HexMapScene: SKScene {
             
             hexMapController = HexMapController(scene: self, world: loadedWorld, tileWidth: 120.0, tileHeight: 140.0, tileYOffsetFactor: 0.74)
             
-            hexMapController.guiPlayer = loadedWorld.playerTurnSequence[0]
+            hexMapController.guiPlayer = loadedWorld.currentPlayer!.id
                         
             hexMapController.showMap()
             
@@ -147,7 +147,15 @@ class HexMapScene: SKScene {
         }
     }
     
+    
+    // NOTE: we need to make sure this only gets called when currentPlayer is a guiplayer.
+    // i.e. on players own turn.
     func save() {
+        guard hexMapController.guiPlayerIsCurrentPlayer else {
+            print("Only save on own turn")
+            return
+        }
+        
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
         do {

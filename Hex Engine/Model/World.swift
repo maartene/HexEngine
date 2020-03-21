@@ -22,6 +22,7 @@ class World: ObservableObject, Codable {
     
     var onUnitRemoved: ((Unit) -> Void)?
     var onVisibilityMapUpdated: (() -> Void)?
+    var onCurrentPlayerChanged: ((Player) -> Void)?
     var visibilityMap = [AxialCoord: Bool]()
     var visitedMap = [AxialCoord: Bool]()
     
@@ -166,6 +167,7 @@ class World: ObservableObject, Codable {
         currentPlayerIndex += 1
         assert(players.count == playerTurnSequence.count)
         currentPlayerIndex = currentPlayerIndex % players.count
+        onCurrentPlayerChanged?(currentPlayer!)
     }
     
     func updateVisibilityForPlayer(player: Player) {

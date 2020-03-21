@@ -88,6 +88,12 @@ class HexMapController: ObservableObject {
         
         self.world.onUnitRemoved = unitController.onUnitRemoved
         self.world.onVisibilityMapUpdated = showHideTiles
+        self.world.onCurrentPlayerChanged = { player in
+            if player.ai == nil {
+                self.guiPlayer = player.id
+            }
+        }
+            
         Unit.onUnitDies = world.removeUnit
         
         highlighter.lineWidth = 2
@@ -302,5 +308,6 @@ class HexMapController: ObservableObject {
         }
         
         unitController.showHideUnits(in: world, visibilityMap: player.visibilityMap)
+        cityController.showHideCities(in: world, visibilityMap: player.visibilityMap)
     }
 }
