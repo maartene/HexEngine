@@ -9,7 +9,7 @@
 import Foundation
 
 struct Player: Identifiable, Hashable, Equatable, Codable {
-    let id = UUID()
+    let id: UUID
     let name: String
     
     var ai: AI? {
@@ -18,6 +18,11 @@ struct Player: Identifiable, Hashable, Equatable, Codable {
     var aiName: String = ""
     
     var visibilityMap = [AxialCoord: TileVisibility]()
+    
+    init(name: String) {
+        self.id = UUID()
+        self.name = name
+    }
     
     static func == (lhs: Player, rhs: Player) -> Bool {
         lhs.id == rhs.id

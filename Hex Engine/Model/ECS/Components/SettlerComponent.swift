@@ -29,6 +29,7 @@ struct SettlerComponent: Component {
     }
 }
 
+
 // MARK: Commands
 struct FoundCityCommand: Command, Codable {
     let title = "Found city"

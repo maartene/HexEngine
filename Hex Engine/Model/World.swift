@@ -14,7 +14,7 @@ enum IDArrayError: Error {
     case indexOutOfBounds
 }
 
-class World: ObservableObject {
+class World: ObservableObject, Codable {
     var hexMap: HexMap
     
     @Published var units = [UUID: Unit]()
@@ -29,7 +29,38 @@ class World: ObservableObject {
     var playerTurnSequence = [UUID]()
     @Published var currentPlayerIndex = 0
     var currentPlayer: Player? {
+        assert(currentPlayerIndex < playerTurnSequence.count)
         return players[playerTurnSequence[currentPlayerIndex]]
+    }
+    
+    enum CodingKeys: CodingKey {
+        case hexMap
+        case units
+        case cities
+        case players
+        case playerTurnSequence
+        case currentPlayerIndex
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(hexMap, forKey: .hexMap)
+        try container.encode(units, forKey: .units)
+        try container.encode(cities, forKey: .cities)
+        try container.encode(players, forKey: .players)
+        try container.encode(playerTurnSequence, forKey: .playerTurnSequence)
+        try container.encode(currentPlayerIndex, forKey: .currentPlayerIndex)
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        hexMap = try values.decode(HexMap.self, forKey: .hexMap)
+        units = try values.decode([UUID: Unit].self, forKey: .units)
+        cities = try values.decode([UUID: City].self, forKey: .cities)
+        players = try values.decode([UUID: Player].self, forKey: .players)
+        playerTurnSequence = try values.decode([UUID].self, forKey: .playerTurnSequence)
+        currentPlayerIndex = try values.decode(Int.self, forKey: .currentPlayerIndex)
+        assert(players.count == playerTurnSequence.count)
     }
         
     init(playerCount: Int, width: Int, height: Int, hexMapFactory: (Int, Int) -> HexMap) {
@@ -120,6 +151,7 @@ class World: ObservableObject {
                     city.step(in: self)
                 }
             
+            assert(players.keys.contains(player.id))
             players[player.id] = player.calculateVisibility(in: self)
             
             if let ai = player.ai {
@@ -132,11 +164,13 @@ class World: ObservableObject {
     
     func nextPlayer() {
         currentPlayerIndex += 1
+        assert(players.count == playerTurnSequence.count)
         currentPlayerIndex = currentPlayerIndex % players.count
     }
     
     func updateVisibilityForPlayer(player: Player) {
         let player = player.calculateVisibility(in: self)
+        assert(players.keys.contains(player.id))
         players[player.id] = player
         onVisibilityMapUpdated?()
     }

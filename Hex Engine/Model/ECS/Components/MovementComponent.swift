@@ -15,7 +15,7 @@ struct MovementComponent : Component {
     
     // pathfinding stuff
     var pathfindingGraph = GKGraph()                            // every entity with a movement component has its own pathfinding graph
-    var nodeToTileCoordMap = [HexGraphNode: AxialCoord]()
+//    var nodeToTileCoordMap = [HexGraphNode: AxialCoord]()
     var tileCoordToNodeMap = [AxialCoord : HexGraphNode]()
     var path = [AxialCoord]()
     
@@ -59,7 +59,6 @@ struct MovementComponent : Component {
     }
     
 }
-
 
 // MARK: Commands
 struct MoveUnitCommand: TileTargettingCommand, Codable {

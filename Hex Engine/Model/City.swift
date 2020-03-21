@@ -9,7 +9,7 @@
 import Foundation
 
 struct City: Entity {
-    let id = UUID()
+    let id: UUID
     var owningPlayerID: UUID
     var position: AxialCoord
     
@@ -20,6 +20,7 @@ struct City: Entity {
     static var onCityCreate: ((City) -> Void)?
     
     init(owningPlayer: UUID, name: String, position: AxialCoord) {
+        self.id = UUID()
         self.owningPlayerID = owningPlayer
         self.name = name
         self.position = position

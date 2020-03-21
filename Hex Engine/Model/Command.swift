@@ -20,7 +20,7 @@ enum CommandErrors: Error {
     case illegalTarget          // maybe move to seperate enum for TileTargettingCommands
 }
 
-protocol Command {
+protocol Command: Codable {
     var title: String { get }
     var ownerID: UUID { get }
     

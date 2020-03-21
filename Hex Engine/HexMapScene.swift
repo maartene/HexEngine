@@ -111,20 +111,16 @@ class HexMapScene: SKScene {
         print("HexMapScene:load")
         do {
             hexMapController.reset()
-            
-            let world = World(playerCount: 4, width: 84, height: 54, hexMapFactory: WorldFactory.CreateWorld)
             let decoder = JSONDecoder()
             let url = URL(fileURLWithPath: "world.json")
             let data = try Data(contentsOf: url)
             
-            let wrappedCommands = try decoder.decode([CommandWrapper].self, from: data)
-            for wrappedCommand in wrappedCommands {
-                print(wrappedCommand)
-                try world.executeCommand(wrappedCommand.command())
-            }
+            let loadedWorld = try decoder.decode(World.self, from: data)
             
-            hexMapController = HexMapController(scene: self, world: world, tileWidth: 120.0, tileHeight: 140.0, tileYOffsetFactor: 0.74)
+            hexMapController = HexMapController(scene: self, world: loadedWorld, tileWidth: 120.0, tileHeight: 140.0, tileYOffsetFactor: 0.74)
             
+            hexMapController.guiPlayer = loadedWorld.playerTurnSequence[0]
+                        
             hexMapController.showMap()
             
             
@@ -140,8 +136,27 @@ class HexMapScene: SKScene {
     
     override func keyDown(with event: NSEvent) {
         print(event)
+        // 'L' key - load
         if event.keyCode == 37 {
             load()
+        }
+        
+        // 'S' key - save
+        if event.keyCode == 1 {
+            save()
+        }
+    }
+    
+    func save() {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        do {
+            let data = try encoder.encode(hexMapController.world)
+            let url = URL(fileURLWithPath: "world.json")
+            try data.write(to: url)
+            print("Succesfully saved world to: \(url)")
+        } catch {
+            print("Error while saving: \(error)")
         }
     }
     

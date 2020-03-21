@@ -10,7 +10,7 @@ import Foundation
 import SpriteKit
 
 struct Unit: Entity {
-    let id = UUID()
+    let id: UUID
     let owningPlayerID: UUID
     var position: AxialCoord
     
@@ -25,6 +25,7 @@ struct Unit: Entity {
     static var onUnitDies: ((Unit) -> Void)?
     
     init(owningPlayer: UUID, name: String, visibility: Int = 2, startPosition: AxialCoord = AxialCoord.zero) {
+        self.id = UUID()
         self.owningPlayerID = owningPlayer
         self.name = name
         self.visibility = visibility

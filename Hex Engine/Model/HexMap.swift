@@ -10,7 +10,20 @@ import Foundation
 import SpriteKit
 import GameplayKit
 
-struct HexMap {
+struct HexMap: Codable {
+    
+    /*enum CodingKeys: CodingKey {
+        case tiles
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(tiles, forKey: .tiles)
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values = decoder.container(keyedBy: <#T##CodingKey.Protocol#>)
+    }*/
     
     private static let cubeDirections = [
         CubeCoord(x: +1, y: -1, z: 0), CubeCoord(x: +1, y: 0, z: -1), CubeCoord(x: 0, y: +1, z: -1),
@@ -27,7 +40,7 @@ struct HexMap {
     let width: Int
     let height: Int
     
-    var tileDidChangedEventHandlers = [(tile: AxialCoord, oldValue: Tile?, newValue: Tile) -> Void]()
+    //var tileDidChangedEventHandlers = [(tile: AxialCoord, oldValue: Tile?, newValue: Tile) -> Void]()
     
     private var tiles = [AxialCoord: Tile]()
     
@@ -64,9 +77,9 @@ struct HexMap {
             tiles[tile] = newValue
             // print("Tile \(tile) changed value from \(oldValue ?? Tile.void) to \(newValue)")
             
-            tileDidChangedEventHandlers.forEach {
+            /*tileDidChangedEventHandlers.forEach {
                 $0(tile, oldValue, newValue)
-            }
+            }*/
         }
     }
     
@@ -343,7 +356,7 @@ struct AxialCoord: Equatable, Hashable, CustomStringConvertible, Codable {
     }
 }
 
-enum Tile: Int {
+enum Tile: Int, Codable {
     case void
     case Water
     case Sand

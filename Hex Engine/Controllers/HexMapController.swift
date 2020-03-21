@@ -168,7 +168,7 @@ class HexMapController: ObservableObject {
                 scene.addChild(tile)
             }
         }
-        
+        //print("Players in world: \(world.players) - GUIPlayer: \(guiPlayer)")
         let player = world.players[guiPlayer]!
         world.updateVisibilityForPlayer(player: player)
         //showHideTiles(visibilityMap: player.visibilityMap)
