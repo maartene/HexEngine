@@ -34,6 +34,7 @@ Uses art assets from [Kenney](https://www.kenney.nl)
 
 ### Application technology
 * UI is SwiftUI based;
+* Save/Load game based on Codable conformance of `World` class. (press 'S' to Save, 'L' to load. Hacky solution in HexMapScene.swift - no formal UI integration.)
 * Unit and City abilities are based on a rudimentary ECS system. Will be improved.
 
 ## What is missing
