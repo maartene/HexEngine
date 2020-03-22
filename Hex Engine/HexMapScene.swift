@@ -155,22 +155,42 @@ class HexMapScene: SKScene {
     }
     
     override func keyDown(with event: NSEvent) {
-        print(event)
-        // 'L' key - load
-        /*if event.keyCode == 37 {
-            load()
+        print(event.keyCode)
+        let cameraMoveDistance = 20
+        
+        // 'Enter' key - next turn
+        if event.keyCode == 36 {
+            if hexMapController.guiPlayerIsCurrentPlayer {
+                hexMapController.world.executeCommand(NextTurnCommand(ownerID: UUID()))
+            }
+        }
+        // 'Right arrow' key
+        if event.keyCode == 124 {
+            if let camera = camera {
+                camera.position = camera.position + CGPoint(x: cameraMoveDistance, y: 0)
+            }
         }
         
-        // 'S' key - save
-        if event.keyCode == 1 {
-            save()
+        // 'Left arrow' key
+        if event.keyCode == 123 {
+            if let camera = camera {
+                camera.position = camera.position + CGPoint(x: -cameraMoveDistance, y: 0)
+            }
         }
         
-        // 'R' key - reset
-        if event.keyCode == 15 {
-            hexMapController.reset()
-            setupCamera()
-        }*/
+        // 'Up arrow' key
+        if event.keyCode == 126 {
+            if let camera = camera {
+                camera.position = camera.position + CGPoint(x: 0, y: cameraMoveDistance)
+            }
+        }
+        
+        // 'Down arrow' key
+        if event.keyCode == 125 {
+            if let camera = camera {
+                camera.position = camera.position + CGPoint(x: 0, y: -cameraMoveDistance)
+            }
+        }
     }
     
     
