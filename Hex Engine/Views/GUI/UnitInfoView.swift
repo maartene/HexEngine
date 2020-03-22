@@ -31,7 +31,7 @@ struct UnitInfoView: View {
             return "unknown owning player"
         }
     }
-    
+        
     var body: some View {
         VStack {
             if unit == nil {
