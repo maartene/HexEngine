@@ -25,9 +25,6 @@ struct AttackComponent: Component {
         print("AttackComponent:Step")
         // return
     }
-    
-    
-    
 }
 
 // MARK: Commands

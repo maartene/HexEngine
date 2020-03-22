@@ -44,7 +44,7 @@ extension Entity {
     }
     
     func step(in world: World) {
-        print("step for entity \(self)")
+        print("step for entity \(self.name) (\(self.id))")
         
         for component in components {
             component.step(in: world)

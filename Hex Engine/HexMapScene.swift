@@ -21,15 +21,30 @@ class HexMapScene: SKScene {
     var hexMapController: HexMapController!
     var uiState = UI_State.map
     
-    var vc: ViewController!
+    var onLoadedGameWorld: (() -> Void)?
     
     override func sceneDidLoad() {
-        let world = World(playerCount: 4, width: 84, height: 54, hexMapFactory: WorldFactory.CreateWorld)
+        newGame()
+    }
     
+    func newGame() {
+        if hexMapController != nil {
+            hexMapController.reset()
+        }
+        
+        let world = World(playerCount: 4, width: 84, height: 54, hexMapFactory: WorldFactory.CreateWorld)
+        
         hexMapController = HexMapController(scene: self, world: world, tileWidth: 120.0, tileHeight: 140.0, tileYOffsetFactor: 0.74)
         
+        // we assume that the player who saved the game was the current player.
+        hexMapController.guiPlayer = world.currentPlayer!.id
         hexMapController.showMap()
         
+        setupCamera()
+        onLoadedGameWorld?()
+    }
+    
+    func setupCamera() {
         let camera = SKCameraNode()
         self.addChild(camera)
         self.camera = camera
@@ -107,33 +122,32 @@ class HexMapScene: SKScene {
     }
     
     
-    func load() {
+    func load(url: URL? = nil) {
         print("HexMapScene:load")
         do {
             hexMapController.reset()
-            
-            let world = World(playerCount: 4, width: 84, height: 54, hexMapFactory: WorldFactory.CreateWorld)
-            world.processAI = false
             let decoder = JSONDecoder()
-            let url = URL(fileURLWithPath: "world.json")
-            let data = try Data(contentsOf: url)
-            
-            let wrappedCommands = try decoder.decode([CommandWrapper].self, from: data)
-            for wrappedCommand in wrappedCommands {
-                print(wrappedCommand)
-                try world.executeCommand(wrappedCommand.command())
+            let data: Data
+            if let url = url {
+                data = try Data(contentsOf: url)
+            } else {
+                let url = URL(fileURLWithPath: "world.json")
+                data = try Data(contentsOf: url)
             }
             
-            hexMapController = HexMapController(scene: self, world: world, tileWidth: 120.0, tileHeight: 140.0, tileYOffsetFactor: 0.74)
+            let loadedWorld = try decoder.decode(World.self, from: data)
             
+            hexMapController = HexMapController(scene: self, world: loadedWorld, tileWidth: 120.0, tileHeight: 140.0, tileYOffsetFactor: 0.74)
+            
+            // we assume that the player who saved the game was the current player.
+            hexMapController.guiPlayer = loadedWorld.currentPlayer!.id
             hexMapController.showMap()
             
+            setupCamera()
             
-            vc.guiView.removeFromSuperview()
-            vc.guiView = nil
-            vc.guiView = hexMapController.setupUI(in: view!)
+            // callback to signal parent that the game world was reloaded - maybe other scenes/view require updating?
+            onLoadedGameWorld?()
             
-            world.processAI = true
             print("World loaded succesfully")
             } catch {
             print("An error of type '\(error)' occored.")
@@ -142,8 +156,45 @@ class HexMapScene: SKScene {
     
     override func keyDown(with event: NSEvent) {
         print(event)
-        if event.keyCode == 37 {
+        // 'L' key - load
+        /*if event.keyCode == 37 {
             load()
+        }
+        
+        // 'S' key - save
+        if event.keyCode == 1 {
+            save()
+        }
+        
+        // 'R' key - reset
+        if event.keyCode == 15 {
+            hexMapController.reset()
+            setupCamera()
+        }*/
+    }
+    
+    
+    // NOTE: we need to make sure this only gets called when currentPlayer is a guiplayer.
+    // i.e. on players own turn.
+    func save(url: URL? = nil) {
+        guard hexMapController.guiPlayerIsCurrentPlayer else {
+            print("Only save on own turn")
+            return
+        }
+        
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        do {
+            let data = try encoder.encode(hexMapController.world)
+            if let url = url {
+                try data.write(to: url)
+            } else {
+                let url = URL(fileURLWithPath: "world.json")
+                try data.write(to: url)
+            }
+            print("Succesfully saved world to: \(url)")
+        } catch {
+            print("Error while saving: \(error)")
         }
     }
     

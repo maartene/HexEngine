@@ -10,7 +10,7 @@ import Foundation
 import SpriteKit
 
 struct Unit: Entity {
-    let id = UUID()
+    let id: UUID
     let owningPlayerID: UUID
     var position: AxialCoord
     
@@ -25,6 +25,7 @@ struct Unit: Entity {
     static var onUnitDies: ((Unit) -> Void)?
     
     init(owningPlayer: UUID, name: String, visibility: Int = 2, startPosition: AxialCoord = AxialCoord.zero) {
+        self.id = UUID()
         self.owningPlayerID = owningPlayer
         self.name = name
         self.visibility = visibility
@@ -54,15 +55,26 @@ struct Unit: Entity {
     
     static func Narwhal(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
         var newNarwhal = Unit(owningPlayer: owningPlayer, name: "Narwhal", startPosition: startPosition)
-        newNarwhal.components = [MovementComponent(ownerID: newNarwhal.id, movementCosts: [.Water: 1], movement: 4), HealthComponent(ownerID: newNarwhal.id)]
+        newNarwhal.components = [MovementComponent(ownerID: newNarwhal.id, movementCosts: [.Water: 0.5]), HealthComponent(ownerID: newNarwhal.id)]
         return newNarwhal
+    }
+    
+    static func Reindeer(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
+        var newReindeer = Unit(owningPlayer: owningPlayer, name: "Reindeer", startPosition: startPosition)
+        var movementCosts = Tile.defaultCostsToEnter
+        movementCosts[.Forest] = 0.5
+        movementCosts[.Grass] = 0.75
+        movementCosts[.Sand] = 0.75
+        newReindeer.components = [MovementComponent(ownerID: newReindeer.id, movementCosts: movementCosts), HealthComponent(ownerID: newReindeer.id, maxHitPoints: 15)]
+        return newReindeer
     }
     
     static func nullUnit(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
         print("WARNING: creating nullUnit. Probably not intentional.")
+        assert(false)
         return Unit(owningPlayer: owningPlayer, name: "Null Unit", startPosition: startPosition)
     }
     
-    static let allUnits = ["Narwhal": Unit.Narwhal, "Rabbit": Unit.Rabbit, "Snake": Unit.Snake]
-    static let unitProductionRequirements: [String: Double] = ["Narwhal": 15, "Rabbit": 10, "Snake": 5]
+    static let allUnits = ["Narwhal": Unit.Narwhal, "Rabbit": Unit.Rabbit, "Snake": Unit.Snake, "Reindeer": Unit.Reindeer]
+    static let unitProductionRequirements: [String: Double] = ["Narwhal": 15, "Rabbit": 10, "Snake": 5, "Reindeer": 20]
 }

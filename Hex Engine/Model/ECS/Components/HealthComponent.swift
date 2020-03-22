@@ -49,3 +49,4 @@ struct HealthComponent: Component {
         print("Took \(damageTaken) damage. Attacked for \(amount), defense value: \(defencePower). HP left: \(currentHitPoints)")
     }
 }
+

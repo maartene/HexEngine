@@ -36,7 +36,7 @@ final class CityController: ObservableObject {
             return
         }
         
-        print("Creating sprite for city \(city)")
+        print("Creating sprite for city \(city.name) (\(city.id))")
         // find a resource for the unit
         let color = getColorForPlayerFunction?(city.owningPlayerID) ?? SKColor.white
         let sprite = CitySprite(city: city, playerColor: color)
@@ -68,6 +68,18 @@ final class CityController: ObservableObject {
         selectedCity = nil
     }
     
+    func showHideCities(in world: World, visibilityMap: [AxialCoord: TileVisibility]) {
+        for cityID in citySpriteMap.keys {
+            if let city = try? world.getCityWithID(cityID) {
+                if visibilityMap[city.position] ?? .unvisited == .visible {
+                    citySpriteMap[cityID]!.alpha = 1
+                } else {
+                    citySpriteMap[cityID]!.alpha = 0
+                }
+            }
+        }
+    }
+    
     func reset() {
         for citySprite in citySpriteMap.values {
             citySprite.removeAllChildren()
@@ -75,5 +87,7 @@ final class CityController: ObservableObject {
         }
         
         citySpriteMap.removeAll()
+        
+        City.onCityCreate = nil
     }
 }

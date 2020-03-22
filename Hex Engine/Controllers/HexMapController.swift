@@ -16,7 +16,7 @@ enum UI_State {
 }
 
 class HexMapController: ObservableObject {
-    static var instance: HexMapController!
+    //static var instance: HexMapController!
     
     @Published var world: World
 
@@ -88,6 +88,12 @@ class HexMapController: ObservableObject {
         
         self.world.onUnitRemoved = unitController.onUnitRemoved
         self.world.onVisibilityMapUpdated = showHideTiles
+        self.world.onCurrentPlayerChanged = { player in
+            if player.ai == nil {
+                self.guiPlayer = player.id
+            }
+        }
+            
         Unit.onUnitDies = world.removeUnit
         
         highlighter.lineWidth = 2
@@ -102,7 +108,7 @@ class HexMapController: ObservableObject {
         
         highlighter.zPosition = 0.1
         self.scene.addChild(highlighter)
-        Self.instance = self
+        //Self.instance = self
     }
     
     func setupUI(in view: SKView) -> some NSView {
@@ -149,6 +155,8 @@ class HexMapController: ObservableObject {
         }
         
         tileSKSpriteNodeMap.removeAll()
+        
+        scene.removeAllChildren()
     }
     
     func showMap() {
@@ -168,7 +176,7 @@ class HexMapController: ObservableObject {
                 scene.addChild(tile)
             }
         }
-        
+        //print("Players in world: \(world.players) - GUIPlayer: \(guiPlayer)")
         let player = world.players[guiPlayer]!
         world.updateVisibilityForPlayer(player: player)
         //showHideTiles(visibilityMap: player.visibilityMap)
@@ -234,7 +242,7 @@ class HexMapController: ObservableObject {
                     if let unit = try? world.getUnitWithID(unitID) {
                         unitController.selectUnit(unit)
                         deselectTile()
-                        print("clicked unit: \(unit)")
+                        print("clicked unit: \(unit.name)")
                     }
                 }
                 
@@ -302,5 +310,6 @@ class HexMapController: ObservableObject {
         }
         
         unitController.showHideUnits(in: world, visibilityMap: player.visibilityMap)
+        cityController.showHideCities(in: world, visibilityMap: player.visibilityMap)
     }
 }

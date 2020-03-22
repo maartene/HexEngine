@@ -21,10 +21,11 @@ Uses art assets from [Kenney](https://www.kenney.nl)
 ### Units:
 * Select a unit, displays a path for the unit if one is set;
 * Issue a "move" command and "build city" command for a unit;
+* Melee combat for units;
 * Path finding for units (takes inaccessible terrain and terrain costs into account);
 
 ### Cities
-* Select a city, issue a "breed rabbit" command;
+* Select a city, issue "Build <unit>" commands;
 * Cities and units have owners (players). Commands can only be entered on owning player turn.
 
 ### Players
@@ -32,14 +33,17 @@ Uses art assets from [Kenney](https://www.kenney.nl)
 * "Next turn" button processes actions for all units, i.e. moves along path if one is set;
 
 ### Application technology
-* UI is SwiftUI based.
+* UI is SwiftUI based;
+* Save/Load game based on Codable conformance of `World` class;
+* Main menu to Load/Save/New game;
+* Unit and City abilities are based on a rudimentary ECS system. Will be improved.
 
 ## What is missing
 ### HexMap
-* high res sprites for tiles, units, cities, etc.
+* high res sprites for tiles
 
 ### Units
-* Combat
+* Ranged Combat
 * Build improvements
 * Other abilities
 * Animations

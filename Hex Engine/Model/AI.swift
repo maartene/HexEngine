@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol AI {
+protocol AI: Codable {
     // this function should perform all "heavy calculations" in a seperate thread and call "world.nextTurn()" on the main thread when finished.
     func decide(for player: Player, in world: World)
 }
@@ -34,9 +34,11 @@ extension AI {
     }
     
     func decide(for player: Player, in world: World) {
-        //sleep(1)
+        //sleep(0.1)
     }
 }
 
+let allAIs = ["turnSkipAI": TurnSkipAI()]
+
 /// all this AI does, is skip to next turn.
-struct TurnSkipAI: AI { }
+struct TurnSkipAI: AI {}

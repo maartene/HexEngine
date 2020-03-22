@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol Component {
+protocol Component: Codable {
     var ownerID: UUID { get }
     var possibleCommands: [Command] { get }
     

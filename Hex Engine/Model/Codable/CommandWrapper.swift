@@ -21,6 +21,7 @@ enum CommandWrapper: Codable {
     case foundCityCommand(value: FoundCityCommand)
     case moveUnitCommand(value: MoveUnitCommand)
     case queueBuildUnitCommand(value: QueueBuildUnitCommand)
+    case buildUnitCommand(value: BuildUnitCommand)
     case nextTurnCommand(value: NextTurnCommand)
     case attackTileCommand(value: AttackCommand)
     case removeFromBuildQueueCommand(value: RemoveFromBuildQueueCommand)
@@ -36,6 +37,9 @@ enum CommandWrapper: Codable {
             try container.encode(value, forKey: .value)
         case .queueBuildUnitCommand(let value):
             try container.encode("queueBuildUnitCommand", forKey: .type)
+            try container.encode(value, forKey: .value)
+        case .buildUnitCommand(let value):
+            try container.encode("buildUnitCommand", forKey: .type)
             try container.encode(value, forKey: .value)
         case .nextTurnCommand(let value):
             try container.encode("nextTurnCommand", forKey: .type)
@@ -62,6 +66,9 @@ enum CommandWrapper: Codable {
         case "queueBuildUnitCommand":
             let value = try values.decode(QueueBuildUnitCommand.self, forKey: .value)
             self = .queueBuildUnitCommand(value: value)
+        case "buildUnitCommand":
+            let value = try values.decode(BuildUnitCommand.self, forKey: .value)
+            self = .buildUnitCommand(value: value)
         case "nextTurnCommand":
             let value = try values.decode(NextTurnCommand.self, forKey: .value)
             self = .nextTurnCommand(value: value)
@@ -83,6 +90,8 @@ enum CommandWrapper: Codable {
             return .moveUnitCommand(value: c)
         } else if let c = command as? QueueBuildUnitCommand {
             return .queueBuildUnitCommand(value: c)
+        } else if let c = command as? BuildUnitCommand {
+            return .buildUnitCommand(value: c)
         } else if let c = command as? NextTurnCommand {
             return .nextTurnCommand(value: c)
         } else if let c = command as? AttackCommand {
@@ -101,6 +110,8 @@ enum CommandWrapper: Codable {
         case .moveUnitCommand(let value):
             return value
         case .queueBuildUnitCommand(let value):
+            return value
+        case .buildUnitCommand(let value):
             return value
         case .nextTurnCommand(let value):
             return value

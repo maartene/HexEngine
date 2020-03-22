@@ -8,13 +8,21 @@
 
 import Foundation
 
-struct Player: Identifiable, Hashable, Equatable {
-    let id = UUID()
+struct Player: Identifiable, Hashable, Equatable, Codable {
+    let id: UUID
     let name: String
     
-    var ai: AI?
+    var ai: AI? {
+        return allAIs[aiName]
+    }
+    var aiName: String = ""
     
     var visibilityMap = [AxialCoord: TileVisibility]()
+    
+    init(name: String) {
+        self.id = UUID()
+        self.name = name
+    }
     
     static func == (lhs: Player, rhs: Player) -> Bool {
         lhs.id == rhs.id
@@ -59,7 +67,7 @@ struct Player: Identifiable, Hashable, Equatable {
     }
 }
 
-enum TileVisibility: Int {
+enum TileVisibility: Int, Codable {
     case unvisited
     case visited
     case visible

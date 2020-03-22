@@ -15,13 +15,13 @@ struct MovementComponent : Component {
     
     // pathfinding stuff
     var pathfindingGraph = GKGraph()                            // every entity with a movement component has its own pathfinding graph
-    var nodeToTileCoordMap = [GKGraphNode: AxialCoord]()
-    var tileCoordToNodeMap = [AxialCoord : GKGraphNode]()
+//    var nodeToTileCoordMap = [HexGraphNode: AxialCoord]()
+    var tileCoordToNodeMap = [AxialCoord : HexGraphNode]()
     var path = [AxialCoord]()
     
     let possibleCommands: [Command]
     
-    init(ownerID: UUID, movementCosts: [Tile: Double] = Tile.defaultCostsToEnter, movement: Double = 2) {
+    init(ownerID: UUID, movementCosts: [Tile: Double] = Tile.defaultCostsToEnter) {
         self.ownerID = ownerID
         self.movementCosts = movementCosts
         
@@ -53,13 +53,23 @@ struct MovementComponent : Component {
     }
     
     func step(in world: World) {
-        if let updatedUnit = try? move(in: world) {
-            world.replace(updatedUnit)
-        }
+        /*var attempts = 0
+        while path.count == 0 && attempts < 5{
+            // find a new target
+            let targetTile = world.hexMap.getTileCoordinates().randomElement()!
+            
+            world.executeCommand(MoveUnitCommand(ownerID: ownerID, targetTile: targetTile))
+            attempts += 1
+        }*/
+        //if let unit = try? world.getUnitWithID(ownerID) {
+            //if let updatedUnit = try? unit.getComponent(MovementComponent.self)!.move(in: world) {
+            if let updatedUnit = try? move(in: world) {
+                world.replace(updatedUnit)
+            }
+        //}
     }
     
 }
-
 
 // MARK: Commands
 struct MoveUnitCommand: TileTargettingCommand, Codable {
@@ -87,14 +97,13 @@ struct MoveUnitCommand: TileTargettingCommand, Codable {
         
         let pathfindingResult = world.hexMap.rebuildPathFindingGraph(movementCosts: moveComponent.movementCosts, additionalEnterableTiles: friendlyCityLocations)
         moveComponent.pathfindingGraph = pathfindingResult.graph
-        moveComponent.nodeToTileCoordMap = pathfindingResult.nodeToTileCoordMap
         moveComponent.tileCoordToNodeMap = pathfindingResult.tileCoordToNodeMap
         
         guard let targetPosition = targetTile else {
             throw CommandErrors.missingTarget
         }
         
-        guard let path = world.hexMap.findPathFrom(owner.position, to: targetPosition, pathfindingGraph: moveComponent.pathfindingGraph, tileCoordToNodeMap: moveComponent.tileCoordToNodeMap, nodeToTileCoordMap: moveComponent.nodeToTileCoordMap, movementCosts: moveComponent.movementCosts) else {
+        guard let path = world.hexMap.findPathFrom(owner.position, to: targetPosition, pathfindingGraph: moveComponent.pathfindingGraph, tileCoordToNodeMap: moveComponent.tileCoordToNodeMap, movementCosts: moveComponent.movementCosts) else {
             print("No valid path from \(owner.position) to \(targetPosition).")
             return
         }

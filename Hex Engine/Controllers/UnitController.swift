@@ -44,7 +44,7 @@ final class UnitController: ObservableObject {
     }
     
     func onUnitCreate(unit: Unit) {
-        print("Creating sprite for unit \(unit)")
+        print("Creating sprite for unit \(unit.name) (\(unit.id))")
         // find a resource for the unit
         let color = getColorForPlayerFunction?(unit.owningPlayerID) ?? SKColor.white
         
@@ -151,10 +151,11 @@ final class UnitController: ObservableObject {
     func reset() {
         for unitSprite in unitSpriteMap.values {
             unitSprite.removeAllChildren()
-            unitSprite.removeFromParent()
         }
-        
         unitSpriteMap.removeAll()
+        Unit.onUnitCreate = nil
+        Unit.onUnitChanged = nil
+        Unit.onUnitDies = nil
     }
         
 }
