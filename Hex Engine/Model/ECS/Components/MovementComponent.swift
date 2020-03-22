@@ -21,7 +21,7 @@ struct MovementComponent : Component {
     
     let possibleCommands: [Command]
     
-    init(ownerID: UUID, movementCosts: [Tile: Double] = Tile.defaultCostsToEnter, movement: Double = 2) {
+    init(ownerID: UUID, movementCosts: [Tile: Double] = Tile.defaultCostsToEnter) {
         self.ownerID = ownerID
         self.movementCosts = movementCosts
         
@@ -53,9 +53,20 @@ struct MovementComponent : Component {
     }
     
     func step(in world: World) {
-        if let updatedUnit = try? move(in: world) {
-            world.replace(updatedUnit)
-        }
+        /*var attempts = 0
+        while path.count == 0 && attempts < 5{
+            // find a new target
+            let targetTile = world.hexMap.getTileCoordinates().randomElement()!
+            
+            world.executeCommand(MoveUnitCommand(ownerID: ownerID, targetTile: targetTile))
+            attempts += 1
+        }*/
+        //if let unit = try? world.getUnitWithID(ownerID) {
+            //if let updatedUnit = try? unit.getComponent(MovementComponent.self)!.move(in: world) {
+            if let updatedUnit = try? move(in: world) {
+                world.replace(updatedUnit)
+            }
+        //}
     }
     
 }

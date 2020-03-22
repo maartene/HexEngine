@@ -22,7 +22,14 @@ class ViewController: NSViewController {
         super.viewDidLoad()
         hexMapScene = HexMapScene(size: CGSize(width: skView.bounds.width, height: skView.bounds.height))
         hexMapScene.scaleMode = .aspectFill
-        hexMapScene.vc = self
+        hexMapScene.onLoadedGameWorld = { [weak self] in
+            guard let vc = self else {
+                return
+            }
+            vc.guiView.removeFromSuperview()
+            vc.guiView = nil
+            vc.guiView = vc.hexMapScene.hexMapController.setupUI(in: vc.skView)
+        }
         
         // Present the scene
         skView.allowsTransparency = true
@@ -104,5 +111,25 @@ class ViewController: NSViewController {
         
         guiView.frame = skView.frame
     }
+    
+    @IBAction func newGame(sender: Any) {
+        hexMapScene.newGame()
+    }
+    
+    @IBAction func saveGame(sender: Any) {
+        let saveSheet = NSSavePanel()
+        saveSheet.nameFieldStringValue = "Game.json"
+        saveSheet.beginSheetModal(for: self.view.window!) { [weak self] response in
+            self?.hexMapScene.save(url: saveSheet.url)
+        }
+    }
+    
+    @IBAction func loadGame(sender: Any) {
+        let loadSheet = NSOpenPanel()
+        loadSheet.nameFieldStringValue = "Game.json"
+        loadSheet.allowedFileTypes = ["json"]
+        loadSheet.beginSheetModal(for: self.view.window!) { [weak self] response in
+            self?.hexMapScene.load(url: loadSheet.url)
+        }
+    }
 }
-

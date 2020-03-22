@@ -16,7 +16,7 @@ enum UI_State {
 }
 
 class HexMapController: ObservableObject {
-    static var instance: HexMapController!
+    //static var instance: HexMapController!
     
     @Published var world: World
 
@@ -108,7 +108,7 @@ class HexMapController: ObservableObject {
         
         highlighter.zPosition = 0.1
         self.scene.addChild(highlighter)
-        Self.instance = self
+        //Self.instance = self
     }
     
     func setupUI(in view: SKView) -> some NSView {
@@ -155,6 +155,8 @@ class HexMapController: ObservableObject {
         }
         
         tileSKSpriteNodeMap.removeAll()
+        
+        scene.removeAllChildren()
     }
     
     func showMap() {

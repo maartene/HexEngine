@@ -36,7 +36,7 @@ final class CityController: ObservableObject {
             return
         }
         
-        print("Creating sprite for city \(city)")
+        print("Creating sprite for city \(city.name) (\(city.id))")
         // find a resource for the unit
         let color = getColorForPlayerFunction?(city.owningPlayerID) ?? SKColor.white
         let sprite = CitySprite(city: city, playerColor: color)
@@ -87,5 +87,7 @@ final class CityController: ObservableObject {
         }
         
         citySpriteMap.removeAll()
+        
+        City.onCityCreate = nil
     }
 }
