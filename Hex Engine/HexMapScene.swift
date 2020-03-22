@@ -157,7 +157,7 @@ class HexMapScene: SKScene {
     override func keyDown(with event: NSEvent) {
         print(event)
         // 'L' key - load
-        if event.keyCode == 37 {
+        /*if event.keyCode == 37 {
             load()
         }
         
@@ -170,7 +170,7 @@ class HexMapScene: SKScene {
         if event.keyCode == 15 {
             hexMapController.reset()
             setupCamera()
-        }
+        }*/
     }
     
     
