@@ -212,7 +212,7 @@ class HexMapScene: SKScene {
                 let url = URL(fileURLWithPath: "world.json")
                 try data.write(to: url)
             }
-            print("Succesfully saved world to: \(url)")
+            print("Succesfully saved world to: \(String(describing: url))")
         } catch {
             print("Error while saving: \(error)")
         }
