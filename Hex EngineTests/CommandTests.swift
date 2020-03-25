@@ -88,7 +88,10 @@ class CommandTests: XCTestCase {
     
     func testFoundCityCommand() throws {
         let world = World(playerCount: 1, width: 30, height: 30, hexMapFactory: getTestMap(width:height:))
-        let coord = AxialCoord.zero
+        let coord = AxialCoord(q: 4, r: 4)
+        if world.hexMap[coord] != .Grass {
+            world.hexMap[coord] = .Grass
+        }
         let rabbit = Unit.Rabbit(owningPlayer: world.currentPlayer!.id, startPosition: coord)
         XCTAssertNil(world.getCityAt(coord))
         world.addUnit(rabbit)
