@@ -32,7 +32,7 @@ class CitySprite: SKSpriteNode {
             playerBadge.color = playerColor
             
             // add "city label"
-            cityNameLabel = SKLabelNode(text: city.name)
+            cityNameLabel = SKLabelNode(text: "\(city.name) (\(city.population))")
             cityNameLabel.fontName = "American Typewriter"
             cityNameLabel.fontSize = 16
             

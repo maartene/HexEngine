@@ -13,7 +13,9 @@ struct BuildComponent: Component {
     
     let possibleCommands: [Command]
     var buildQueue = [BuildCommand]()
-    var production: Double = 5
+    var production: Double {
+        return 5
+    }
     
     init(ownerID: UUID) {
         self.ownerID = ownerID
