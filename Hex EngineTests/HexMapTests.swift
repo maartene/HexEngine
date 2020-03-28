@@ -19,7 +19,7 @@ class HexMapTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testExample() {
+    func _testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
@@ -71,7 +71,7 @@ class HexMapTests: XCTestCase {
         assert(diagonals.contains(diagonal2))
     }
     
-    func testTileDidChangeHandler() {
+/*    func testTileDidChangeHandler() {
         let tile = AxialCoord(q: 0, r: 0)
         
         var hexMap = HexMap(width: 10, height: 10)
@@ -83,7 +83,7 @@ class HexMapTests: XCTestCase {
         
         hexMap[tile] = .Forest
         assert(hexMap[tile] == .Forest)
-    }
+    }*/
     
     func tileDidChangeHandler(tile: AxialCoord, oldValue: Tile?, newValue: Tile) {
         print("Tile \(tile) changed value from \(oldValue ?? Tile.void) to \(newValue)")
@@ -91,7 +91,7 @@ class HexMapTests: XCTestCase {
     
     func testPathfinding() {
         
-        var hexMap = WorldFactory.CreateWorld(width: 30, height: 20)
+        let hexMap = WorldFactory.CreateWorld(width: 30, height: 20)
         
         // find two passable tiles
         var tile1: AxialCoord?
@@ -120,8 +120,7 @@ class HexMapTests: XCTestCase {
             
             if let path = hexMap.findPathFrom(tile1, to: tile2,
                                               pathfindingGraph: pathfindingResult.graph,
-                                              tileCoordToNodeMap: pathfindingResult.tileCoordToNodeMap,
-                                              nodeToTileCoordMap: pathfindingResult.nodeToTileCoordMap) {
+                                              tileCoordToNodeMap: pathfindingResult.tileCoordToNodeMap) {
                 path.forEach {
                     print ("Coord: \($0) Terrain: \(hexMap[$0])")
                 }                
@@ -144,12 +143,12 @@ class HexMapTests: XCTestCase {
     func testHexMapRebuildPathfindingGraphPerformance() {
         // Rebuilding the pathfinding graph is notoriously expensive
         // This tests how long it takes to rebuild the pathfinding graph for a Civ VI HUGE map (106x66 tiles) x 2
-        var hexMap = WorldFactory.CreateWorld(width: 212, height: 132)
+        let hexMap = WorldFactory.CreateWorld(width: 212, height: 132)
         
         var pass = 1
         self.measure {
             // Put the code you want to measure the time of here.
-            hexMap.rebuildPathFindingGraph()
+            _ = hexMap.rebuildPathFindingGraph()
             print("testHexMapRebuildPathfindingGraphPerformance pass: \(pass) complete.")
             pass += 1
         }

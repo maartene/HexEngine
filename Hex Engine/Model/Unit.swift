@@ -33,13 +33,13 @@ struct Unit: Entity {
         Self.onUnitCreate?(self)
     }
     
-    mutating func step(in world: World) {
+    /*func step(in world: World) {
         print("step for unit \(self)")
 
         for component in components {
             component.step(in: world)
         }
-    }
+    }*/
     
     static func Rabbit(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
         var newRabbit = Unit(owningPlayer: owningPlayer, name: "Rabbit", startPosition: startPosition)

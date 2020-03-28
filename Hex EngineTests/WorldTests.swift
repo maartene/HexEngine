@@ -20,12 +20,12 @@ class WorldTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testExample() {
+    func _testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 
-    func testPerformanceExample() {
+    func _testPerformanceExample() {
         // This is an example of a performance test case.
         self.measure {
             // Put the code you want to measure the time of here.
@@ -86,5 +86,89 @@ class WorldTests: XCTestCase {
             pass += 1
         }
     }
+    
+    func testNextTurn() throws {
+        let world = World(playerCount: 2, width: 20, height: 20, hexMapFactory: getTestMap(width:height:))
+        
+        XCTAssertGreaterThan(world.allUnits.count, 0)
+        
+        for unit in world.allUnits {
+            var changedUnit = unit
+            changedUnit.actionsRemaining = 0
+            world.removeUnit(changedUnit)
+        }
+        
+        var unit = Hex_Engine.Unit(owningPlayer: world.playerTurnSequence[1], name: "countingUnit")
+        unit.components = [CountingComponent(ownerID: unit.id)]
+        world.addUnit(unit)
+        XCTAssertEqual(unit.getComponent(CountingComponent.self)?.count, 0)
+        
+        let currentPlayer = world.currentPlayer
+        world.nextTurn()
+        XCTAssertNotEqual(currentPlayer, world.currentPlayer)
+        
+        XCTAssertGreaterThan(try world.getUnitWithID(unit.id).getComponent(CountingComponent.self)!.count, 0)
+        
+        for unit in world.allUnits {
+            XCTAssertGreaterThan(unit.actionsRemaining, 0)
+        }
+        
+        for _ in 0 ..< world.players.keys.count * 10 {
+            world.nextTurn()
+        }
+    }
+    
+    func testNextPlayer() throws {
+        let world = World(playerCount: 2, width: 20, height: 20, hexMapFactory: getTestMap(width:height:))
+        
+        let currentPlayer = world.currentPlayer!
+        world.nextPlayer()
+        XCTAssertNotEqual(currentPlayer, world.currentPlayer!)
+        
 
+    }
+    
+    func testExecuteCommand() throws {
+        let world = World.init(playerCount: 2, width: 20, height: 20, hexMapFactory: getTestMap(width:height:))
+        var unit = Hex_Engine.Unit(owningPlayer: world.playerTurnSequence[1], name: "countingUnit")
+        unit.components = [CountingComponent(ownerID: unit.id)]
+        world.addUnit(unit)
+        XCTAssertEqual(unit.getComponent(CountingComponent.self)?.count, 0)
+        
+        world.executeCommand(NextTurnCommand(ownerID: world.currentPlayer!.id))
+        
+        XCTAssertGreaterThan(try world.getUnitWithID(unit.id).getComponent(CountingComponent.self)!.count, 0)
+    }
+    
+    func testEncodeWorld() throws {
+        let world = World.init(playerCount: 2, width: 20, height: 20, hexMapFactory: getTestMap(width:height:))
+        
+        let encoder = JSONEncoder()
+        let encodedWorld = try encoder.encode(world)
+        
+        let decoder = JSONDecoder()
+        let decodedWorld = try decoder.decode(World.self, from: encodedWorld)
+        
+        for player in world.players {
+            XCTAssertTrue(decodedWorld.players.keys.contains(player.key))
+        }
+        
+        for city in world.cities {
+            XCTAssertTrue(decodedWorld.cities.keys.contains(city.key))
+        }
+        
+        for unit in world.units {
+            XCTAssertTrue(decodedWorld.units.keys.contains(unit.key))
+        }
+                
+        for _ in 0 ..< 100 {
+            let coord = world.hexMap.getTileCoordinates().randomElement()!
+            XCTAssertEqual(decodedWorld.hexMap[coord], world.hexMap[coord])
+        }
+        
+        
+        
+    }
+    
+    
 }

@@ -73,7 +73,7 @@ struct HexMap: Codable {
             }
         }
         set {
-            let oldValue = tiles[tile]
+            //let oldValue = tiles[tile]
             tiles[tile] = newValue
             // print("Tile \(tile) changed value from \(oldValue ?? Tile.void) to \(newValue)")
             
