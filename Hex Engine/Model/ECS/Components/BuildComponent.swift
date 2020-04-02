@@ -38,7 +38,7 @@ struct BuildComponent: Component {
         var changedBuildQueue = buildQueue
         var itemToBuild = changedBuildQueue.removeFirst()
         
-        itemToBuild.productionRemaining -= production
+        itemToBuild.productionRemaining -= changedCity.production
         print("Added \(production) production. \(itemToBuild.productionRemaining) production remaining.")
     
         if itemToBuild.productionRemaining <= 0 {

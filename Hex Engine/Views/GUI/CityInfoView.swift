@@ -67,6 +67,8 @@ struct CityInfoView: View {
                         Text("""
                             City: \(city?.name ?? "nil")
                             Owning player: \(city!.owningPlayerID)
+                            Population: \(city?.population ?? -1)
+                            Saved food: \(city?.savedFood ?? -1)
                         """)
                         
                         HStack {

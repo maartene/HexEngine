@@ -80,6 +80,14 @@ class TileSprite: SKSpriteNode {
         //selectionIndicator.isHidden = true
     }
     
+    func tintSprite(color: SKColor) {
+        self.color = color
+    }
+    
+    func resetSpriteTint() {
+        self.color = SKColor.white
+    }
+    
     deinit {
         // print("Removing tilesprite: \(self)")
     }

@@ -25,6 +25,7 @@ enum ComponentWrapper: Codable {
     case movementComponent(value: MovementComponent)
     case settlerComponent(value: SettlerComponent)
     case growthComponent(value: GrowthComponent)
+    case autoExploreComponent(value: AutoExploreComponent)
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -46,6 +47,9 @@ enum ComponentWrapper: Codable {
             try container.encode(value, forKey: .value)
         case .growthComponent(let value):
             try container.encode("growthComponent", forKey: .type)
+            try container.encode(value, forKey: .value)
+        case .autoExploreComponent(let value):
+            try container.encode("autoExploreComponent", forKey: .type)
             try container.encode(value, forKey: .value)
         }
     }
@@ -72,6 +76,9 @@ enum ComponentWrapper: Codable {
         case "growthComponent":
             let value = try values.decode(GrowthComponent.self, forKey: .value)
             self = .growthComponent(value: value)
+        case "autoExploreComponent":
+            let value = try values.decode(AutoExploreComponent.self, forKey: .value)
+            self = .autoExploreComponent(value: value)
         default:
             throw ComponentWrapperErrors.cannotConvertComponentError
         }
@@ -90,6 +97,8 @@ enum ComponentWrapper: Codable {
             return .settlerComponent(value: c)
         } else if let c = component as? GrowthComponent {
             return .growthComponent(value: c)
+        } else if let c = component as? AutoExploreComponent {
+            return .autoExploreComponent(value: c)
         } else {
             throw ComponentWrapperErrors.cannotConvertComponentError
         }
@@ -108,6 +117,8 @@ enum ComponentWrapper: Codable {
         case .settlerComponent(let component):
             return component
         case .growthComponent(let component):
+            return component
+        case .autoExploreComponent(let component):
             return component
         }
     }

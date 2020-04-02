@@ -180,3 +180,29 @@ extension GrowthComponent {
         possibleCommands = wrappedPossibleCommands.compactMap { try? $0.command() }
     }
 }
+
+extension AutoExploreComponent {
+    enum CodingKeys: CodingKey {
+        case ownerID
+        case active
+        case possibleCommands
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(ownerID, forKey: .ownerID)
+        try container.encode(active, forKey: .active)
+        
+        let wrappedPossibleCommands = possibleCommands.compactMap { command in try? CommandWrapper.wrapperFor(command: command) }
+        try container.encode(wrappedPossibleCommands, forKey: .possibleCommands)
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        ownerID = try values.decode(UUID.self, forKey: .ownerID)
+        active = try values.decode(Bool.self, forKey: .active)
+        
+        let wrappedPossibleCommands = try values.decode([CommandWrapper].self, forKey: .possibleCommands)
+        possibleCommands = wrappedPossibleCommands.compactMap { try? $0.command() }
+    }
+}

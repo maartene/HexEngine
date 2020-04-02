@@ -217,7 +217,7 @@ struct HexMap: Codable {
     func reachableFromTile(_ startTile: CubeCoord, movement: Int, movementCosts: [Tile: Double] = Tile.defaultCostsToEnter) -> [CubeCoord] {
         var visited = Set<CubeCoord>()
         visited.insert(startTile)
-        var fringes = [Set<CubeCoord>]()
+        var fringes = [Set<CubeCoord>()]
         fringes.append(visited)
         
         for k in 2 ... movement {
@@ -357,6 +357,31 @@ struct AxialCoord: Equatable, Hashable, CustomStringConvertible, Codable {
 }
 
 enum Tile: Int, Codable {
+    
+    struct TileYield: Codable, CustomStringConvertible {
+        let food: Double
+        let production: Double
+        let gold: Double
+        
+        init(food: Double = 0, production: Double = 0, gold: Double = 0) {
+            self.food = food
+            self.production = production
+            self.gold = gold
+        }
+        
+        static func +(lhs: TileYield, rhs: TileYield) -> TileYield {
+            return TileYield(food: lhs.food + rhs.food, production: lhs.production + rhs.production, gold: lhs.gold + rhs.gold)
+        }
+        
+        static func += (left: inout TileYield, right: TileYield) {
+            left = left + right
+        }
+        
+        var description: String {
+            "\(food)f, \(production)p, \(gold)g"
+        }
+    }
+    
     case void
     case Water
     case Sand
@@ -406,6 +431,23 @@ enum Tile: Int, Codable {
             return "Forest"
         case .Mountain:
             return "Mountain"
+        }
+    }
+    
+    var baseTileYield: TileYield {
+        switch self {
+        case .void:
+            return TileYield(food: 0, production: 0, gold: 0)
+        case .Water:
+            return TileYield(food: 0, production: 1, gold: 1)
+        case .Sand:
+            return TileYield(food: 1, production: 1, gold: 1)
+        case .Grass:
+            return TileYield(food: 1, production: 2, gold: 1)
+        case .Forest:
+            return TileYield(food: 2, production: 1, gold: 1)
+        case .Mountain:
+            return TileYield(food: 1, production: 0, gold: 2)
         }
     }
 }

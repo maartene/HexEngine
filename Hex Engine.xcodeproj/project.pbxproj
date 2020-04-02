@@ -246,11 +246,11 @@
 			isa = PBXGroup;
 			children = (
 				DE24EA4D242357140071D0C2 /* AttackComponent.swift */,
+				DEC545942427865300D68FDE /* AutoExploreComponent.swift */,
 				DE78AD8F24222F5700A45C01 /* BuildComponent.swift */,
 				DE24EA4B242260A30071D0C2 /* HealthComponent.swift */,
 				DE0DE0662420E38F0077D5EE /* MovementComponent.swift */,
 				DE24EA4824225E430071D0C2 /* SettlerComponent.swift */,
-				DEC545942427865300D68FDE /* AutoExploreComponent.swift */,
 				DE8EE9B7242F647E00F806A6 /* GrowthComponent.swift */,
 			);
 			path = Components;

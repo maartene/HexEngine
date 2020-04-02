@@ -28,6 +28,7 @@ final class CityController: ObservableObject {
         self.tileYOffsetFactor = tileYOffsetFactor
         
         City.onCityCreate = onCityCreate
+        City.onCityChanged = onCityChanged
     }
 
     func onCityCreate(city: City) {
@@ -89,5 +90,11 @@ final class CityController: ObservableObject {
         citySpriteMap.removeAll()
         
         City.onCityCreate = nil
+    }
+    
+    func onCityChanged(city: City) {
+        if let citySprite = citySpriteMap[city.id] {
+            citySprite.updateCity(city: city)
+        }
     }
 }
