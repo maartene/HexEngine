@@ -227,9 +227,13 @@ class HexMapController: ObservableObject {
             if let cityNode = node as? CitySprite {
                 print("Clicked city node: \(node)")
                 if let cityID = cityController.getCityForNode(node) {
-                    if (try? world.getCityWithID(cityID)) != nil {
+                    if let city = try? world.getCityWithID(cityID) {
                         cityNode.select()
                         cityController.selectedCity = cityID
+                        
+                        for coord in city.getComponent(GrowthComponent.self)?.workingTiles ?? [] {
+                            tileSKSpriteNodeMap[coord]?.tintSprite(color: SKColor.green)
+                        }
                     }
                 }
             }
@@ -257,6 +261,10 @@ class HexMapController: ObservableObject {
     }
     
     func deselectAll() {
+        for coord in (try? world.getCityWithID(cityController.selectedCity ?? UUID()).getComponent(GrowthComponent.self)?.workingTiles) ?? [] {
+            tileSKSpriteNodeMap[coord]?.resetSpriteTint()
+        }
+        
         deselectTile()
         unitController.deselectUnit()
         cityController.deselectCity()

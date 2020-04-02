@@ -13,7 +13,9 @@ struct BuildComponent: Component {
     
     let possibleCommands: [Command]
     var buildQueue = [BuildCommand]()
-    var production: Double = 5
+    var production: Double {
+        return 5
+    }
     
     init(ownerID: UUID) {
         self.ownerID = ownerID
@@ -36,7 +38,7 @@ struct BuildComponent: Component {
         var changedBuildQueue = buildQueue
         var itemToBuild = changedBuildQueue.removeFirst()
         
-        itemToBuild.productionRemaining -= production
+        itemToBuild.productionRemaining -= changedCity.production
         print("Added \(production) production. \(itemToBuild.productionRemaining) production remaining.")
     
         if itemToBuild.productionRemaining <= 0 {

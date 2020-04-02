@@ -93,7 +93,7 @@ class World: ObservableObject, Codable {
         }
         
         // TESTING only: add a city with a fixed command
-        let city = City(owningPlayer: currentPlayer!.id, name: "New City", position: AxialCoord(q: 1, r: 1))
+        let city = City(owningPlayer: currentPlayer!.id, name: "New City", position: AxialCoord(q: 1, r: 1), isCapital: true)
         cities[city.id] = city
     }
     
@@ -242,6 +242,7 @@ class World: ObservableObject, Codable {
         }
         
         cities[city.id] = city
+        City.onCityChanged?(city)
     }
     
     func replace(_ unit: Unit) {

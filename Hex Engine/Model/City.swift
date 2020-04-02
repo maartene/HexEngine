@@ -16,17 +16,22 @@ struct City: Entity {
     let name: String
     var components = [Component]()
     var visibility = 2
+    var isCapital = false
     
     static var onCityCreate: ((City) -> Void)?
+    static var onCityChanged: ((City) -> Void)?
     
-    init(owningPlayer: UUID, name: String, position: AxialCoord) {
+    init(owningPlayer: UUID, name: String, position: AxialCoord, isCapital: Bool = false) {
         self.id = UUID()
         self.owningPlayerID = owningPlayer
         self.name = name
         self.position = position
+        self.isCapital = isCapital
         
-        components = [BuildComponent(ownerID: id)]
+        components = [BuildComponent(ownerID: id), GrowthComponent(ownerID: id)]
         
         Self.onCityCreate?(self)
     }
+    
+    
 }

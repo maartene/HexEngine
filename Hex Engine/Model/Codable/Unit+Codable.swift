@@ -26,7 +26,7 @@ extension Unit: Codable {
         try container.encode(position, forKey: .position)
         try container.encode(name, forKey: .name)
         
-        let wrappedComponents = components.compactMap { component in try? ComponentWrapper.wrapperFor(component) }
+        let wrappedComponents = try components.map { component in try ComponentWrapper.wrapperFor(component) }
         try container.encode(wrappedComponents, forKey: .components)
         
         try container.encode(visibility, forKey: .visibility)
@@ -40,7 +40,7 @@ extension Unit: Codable {
         position = try values.decode(AxialCoord.self, forKey: .position)
         name = try values.decode(String.self, forKey: .name)
         let wrappedComponents = try values.decode([ComponentWrapper].self, forKey: .components)
-        components = wrappedComponents.compactMap { try? $0.component() }
+        components = try wrappedComponents.map { try $0.component() }
         visibility = try values.decode(Int.self, forKey: .visibility)
         actionsRemaining = try values.decode(Double.self, forKey: .actionsRemaining)
     }

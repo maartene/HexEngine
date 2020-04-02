@@ -41,7 +41,6 @@ extension BuildComponent {
         case ownerID
         case possibleCommands
         case buildQueue
-        case production
     }
     
     func encode(to encoder: Encoder) throws {
@@ -53,8 +52,6 @@ extension BuildComponent {
         
         let wrappedBuildQueue = buildQueue.compactMap { command in try? CommandWrapper.wrapperFor(command: command) }
         try container.encode(wrappedBuildQueue, forKey: .buildQueue)
-        
-        try container.encode(production, forKey: .production)
     }
     
     init(from decoder: Decoder) throws {
@@ -66,8 +63,6 @@ extension BuildComponent {
         
         let wrappedBuildQueue = try values.decode([CommandWrapper].self, forKey: .buildQueue)
         buildQueue = wrappedBuildQueue.compactMap { try? $0.command() as? BuildCommand }
-        
-        production = try values.decode(Double.self, forKey: .production)
     }
 }
 
@@ -152,6 +147,61 @@ extension SettlerComponent {
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         ownerID = try values.decode(UUID.self, forKey: .ownerID)
+        let wrappedPossibleCommands = try values.decode([CommandWrapper].self, forKey: .possibleCommands)
+        possibleCommands = wrappedPossibleCommands.compactMap { try? $0.command() }
+    }
+}
+
+extension GrowthComponent {
+    enum CodingKeys: CodingKey {
+        case ownerID
+        case population
+        case savedFood
+        case possibleCommands
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(ownerID, forKey: .ownerID)
+        try container.encode(population, forKey: .population)
+        try container.encode(savedFood, forKey: .savedFood)
+        
+        let wrappedPossibleCommands = possibleCommands.compactMap { command in try? CommandWrapper.wrapperFor(command: command) }
+        try container.encode(wrappedPossibleCommands, forKey: .possibleCommands)
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        ownerID = try values.decode(UUID.self, forKey: .ownerID)
+        population = try values.decode(Int.self, forKey: .population)
+        savedFood = try values.decode(Double.self, forKey: .savedFood)
+        
+        let wrappedPossibleCommands = try values.decode([CommandWrapper].self, forKey: .possibleCommands)
+        possibleCommands = wrappedPossibleCommands.compactMap { try? $0.command() }
+    }
+}
+
+extension AutoExploreComponent {
+    enum CodingKeys: CodingKey {
+        case ownerID
+        case active
+        case possibleCommands
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(ownerID, forKey: .ownerID)
+        try container.encode(active, forKey: .active)
+        
+        let wrappedPossibleCommands = possibleCommands.compactMap { command in try? CommandWrapper.wrapperFor(command: command) }
+        try container.encode(wrappedPossibleCommands, forKey: .possibleCommands)
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        ownerID = try values.decode(UUID.self, forKey: .ownerID)
+        active = try values.decode(Bool.self, forKey: .active)
+        
         let wrappedPossibleCommands = try values.decode([CommandWrapper].self, forKey: .possibleCommands)
         possibleCommands = wrappedPossibleCommands.compactMap { try? $0.command() }
     }

@@ -43,19 +43,19 @@ struct Unit: Entity {
     
     static func Rabbit(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
         var newRabbit = Unit(owningPlayer: owningPlayer, name: "Rabbit", startPosition: startPosition)
-        newRabbit.components = [MovementComponent(ownerID: newRabbit.id), SettlerComponent(ownerID: newRabbit.id), HealthComponent(ownerID: newRabbit.id)]
+        newRabbit.components = [MovementComponent(ownerID: newRabbit.id), SettlerComponent(ownerID: newRabbit.id), HealthComponent(ownerID: newRabbit.id), AutoExploreComponent(ownerID: newRabbit.id)]
         return newRabbit
     }
     
     static func Snake(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
         var newSnake = Unit(owningPlayer: owningPlayer, name: "Snake", startPosition: startPosition)
-        newSnake.components = [MovementComponent(ownerID: newSnake.id), HealthComponent(ownerID: newSnake.id), AttackComponent(ownerID: newSnake.id, attackPower: 8)]
+        newSnake.components = [MovementComponent(ownerID: newSnake.id), HealthComponent(ownerID: newSnake.id), AttackComponent(ownerID: newSnake.id, attackPower: 8), AutoExploreComponent(ownerID: newSnake.id)]
         return newSnake
     }
     
     static func Narwhal(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
         var newNarwhal = Unit(owningPlayer: owningPlayer, name: "Narwhal", startPosition: startPosition)
-        newNarwhal.components = [MovementComponent(ownerID: newNarwhal.id, movementCosts: [.Water: 0.5]), HealthComponent(ownerID: newNarwhal.id)]
+        newNarwhal.components = [MovementComponent(ownerID: newNarwhal.id, movementCosts: [.Water: 0.5]), HealthComponent(ownerID: newNarwhal.id), AutoExploreComponent(ownerID: newNarwhal.id)]
         return newNarwhal
     }
     
@@ -65,7 +65,7 @@ struct Unit: Entity {
         movementCosts[.Forest] = 0.5
         movementCosts[.Grass] = 0.75
         movementCosts[.Sand] = 0.75
-        newReindeer.components = [MovementComponent(ownerID: newReindeer.id, movementCosts: movementCosts), HealthComponent(ownerID: newReindeer.id, maxHitPoints: 15)]
+        newReindeer.components = [MovementComponent(ownerID: newReindeer.id, movementCosts: movementCosts), HealthComponent(ownerID: newReindeer.id, maxHitPoints: 15), AutoExploreComponent(ownerID: newReindeer.id)]
         return newReindeer
     }
     

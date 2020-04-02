@@ -38,6 +38,7 @@
 		DE75E384235B41490018F1F9 /* WorldTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE75E383235B41490018F1F9 /* WorldTests.swift */; };
 		DE75E386235B416F0018F1F9 /* CommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE75E385235B416F0018F1F9 /* CommandTests.swift */; };
 		DE78AD9024222F5700A45C01 /* BuildComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE78AD8F24222F5700A45C01 /* BuildComponent.swift */; };
+		DE8EE9B8242F647E00F806A6 /* GrowthComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8EE9B7242F647E00F806A6 /* GrowthComponent.swift */; };
 		DEB0A4DB242A0FC6004E11DF /* UnitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0A4DA242A0FC6004E11DF /* UnitTests.swift */; };
 		DEB0A4DD242A118A004E11DF /* EntityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0A4DC242A118A004E11DF /* EntityTests.swift */; };
 		DEB0A9A1226218AB005770B2 /* WorldFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0A9A0226218AB005770B2 /* WorldFactory.swift */; };
@@ -106,6 +107,7 @@
 		DE75E383235B41490018F1F9 /* WorldTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldTests.swift; sourceTree = "<group>"; };
 		DE75E385235B416F0018F1F9 /* CommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandTests.swift; sourceTree = "<group>"; };
 		DE78AD8F24222F5700A45C01 /* BuildComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildComponent.swift; sourceTree = "<group>"; };
+		DE8EE9B7242F647E00F806A6 /* GrowthComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthComponent.swift; sourceTree = "<group>"; };
 		DEB0A4DA242A0FC6004E11DF /* UnitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitTests.swift; sourceTree = "<group>"; };
 		DEB0A4DC242A118A004E11DF /* EntityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityTests.swift; sourceTree = "<group>"; };
 		DEB0A9A0226218AB005770B2 /* WorldFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldFactory.swift; sourceTree = "<group>"; };
@@ -244,11 +246,12 @@
 			isa = PBXGroup;
 			children = (
 				DE24EA4D242357140071D0C2 /* AttackComponent.swift */,
+				DEC545942427865300D68FDE /* AutoExploreComponent.swift */,
 				DE78AD8F24222F5700A45C01 /* BuildComponent.swift */,
 				DE24EA4B242260A30071D0C2 /* HealthComponent.swift */,
 				DE0DE0662420E38F0077D5EE /* MovementComponent.swift */,
 				DE24EA4824225E430071D0C2 /* SettlerComponent.swift */,
-				DEC545942427865300D68FDE /* AutoExploreComponent.swift */,
+				DE8EE9B7242F647E00F806A6 /* GrowthComponent.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -416,6 +419,7 @@
 				DEFFE2832258B5C400D9AE5A /* CGPoint+Extension.swift in Sources */,
 				DE12FB432392928A00A58357 /* AI.swift in Sources */,
 				DE24EA4C242260A30071D0C2 /* HealthComponent.swift in Sources */,
+				DE8EE9B8242F647E00F806A6 /* GrowthComponent.swift in Sources */,
 				DEF58F0222874D7C0020B473 /* World.swift in Sources */,
 				DE67A86E236052D500A858D0 /* CityController.swift in Sources */,
 				DE3A71ED24266F5B00C48421 /* ComponentWrapper.swift in Sources */,
