@@ -20,7 +20,7 @@ class World: ObservableObject, Codable {
     @Published var units = [UUID: Unit]()
     @Published var cities = [UUID: City]()
     
-    var onUnitRemoved: ((Unit) -> Void)?
+    //var onUnitRemoved: ((Unit) -> Void)?
     var onVisibilityMapUpdated: (() -> Void)?
     //var onCurrentPlayerChanged: ((Player) -> Void)?
     //var visibilityMap = [AxialCoord: Bool]()
@@ -216,7 +216,7 @@ class World: ObservableObject, Codable {
         if let owningPlayer = players[unit.owningPlayerID] {
             updateVisibilityForPlayer(player: owningPlayer)
         }
-        onUnitRemoved?(unit)
+        //onUnitRemoved?(unit)
     }
     
     /*func replaceBuilder(_ newBuilder: Builder) {

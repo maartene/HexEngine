@@ -20,8 +20,8 @@ final class UnitController: ObservableObject {
     
     @Published var selectedUnit: UUID?
     
-    var unitBecameSelected: ((Unit) -> Void)?
-    var unitBecameDeselected: ((UUID) -> Void)?
+    //var unitBecameSelected: ((Unit) -> Void)?
+    //var unitBecameDeselected: ((UUID) -> Void)?
     var getColorForPlayerFunction: ((UUID) -> SKColor)?
     
     private var cancellables: Set<AnyCancellable>
@@ -137,7 +137,7 @@ final class UnitController: ObservableObject {
         }
         
         selectedUnit = unit.id
-        unitBecameSelected?(unit)
+        //unitBecameSelected?(unit)
         
     }
     
@@ -145,7 +145,7 @@ final class UnitController: ObservableObject {
         pathIndicator = nil
         
         if let selectedUnitID = selectedUnit {
-            unitBecameDeselected?(selectedUnitID)
+            //unitBecameDeselected?(selectedUnitID)
             if let previousSelectedUnit = unitSpriteMap[selectedUnitID] {
                 previousSelectedUnit.deselect()
                 if uiState == .map { selectedUnit = nil }

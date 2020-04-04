@@ -30,23 +30,23 @@ class HexMapController: ObservableObject {
     
     var guiPlayer: UUID
     
-    var tileBecameSelected: ((AxialCoord, Tile) -> Void)?
-    var tileBecameDeselected: ((AxialCoord) -> Void)?
+    //var tileBecameSelected: ((AxialCoord, Tile) -> Void)?
+    //var tileBecameDeselected: ((AxialCoord) -> Void)?
     
     @Published var uiState = UI_State.map
     var queuedCommands = [UUID: Command]()
     
-    @Published var selectedTile: AxialCoord? {
+    @Published var selectedTile: AxialCoord? /*{
         didSet {
             if let oldSelectedTile = oldValue {
-                tileBecameDeSelected(tile: oldSelectedTile)
+                deselectTile()
             }
             if let newSelectedTile = selectedTile {
                 let tile = world.hexMap[newSelectedTile.q, newSelectedTile.r]
                 tileBecameSelected?(newSelectedTile, tile)
             }
         }
-    }
+    }*/
     
     // the highlighter is a simple shape that follow the mouse around and gives an visual feedback about what can be clicked/tapped.
     var highlighter: SKShapeNode
@@ -313,7 +313,7 @@ class HexMapController: ObservableObject {
             if let previousSprite = tileSKSpriteNodeMap[previousTile] {
                 previousSprite.removeAllChildren()
                 selectedTile = nil
-                tileBecameDeselected?(previousTile)
+                //tileBecameDeselected?(previousTile)
             }
         }
     }
@@ -331,9 +331,9 @@ class HexMapController: ObservableObject {
         }
     }
     
-    func tileBecameDeSelected(tile: AxialCoord) {
+    /*func tileBecameDeSelected(tile: AxialCoord) {
         print("\(tile) was deselected.")
-    }
+    }*/
     
     func showHideTiles() {
         let player = world.players[guiPlayer]!
