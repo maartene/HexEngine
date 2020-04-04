@@ -9,6 +9,7 @@
 import Foundation
 import SpriteKit
 import SwiftUI
+import Combine
 
 final class CityController: ObservableObject {
     let scene: SKScene
@@ -19,19 +20,48 @@ final class CityController: ObservableObject {
     var citySpriteMap = [UUID: CitySprite]()
     var getColorForPlayerFunction: ((UUID) -> SKColor)?
     
+    private var cancellables: Set<AnyCancellable>
+    
     @Published var selectedCity: UUID?
     
     init(with scene: SKScene, tileWidth: Double, tileHeight: Double, tileYOffsetFactor: Double) {
+        self.cancellables = Set<AnyCancellable>()
         self.scene = scene
         self.tileWidth = tileWidth
         self.tileHeight = tileHeight
         self.tileYOffsetFactor = tileYOffsetFactor
-        
-        City.onCityCreate = onCityCreate
-        City.onCityChanged = onCityChanged
+    }
+    
+    func subscribeToCitiesIn( world: World) {
+        world.$cities.sink(receiveCompletion: { completion in
+            print("Print CityController received completion \(completion) from world.cities")
+        }, receiveValue: { [weak self] cities in
+            // there are three cases
+            
+            for cityID in cities.keys {
+                
+                // case 1: city is known to both CityController and World:
+                if self?.citySpriteMap[cityID] != nil, let city = cities[cityID]{
+                    self?.updateCitySprite(city: city)
+                }
+            
+                // case 2: city is known to world, but not yet to CityController
+                if self?.citySpriteMap[cityID] == nil, let city = cities[cityID] {
+                    self?.createCitySprite(city: city)
+                }
+            }
+            
+            // case 3: the final case is where a city is known to the CityController, but not the world
+            // i.e. when the city is destroyed
+            for cityID in (self?.citySpriteMap ?? [UUID: CitySprite]()).keys {
+                if cities[cityID] == nil {
+                    self?.removeCitySprite(cityID: cityID)
+                }
+            }
+            }).store(in: &cancellables)
     }
 
-    func onCityCreate(city: City) {
+    func createCitySprite(city: City) {
         guard citySpriteMap[city.id] == nil else {
             print("A sprite for city already exists. Not creating a second one.")
             return
@@ -88,11 +118,14 @@ final class CityController: ObservableObject {
         }
         
         citySpriteMap.removeAll()
-        
-        City.onCityCreate = nil
+        cancellables.removeAll()
     }
     
-    func onCityChanged(city: City) {
+    func removeCitySprite(cityID: UUID) {
+        fatalError("Not implemented")
+    }
+    
+    func updateCitySprite(city: City) {
         if let citySprite = citySpriteMap[city.id] {
             citySprite.updateCity(city: city)
         }

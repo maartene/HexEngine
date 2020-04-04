@@ -20,17 +20,12 @@ struct Unit: Entity {
     var visibility: Int
     var actionsRemaining = 2.0
 
-    static var onUnitCreate: ((Unit) -> Void)?
-    static var onUnitChanged: ((Unit) -> Void)?
-    static var onUnitDies: ((Unit) -> Void)?
-    
     init(owningPlayer: UUID, name: String, visibility: Int = 2, startPosition: AxialCoord = AxialCoord.zero) {
         self.id = UUID()
         self.owningPlayerID = owningPlayer
         self.name = name
         self.visibility = visibility
         self.position = startPosition
-        Self.onUnitCreate?(self)
     }
     
     /*func step(in world: World) {

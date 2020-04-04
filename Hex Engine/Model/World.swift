@@ -22,9 +22,9 @@ class World: ObservableObject, Codable {
     
     var onUnitRemoved: ((Unit) -> Void)?
     var onVisibilityMapUpdated: (() -> Void)?
-    var onCurrentPlayerChanged: ((Player) -> Void)?
-    var visibilityMap = [AxialCoord: Bool]()
-    var visitedMap = [AxialCoord: Bool]()
+    //var onCurrentPlayerChanged: ((Player) -> Void)?
+    //var visibilityMap = [AxialCoord: Bool]()
+    //var visitedMap = [AxialCoord: Bool]()
     
     var players = [UUID: Player]()
     var playerTurnSequence = [UUID]()
@@ -164,10 +164,8 @@ class World: ObservableObject, Codable {
     }
     
     func nextPlayer() {
-        currentPlayerIndex += 1
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.count
         assert(players.count == playerTurnSequence.count)
-        currentPlayerIndex = currentPlayerIndex % players.count
-        onCurrentPlayerChanged?(currentPlayer!)
     }
     
     func updateVisibilityForPlayer(player: Player) {
@@ -242,7 +240,6 @@ class World: ObservableObject, Codable {
         }
         
         cities[city.id] = city
-        City.onCityChanged?(city)
     }
     
     func replace(_ unit: Unit) {

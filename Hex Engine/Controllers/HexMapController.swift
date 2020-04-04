@@ -9,6 +9,7 @@
 import Foundation
 import SpriteKit
 import SwiftUI
+import Combine
 
 enum UI_State {
     case map
@@ -57,9 +58,13 @@ class HexMapController: ObservableObject {
         guiPlayer == world.currentPlayer?.id
     }
     
+    //var combineTest: CombineTest
+    private var cancellables: Set<AnyCancellable>
+    
     static let colors = [SKColor.green, SKColor.blue, SKColor.red, SKColor.yellow]
     
     init(scene: SKScene, world: World, tileWidth: Double, tileHeight: Double, tileYOffsetFactor: Double) {
+        self.cancellables = Set<AnyCancellable>()
         self.scene = scene
         self.world = world
         self.tileWidth = tileWidth
@@ -74,6 +79,8 @@ class HexMapController: ObservableObject {
             }
         }
         
+        unitController.subscribeToUnitsIn(world: world)
+        
         highlighter = SKShapeNode(circleOfRadius: CGFloat(tileWidth / 2.0))
         cityController = CityController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
         cityController.getColorForPlayerFunction = { playerID in
@@ -83,27 +90,47 @@ class HexMapController: ObservableObject {
                 return SKColor.white
             }
         }
+        cityController.subscribeToCitiesIn(world: world)
+                
+        //combineTest = CombineTest(world: world)
         
         guiPlayer = world.currentPlayer!.id
         
-        self.world.onUnitRemoved = unitController.onUnitRemoved
-        self.world.onVisibilityMapUpdated = showHideTiles
-        self.world.onCurrentPlayerChanged = { player in
-            if player.ai == nil {
-                self.guiPlayer = player.id
+        world.$cities.sink(receiveValue: { [weak self] cities in
+            guard let hc = self else {
+                return
             }
-        }
             
-        Unit.onUnitDies = world.removeUnit
+            for city in cities.values {
+                if city.id == hc.cityController.selectedCity {
+                    for coord in city.getComponent(GrowthComponent.self)?.workingTiles ?? [] {
+                        hc.tileSKSpriteNodeMap[coord]?.tintSprite(color: SKColor.green)
+                    }
+                }
+            }
+        }).store(in: &cancellables)
         
+        self.world.onVisibilityMapUpdated = showHideTiles
+        self.world.$currentPlayerIndex.sink(receiveValue: { [weak self] playerIndex in
+            guard let hc = self else {
+                return
+            }
+            
+            if let player = hc.world.players[world.playerTurnSequence[playerIndex]] {
+                if player.ai == nil {
+                    hc.guiPlayer = player.id
+                }
+            }
+        }).store(in: &cancellables)
+            
         highlighter.lineWidth = 2
         
         world.allUnits.forEach { unit in
-            Unit.onUnitCreate?(unit)
+            //Unit.onUnitCreate?(unit)
         }
         
         world.allCities.forEach { city in
-            City.onCityCreate?(city)
+            //City.onCityCreate?(city)
         }
         
         highlighter.zPosition = 0.1
@@ -157,6 +184,7 @@ class HexMapController: ObservableObject {
         tileSKSpriteNodeMap.removeAll()
         
         scene.removeAllChildren()
+        cancellables.removeAll()
     }
     
     func showMap() {
