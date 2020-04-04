@@ -61,7 +61,6 @@ struct Player: Identifiable, Hashable, Equatable, Codable {
             }
         }
         
-        //onVisibilityMapUpdated?()
         player.visibilityMap = newVisibilityMap
         return player
     }

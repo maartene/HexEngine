@@ -20,11 +20,7 @@ class World: ObservableObject, Codable {
     @Published var units = [UUID: Unit]()
     @Published var cities = [UUID: City]()
     
-    //var onUnitRemoved: ((Unit) -> Void)?
     var onVisibilityMapUpdated: (() -> Void)?
-    //var onCurrentPlayerChanged: ((Player) -> Void)?
-    //var visibilityMap = [AxialCoord: Bool]()
-    //var visitedMap = [AxialCoord: Bool]()
     
     var players = [UUID: Player]()
     var playerTurnSequence = [UUID]()
@@ -216,22 +212,7 @@ class World: ObservableObject, Codable {
         if let owningPlayer = players[unit.owningPlayerID] {
             updateVisibilityForPlayer(player: owningPlayer)
         }
-        //onUnitRemoved?(unit)
     }
-    
-    /*func replaceBuilder(_ newBuilder: Builder) {
-        guard let city = cities[newBuilder.id] else {
-            print("Unknown city \(newBuilder)")
-            return
-        }
-        
-        guard let builder = newBuilder as? City else {
-            print("Passed builder \(newBuilder) is not a city.")
-            return
-        }
-        
-        cities[city.id] = builder
-    }*/
     
     func replace(_ city: City) {
         guard cities[city.id] != nil else {

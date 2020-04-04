@@ -29,24 +29,11 @@ class HexMapController: ObservableObject {
     var tileSKSpriteNodeMap = [AxialCoord: TileSprite]()
     
     var guiPlayer: UUID
-    
-    //var tileBecameSelected: ((AxialCoord, Tile) -> Void)?
-    //var tileBecameDeselected: ((AxialCoord) -> Void)?
-    
+        
     @Published var uiState = UI_State.map
     var queuedCommands = [UUID: Command]()
     
-    @Published var selectedTile: AxialCoord? /*{
-        didSet {
-            if let oldSelectedTile = oldValue {
-                deselectTile()
-            }
-            if let newSelectedTile = selectedTile {
-                let tile = world.hexMap[newSelectedTile.q, newSelectedTile.r]
-                tileBecameSelected?(newSelectedTile, tile)
-            }
-        }
-    }*/
+    @Published var selectedTile: AxialCoord?
     
     // the highlighter is a simple shape that follow the mouse around and gives an visual feedback about what can be clicked/tapped.
     var highlighter: SKShapeNode
@@ -58,7 +45,6 @@ class HexMapController: ObservableObject {
         guiPlayer == world.currentPlayer?.id
     }
     
-    //var combineTest: CombineTest
     private var cancellables: Set<AnyCancellable>
     
     static let colors = [SKColor.green, SKColor.blue, SKColor.red, SKColor.yellow]
@@ -92,8 +78,6 @@ class HexMapController: ObservableObject {
         }
         cityController.subscribeToCitiesIn(world: world)
                 
-        //combineTest = CombineTest(world: world)
-        
         guiPlayer = world.currentPlayer!.id
         
         world.$cities.sink(receiveValue: { [weak self] cities in
@@ -124,18 +108,9 @@ class HexMapController: ObservableObject {
         }).store(in: &cancellables)
             
         highlighter.lineWidth = 2
-        
-        world.allUnits.forEach { unit in
-            //Unit.onUnitCreate?(unit)
-        }
-        
-        world.allCities.forEach { city in
-            //City.onCityCreate?(city)
-        }
-        
+                
         highlighter.zPosition = 0.1
         self.scene.addChild(highlighter)
-        //Self.instance = self
     }
     
     func setupUI(in view: SKView) -> some NSView {
@@ -207,7 +182,6 @@ class HexMapController: ObservableObject {
         //print("Players in world: \(world.players) - GUIPlayer: \(guiPlayer)")
         let player = world.players[guiPlayer]!
         world.updateVisibilityForPlayer(player: player)
-        //showHideTiles(visibilityMap: player.visibilityMap)
     }
     
     func middleOfMapInWorldSpace() -> CGPoint {
@@ -330,11 +304,7 @@ class HexMapController: ObservableObject {
             selectedTile = tile
         }
     }
-    
-    /*func tileBecameDeSelected(tile: AxialCoord) {
-        print("\(tile) was deselected.")
-    }*/
-    
+        
     func showHideTiles() {
         let player = world.players[guiPlayer]!
         

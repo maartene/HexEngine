@@ -20,8 +20,6 @@ final class UnitController: ObservableObject {
     
     @Published var selectedUnit: UUID?
     
-    //var unitBecameSelected: ((Unit) -> Void)?
-    //var unitBecameDeselected: ((UUID) -> Void)?
     var getColorForPlayerFunction: ((UUID) -> SKColor)?
     
     private var cancellables: Set<AnyCancellable>

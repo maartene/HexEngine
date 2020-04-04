@@ -28,14 +28,6 @@ struct Unit: Entity {
         self.position = startPosition
     }
     
-    /*func step(in world: World) {
-        print("step for unit \(self)")
-
-        for component in components {
-            component.step(in: world)
-        }
-    }*/
-    
     static func Rabbit(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
         var newRabbit = Unit(owningPlayer: owningPlayer, name: "Rabbit", startPosition: startPosition)
         newRabbit.components = [MovementComponent(ownerID: newRabbit.id), SettlerComponent(ownerID: newRabbit.id), HealthComponent(ownerID: newRabbit.id), AutoExploreComponent(ownerID: newRabbit.id)]
