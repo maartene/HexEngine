@@ -39,7 +39,7 @@ struct GrowthComponent: Component {
             changedComponent.yield += changedComponent.workingTiles.reduce(Tile.TileYield()) { result, coord in
                 result + getTileYield(for: coord, in: world)
             }
-            //print("Yield: \(yield)")
+//            print("Yield: \(yield)")
             changedComponent.savedFood += yield.food
             
             while changedComponent.savedFood >= foodForNextPopulation {

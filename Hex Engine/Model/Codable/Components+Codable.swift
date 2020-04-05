@@ -158,6 +158,7 @@ extension GrowthComponent {
         case population
         case savedFood
         case possibleCommands
+        case workedTiles
     }
     
     func encode(to encoder: Encoder) throws {
@@ -168,6 +169,8 @@ extension GrowthComponent {
         
         let wrappedPossibleCommands = possibleCommands.compactMap { command in try? CommandWrapper.wrapperFor(command: command) }
         try container.encode(wrappedPossibleCommands, forKey: .possibleCommands)
+        
+        try container.encode(workingTiles, forKey: .workedTiles)
     }
     
     init(from decoder: Decoder) throws {
@@ -178,6 +181,8 @@ extension GrowthComponent {
         
         let wrappedPossibleCommands = try values.decode([CommandWrapper].self, forKey: .possibleCommands)
         possibleCommands = wrappedPossibleCommands.compactMap { try? $0.command() }
+        
+        workingTiles = try values.decode([AxialCoord].self, forKey: .workedTiles)
     }
 }
 

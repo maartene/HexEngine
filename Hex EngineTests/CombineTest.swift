@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import Combine
 @testable import Hex_Engine
 
 class CombineTest: XCTestCase {
@@ -27,18 +28,70 @@ class CombineTest: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 
-    func testPerformanceExample() throws {
+    func testCombinePerformanceWhenSavingUnitChangesExample() throws {
         // This is an example of a performance test case.
-        for _ in 0 ..< 10 {
+        for _ in 0 ..< 100 {
             let unit = Unit.Rabbit(owningPlayer: world.currentPlayer!.id, startPosition: world.hexMap.getTileCoordinates().randomElement()!)
             world.addUnit(unit)
-            world.executeCommand(EnableAutoExploreCommand(ownerID: unit.id))
         }
         
+        var cancellables = Set<AnyCancellable>()
+        
+        var count = 0
+        world.$units.sink(receiveValue: { units in
+            for _ in units.values {
+                // do something
+                count += 1
+            }
+        }).store(in: &cancellables)
+        
+        var pass = 0
         self.measure {
+            pass += 1
+            print("Pass: \(pass)")
             // Put the code you want to measure the time of here.
-            world.executeCommand(NextTurnCommand(ownerID: world.currentPlayer!.id))
+            var changedUnits = world.units
+            for unit in changedUnits.values {
+                var changedUnit = unit
+                changedUnit.position = world.hexMap.getTileCoordinates().randomElement() ?? AxialCoord.zero
+                changedUnits[changedUnit.id] = changedUnit
+            }
+            world.units = changedUnits
         }
+        print("In total, received \(count) units.")
+        XCTAssertGreaterThan(count, 0)
+    }
+    
+    func testCombinePerformanceWithDirectUpdatesExample() throws {
+        // This is an example of a performance test case.
+        for _ in 0 ..< 100 {
+            let unit = Unit.Rabbit(owningPlayer: world.currentPlayer!.id, startPosition: world.hexMap.getTileCoordinates().randomElement()!)
+            world.addUnit(unit)
+        }
+        
+        var cancellables = Set<AnyCancellable>()
+        
+        var count = 0
+        world.$units.sink(receiveValue: { units in
+            for _ in units.values {
+                // do something
+                count += 1
+            }
+        }).store(in: &cancellables)
+        
+        var pass = 0
+        self.measure {
+            pass += 1
+            print("Pass: \(pass)")
+            // Put the code you want to measure the time of here.
+            for unit in world.allUnits {
+                var changedUnit = unit
+                changedUnit.position = world.hexMap.getTileCoordinates().randomElement() ?? AxialCoord.zero
+                world.replace(changedUnit)
+            }
+        }
+        print("In total, received \(count) units.")
+        XCTAssertGreaterThan(count, 0)
     }
 
 }

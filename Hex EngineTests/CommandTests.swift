@@ -120,6 +120,42 @@ class CommandTests: XCTestCase {
         XCTAssertGreaterThan(attackedRabbit.getComponent(HealthComponent.self)!.maxHitPoints, attackedRabbit.getComponent(HealthComponent.self)!.currentHitPoints)
     }
     
+    func testEnableAutoExploreCommand() throws {
+        let world = World(playerCount: 2, width: 30, height: 30, hexMapFactory: getTestMap(width:height:))
+        let coord = AxialCoord.zero
+        let rabbit = Unit.Rabbit(owningPlayer: world.currentPlayer!.id, startPosition: coord)
+        world.addUnit(rabbit)
+        
+        XCTAssertFalse(rabbit.getComponent(AutoExploreComponent.self)?.active ?? true)
+        
+        let command = EnableAutoExploreCommand(ownerID: rabbit.id)
+        world.executeCommand(command)
+        let updatedRabbit = try world.getUnitWithID(rabbit.id)
+        XCTAssertTrue(updatedRabbit.getComponent(AutoExploreComponent.self)?.active ?? false)
+        XCTAssertNotEqual(rabbit.position, updatedRabbit.position, "Rabbit should have moved by now.")
+    }
+    
+    func testDisableAutoExploreCommand() throws {
+        let world = World(playerCount: 2, width: 30, height: 30, hexMapFactory: getTestMap(width:height:))
+        let coord = AxialCoord.zero
+        let rabbit = Unit.Rabbit(owningPlayer: world.currentPlayer!.id, startPosition: coord)
+        world.addUnit(rabbit)
+        
+        XCTAssertFalse(rabbit.getComponent(AutoExploreComponent.self)?.active ?? true)
+        
+        let command = EnableAutoExploreCommand(ownerID: rabbit.id)
+        world.executeCommand(command)
+        let updatedRabbit = try world.getUnitWithID(rabbit.id)
+        XCTAssertTrue(updatedRabbit.getComponent(AutoExploreComponent.self)?.active ?? false)
+        
+        let disableCommand = DisableAutoExploreCommand(ownerID: rabbit.id)
+        world.executeCommand(disableCommand)
+        let disabledAERabbit = try world.getUnitWithID(rabbit.id)
+        XCTAssertFalse(disabledAERabbit.getComponent(AutoExploreComponent.self)?.active ?? true)
+    }
+    
+    
+    
     func testCommandCodable() throws {
         let commands: [Command] = [AttackCommand(ownerID: UUID(), targetTile: AxialCoord(q: 12, r: 26)), FoundCityCommand(ownerID: UUID()), MoveUnitCommand(ownerID: UUID(), targetTile: AxialCoord(q: -50, r: 12))]
         
