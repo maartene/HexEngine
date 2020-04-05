@@ -13,9 +13,6 @@ struct BuildComponent: Component {
     
     let possibleCommands: [Command]
     var buildQueue = [BuildCommand]()
-    var production: Double {
-        return 5
-    }
     
     init(ownerID: UUID) {
         self.ownerID = ownerID
@@ -60,7 +57,9 @@ struct BuildComponent: Component {
     }
     
     func step(in world: World) {
-        try? build(in: world, production: production)
+        if let owner = try? world.getCityWithID(ownerID) {
+            try? build(in: world, production: owner.production)
+        }
     }
 }
 
@@ -82,7 +81,7 @@ struct QueueBuildUnitCommand: Command, Codable {
             throw EntityErrors.componentNotFound(componentName: "BuildComponent")
         }
         
-        let buildUnitCommand = BuildUnitCommand(ownerID: ownerID, unitToBuildName: unitToBuildName, productionRequired: 10)
+        let buildUnitCommand = BuildUnitCommand(ownerID: ownerID, unitToBuildName: unitToBuildName)
         
         let changedBC = buildComponent.addToBuildQueue(buildUnitCommand)
         
@@ -104,7 +103,7 @@ struct BuildUnitCommand: BuildCommand, Codable {
         return Unit.allUnits[unitToBuildName, default: Unit.nullUnit]
     }
     
-    init(ownerID: UUID, unitToBuildName: String, productionRequired: Double) {
+    init(ownerID: UUID, unitToBuildName: String) {
         self.ownerID = ownerID
         self.productionRemaining = Unit.unitProductionRequirements[unitToBuildName, default: 9999999]
         self.unitToBuildName = unitToBuildName

@@ -62,7 +62,7 @@ class CommandTests: XCTestCase {
         let city = City(owningPlayer: world.currentPlayer!.id, name: "testplayer", position: AxialCoord.zero)
         world.addCity(city)
         let unitCount = world.units.count
-        let command = BuildUnitCommand(ownerID: city.id, unitToBuildName: "Snake", productionRequired: 10)
+        let command = BuildUnitCommand(ownerID: city.id, unitToBuildName: "Snake")
         world.executeCommand(command)
         XCTAssertEqual(world.units.count, unitCount + 1)
         XCTAssertTrue(world.units.contains(where: { unit in unit.value.name == "Snake" }))
