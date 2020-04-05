@@ -37,6 +37,7 @@ enum AttackCommandErrors: Error {
 
 struct AttackCommand: TileTargettingCommand, Codable {
     let title: String = "Attack"
+    let hasFilter = true
     let ownerID: UUID
     var targetTile: AxialCoord?
     let range: Int
@@ -103,6 +104,20 @@ struct AttackCommand: TileTargettingCommand, Codable {
         return owner.actionsRemaining > 0
         
         
+    }
+    
+    func getValidTargets(in world: World) throws -> [AxialCoord] {
+        let owner = try world.getUnitWithID(ownerID)
+        let player = try world.getPlayerWithID(owner.owningPlayerID)
+        
+        let validTiles =
+            player.visibilityMap.filter({ element in element.value == .visible }).map { element in element.key } // only visible tiles count
+                .filter({ coord in HexMap.distance(from: owner.position, to: coord) <= range }) // only tiles within range count
+                .filter({ coord in
+                    world.getUnitsOnTile(coord).filter( { unit in unit.owningPlayerID != player.id }).count > 0 ||
+                        world.getCityAt(coord)?.owningPlayerID ?? player.id != player.id
+                }) // only tiles with enemy units count
+        return validTiles
     }
 }
 

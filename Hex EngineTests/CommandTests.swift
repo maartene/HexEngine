@@ -114,7 +114,7 @@ class CommandTests: XCTestCase {
         
         XCTAssertEqual(rabbit.getComponent(HealthComponent.self)!.maxHitPoints, rabbit.getComponent(HealthComponent.self)?.currentHitPoints)
         
-        let command = AttackCommand(ownerID: snake.id, targetTile: AxialCoord(q: 0, r: 1))
+        let command = AttackCommand(ownerID: snake.id, targetTile: AxialCoord(q: 0, r: 1), range: 1)
         world.executeCommand(command)
         let attackedRabbit = try world.getUnitWithID(rabbit.id)
         XCTAssertGreaterThan(attackedRabbit.getComponent(HealthComponent.self)!.maxHitPoints, attackedRabbit.getComponent(HealthComponent.self)!.currentHitPoints)
@@ -157,7 +157,7 @@ class CommandTests: XCTestCase {
     
     
     func testCommandCodable() throws {
-        let commands: [Command] = [AttackCommand(ownerID: UUID(), targetTile: AxialCoord(q: 12, r: 26)), FoundCityCommand(ownerID: UUID()), MoveUnitCommand(ownerID: UUID(), targetTile: AxialCoord(q: -50, r: 12))]
+        let commands: [Command] = [AttackCommand(ownerID: UUID(), targetTile: AxialCoord(q: 12, r: 26), range: 4), FoundCityCommand(ownerID: UUID()), MoveUnitCommand(ownerID: UUID(), targetTile: AxialCoord(q: -50, r: 12))]
         
         for command in commands {
             let wrappedCommand = try CommandWrapper.wrapperFor(command: command)

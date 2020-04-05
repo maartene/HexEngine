@@ -43,4 +43,16 @@ protocol BuildCommand: Command {
 
 protocol TileTargettingCommand: Command {
     var targetTile: AxialCoord? { get set }
+    func getValidTargets(in world: World) throws -> [AxialCoord]
+    var hasFilter: Bool { get }
+}
+
+extension TileTargettingCommand {
+    var hasFilter: Bool {
+        return false
+    }
+    
+    func getValidTargets(in world: World) throws -> [AxialCoord] {
+        return []
+    }
 }

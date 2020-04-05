@@ -31,7 +31,7 @@ class HexMapController: ObservableObject {
     var guiPlayer: UUID
         
     @Published var uiState = UI_State.map
-    var queuedCommands = [UUID: Command]()
+    @Published var queuedCommands = [UUID: Command]()
     
     @Published var selectedTile: AxialCoord?
     
@@ -40,6 +40,7 @@ class HexMapController: ObservableObject {
     
     var unitController: UnitController
     var cityController: CityController
+    var lensController: LensController
     
     var guiPlayerIsCurrentPlayer: Bool {
         guiPlayer == world.currentPlayer?.id
@@ -53,6 +54,7 @@ class HexMapController: ObservableObject {
         self.cancellables = Set<AnyCancellable>()
         self.scene = scene
         self.world = world
+        guiPlayer = world.currentPlayer!.id
         self.tileWidth = tileWidth
         self.tileHeight = tileHeight
         self.tileYOffsetFactor = tileYOffsetFactor
@@ -78,7 +80,8 @@ class HexMapController: ObservableObject {
         }
         cityController.subscribeToCitiesIn(world: world)
                 
-        guiPlayer = world.currentPlayer!.id
+        lensController = LensController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
+        lensController.subscribeToCommandsIn(hexMapController: self, world: world)
         
         world.$cities.sink(receiveValue: { [weak self] cities in
             guard let hc = self else {
@@ -221,6 +224,7 @@ class HexMapController: ObservableObject {
                     ttc.targetTile = tile
                     world.executeCommand(ttc)
                     uiState = .map
+                    queuedCommands.removeValue(forKey: guiPlayer)
                 }
             }
         } else {

@@ -115,6 +115,14 @@ class World: ObservableObject, Codable {
         }
     }
     
+    func getPlayerWithID(_ id: UUID) throws -> Player {
+        if let player = players[id] {
+            return player
+        } else {
+            throw IDArrayError.indexOutOfBounds
+        }
+    }
+    
     var allUnits: [Unit] {
         return Array(units.values)
     }
