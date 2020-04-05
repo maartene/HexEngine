@@ -15,6 +15,7 @@ extension AttackComponent {
         case ownerID
         case possibleCommands
         case attackPower
+        case range
     }
     
     func encode(to encoder: Encoder) throws {
@@ -25,12 +26,14 @@ extension AttackComponent {
         try container.encode(wrappedPossibleCommands, forKey: .possibleCommands)
         
         try container.encode(attackPower, forKey: .attackPower)
+        try container.encode(range, forKey: .range)
     }
     
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         ownerID = try values.decode(UUID.self, forKey: .ownerID)
         attackPower = try values.decode(Double.self, forKey: .attackPower)
+        range = try values.decode(Int.self, forKey: .range)
         let wrappedPossibleCommands = try values.decode([CommandWrapper].self, forKey: .possibleCommands)
         possibleCommands = wrappedPossibleCommands.compactMap { try? $0.command() }
     }

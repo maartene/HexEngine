@@ -11,14 +11,15 @@ import Foundation
 struct AttackComponent: Component {
     var ownerID: UUID
     var possibleCommands: [Command]
-    
+    var range: Int
     var attackPower: Double
     
-    init(ownerID: UUID, attackPower: Double = 2) {
+    init(ownerID: UUID, attackPower: Double = 2, range: Int = 1) {
         self.ownerID = ownerID
         self.attackPower = attackPower
+        self.range = range
         
-        possibleCommands = [AttackCommand(ownerID: ownerID, targetTile: nil)]
+        possibleCommands = [AttackCommand(ownerID: ownerID, targetTile: nil, range: range)]
     }
     
     func step(in world: World) {
@@ -31,12 +32,14 @@ struct AttackComponent: Component {
 enum AttackCommandErrors: Error {
     case unitCannotAttack
     case notEnoughActionsLeftToAttack
+    case targetOutOfRange
 }
 
 struct AttackCommand: TileTargettingCommand, Codable {
     let title: String = "Attack"
-    var ownerID: UUID
+    let ownerID: UUID
     var targetTile: AxialCoord?
+    let range: Int
     
     func execute(in world: World) throws {
         let owner = try world.getUnitWithID(ownerID)
@@ -50,6 +53,10 @@ struct AttackCommand: TileTargettingCommand, Codable {
         
         guard let targetPosition = targetTile else {
             throw CommandErrors.missingTarget
+        }
+        
+        guard HexMap.distance(from: owner.position, to: targetPosition) <= range else {
+            throw AttackCommandErrors.targetOutOfRange
         }
         
         // let's see whether there is a unit on the target coord

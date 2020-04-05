@@ -36,8 +36,14 @@ struct Unit: Entity {
     
     static func Snake(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
         var newSnake = Unit(owningPlayer: owningPlayer, name: "Snake", startPosition: startPosition)
-        newSnake.components = [MovementComponent(ownerID: newSnake.id), HealthComponent(ownerID: newSnake.id), AttackComponent(ownerID: newSnake.id, attackPower: 8), AutoExploreComponent(ownerID: newSnake.id)]
+        newSnake.components = [MovementComponent(ownerID: newSnake.id), HealthComponent(ownerID: newSnake.id), AttackComponent(ownerID: newSnake.id, attackPower: 8, range: 2), AutoExploreComponent(ownerID: newSnake.id)]
         return newSnake
+    }
+    
+    static func Crocodile(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
+        var newCrocodile = Unit(owningPlayer: owningPlayer, name: "Crocodile", startPosition: startPosition)
+        newCrocodile.components = [MovementComponent(ownerID: newCrocodile.id), HealthComponent(ownerID: newCrocodile.id), AttackComponent(ownerID: newCrocodile.id, attackPower: 8), AutoExploreComponent(ownerID: newCrocodile.id)]
+        return newCrocodile
     }
     
     static func Narwhal(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
@@ -62,6 +68,6 @@ struct Unit: Entity {
         return Unit(owningPlayer: owningPlayer, name: "Null Unit", startPosition: startPosition)
     }
     
-    static let allUnits = ["Narwhal": Unit.Narwhal, "Rabbit": Unit.Rabbit, "Snake": Unit.Snake, "Reindeer": Unit.Reindeer]
-    static let unitProductionRequirements: [String: Double] = ["Narwhal": 15, "Rabbit": 10, "Snake": 5, "Reindeer": 20]
+    static let allUnits = ["Narwhal": Unit.Narwhal, "Rabbit": Unit.Rabbit, "Snake": Unit.Snake, "Reindeer": Unit.Reindeer, "Crocodile": Unit.Crocodile]
+    static let unitProductionRequirements: [String: Double] = ["Narwhal": 15, "Rabbit": 10, "Snake": 5, "Reindeer": 20, "Crocodile": 10]
 }
