@@ -8,12 +8,6 @@
 
 import Foundation
 
-/*protocol Commander {
-    var id: UUID { get }
-    var owningPlayerID: UUID { get }
-    var position: AxialCoord { get set }
-}*/
-
 enum CommandErrors: Error {
     case cannotExecute
     case missingTarget          // maybe move to seperate enum for TileTargettingCommands

@@ -20,9 +20,9 @@ final class UnitController: ObservableObject {
     
     @Published var selectedUnit: UUID?
     
-    var unitBecameSelected: ((Unit) -> Void)?
-    var unitBecameDeselected: ((UUID) -> Void)?
     var getColorForPlayerFunction: ((UUID) -> SKColor)?
+    
+    private var cancellables: Set<AnyCancellable>
     
     var pathIndicator: SKShapeNode? {
         didSet {
@@ -33,17 +33,43 @@ final class UnitController: ObservableObject {
     }
     
     init(with scene: SKScene, tileWidth: Double, tileHeight: Double, tileYOffsetFactor: Double) {
+        self.cancellables = Set<AnyCancellable>()
         self.scene = scene
         self.tileWidth = tileWidth
         self.tileHeight = tileHeight
         self.tileYOffsetFactor = tileYOffsetFactor
-        
-        Unit.onUnitCreate = onUnitCreate
-        Unit.onUnitChanged = onUnitChanged
-        Unit.onUnitDies = onUnitRemoved
     }
     
-    func onUnitCreate(unit: Unit) {
+    func subscribeToUnitsIn(world: World) {
+        world.$units.sink(receiveCompletion: { completion in
+            print("Print UnitController received completion \(completion) from world.units")
+        }, receiveValue: { [weak self] units in
+            // there are three cases
+            
+            for unitID in units.keys {
+                
+                // case 1: unit is known to both UnitController and World:
+                if self?.unitSpriteMap[unitID] != nil, let unit = units[unitID]{
+                    self?.updateUnitSprite(unit: unit)
+                }
+            
+                // case 2: unit is known to world, but not yet to UnitController
+                if self?.unitSpriteMap[unitID] == nil, let unit = units[unitID] {
+                    self?.createUnitSprite(unit: unit)
+                }
+            }
+            
+            // case 3: the final case is where a unit is known to the UnitController, but not the world
+            // i.e. when the unit is removed
+            for unitID in (self?.unitSpriteMap ?? [UUID: UnitSprite]()).keys {
+                if units[unitID] == nil {
+                    self?.removeUnitSprite(unitID: unitID)
+                }
+            }
+            }).store(in: &cancellables)
+    }
+    
+    func createUnitSprite(unit: Unit) {
         print("Creating sprite for unit \(unit.name) (\(unit.id))")
         // find a resource for the unit
         let color = getColorForPlayerFunction?(unit.owningPlayerID) ?? SKColor.white
@@ -62,7 +88,7 @@ final class UnitController: ObservableObject {
     
     
     
-    func onUnitChanged(unit: Unit) {
+    func updateUnitSprite(unit: Unit) {
         // find the sprite for the unit
         guard let sprite = unitSpriteMap[unit.id] else {
             print("No sprite for unit \(unit) found).")
@@ -71,11 +97,18 @@ final class UnitController: ObservableObject {
         
         // for now, changes are the only thing we care about
         sprite.position = HexMapController.hexToPixel(unit.position, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
+        
+        // check whether the sprite is dead
+        if let hc = unit.getComponent(HealthComponent.self) {
+            if hc.isDead {
+                removeUnitSprite(unitID: unit.id)
+            }
+        }
     }
     
-    func onUnitRemoved(unit: Unit) {
+    func removeUnitSprite(unitID: UUID) {
         // find the sprite for the unit
-        if let sprite = unitSpriteMap.removeValue(forKey: unit.id) {
+        if let sprite = unitSpriteMap.removeValue(forKey: unitID) {
             scene.removeChildren(in: [sprite])
         }
     }
@@ -102,7 +135,7 @@ final class UnitController: ObservableObject {
         }
         
         selectedUnit = unit.id
-        unitBecameSelected?(unit)
+        //unitBecameSelected?(unit)
         
     }
     
@@ -110,7 +143,7 @@ final class UnitController: ObservableObject {
         pathIndicator = nil
         
         if let selectedUnitID = selectedUnit {
-            unitBecameDeselected?(selectedUnitID)
+            //unitBecameDeselected?(selectedUnitID)
             if let previousSelectedUnit = unitSpriteMap[selectedUnitID] {
                 previousSelectedUnit.deselect()
                 if uiState == .map { selectedUnit = nil }
@@ -153,9 +186,7 @@ final class UnitController: ObservableObject {
             unitSprite.removeAllChildren()
         }
         unitSpriteMap.removeAll()
-        Unit.onUnitCreate = nil
-        Unit.onUnitChanged = nil
-        Unit.onUnitDies = nil
+        cancellables.removeAll()
     }
         
 }

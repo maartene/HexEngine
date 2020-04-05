@@ -45,6 +45,7 @@
 		DEB540FC236DC08E00D03062 /* CommandWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB540FB236DC08E00D03062 /* CommandWrapper.swift */; };
 		DEC545952427865300D68FDE /* AutoExploreComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC545942427865300D68FDE /* AutoExploreComponent.swift */; };
 		DECCAD8422665E7C002D820E /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECCAD8322665E7C002D820E /* Double+Extension.swift */; };
+		DED64EC324387AE800330556 /* CombineTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED64EC224387AE800330556 /* CombineTest.swift */; };
 		DEEB5F622428B18B00669C95 /* TestUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB5F612428B18B00669C95 /* TestUtilities.swift */; };
 		DEEB5F642428CE7100669C95 /* ComponentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB5F632428CE7100669C95 /* ComponentTests.swift */; };
 		DEEDE7AD23816193005E7613 /* PlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEDE7AC23816193005E7613 /* PlayerTests.swift */; };
@@ -114,6 +115,7 @@
 		DEB540FB236DC08E00D03062 /* CommandWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandWrapper.swift; sourceTree = "<group>"; };
 		DEC545942427865300D68FDE /* AutoExploreComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoExploreComponent.swift; sourceTree = "<group>"; };
 		DECCAD8322665E7C002D820E /* Double+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extension.swift"; sourceTree = "<group>"; };
+		DED64EC224387AE800330556 /* CombineTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineTest.swift; sourceTree = "<group>"; };
 		DEEB5F612428B18B00669C95 /* TestUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestUtilities.swift; sourceTree = "<group>"; };
 		DEEB5F632428CE7100669C95 /* ComponentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentTests.swift; sourceTree = "<group>"; };
 		DEEDE7AC23816193005E7613 /* PlayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerTests.swift; sourceTree = "<group>"; };
@@ -206,6 +208,7 @@
 				DEEB5F632428CE7100669C95 /* ComponentTests.swift */,
 				DEB0A4DA242A0FC6004E11DF /* UnitTests.swift */,
 				DEB0A4DC242A118A004E11DF /* EntityTests.swift */,
+				DED64EC224387AE800330556 /* CombineTest.swift */,
 			);
 			path = "Hex EngineTests";
 			sourceTree = "<group>";
@@ -459,6 +462,7 @@
 				DEB0A4DD242A118A004E11DF /* EntityTests.swift in Sources */,
 				DE13AD202257DF5800136AFE /* Hex_EngineTests.swift in Sources */,
 				DEB0A4DB242A0FC6004E11DF /* UnitTests.swift in Sources */,
+				DED64EC324387AE800330556 /* CombineTest.swift in Sources */,
 				DEEB5F642428CE7100669C95 /* ComponentTests.swift in Sources */,
 				DE75E386235B416F0018F1F9 /* CommandTests.swift in Sources */,
 			);

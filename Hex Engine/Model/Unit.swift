@@ -20,26 +20,13 @@ struct Unit: Entity {
     var visibility: Int
     var actionsRemaining = 2.0
 
-    static var onUnitCreate: ((Unit) -> Void)?
-    static var onUnitChanged: ((Unit) -> Void)?
-    static var onUnitDies: ((Unit) -> Void)?
-    
     init(owningPlayer: UUID, name: String, visibility: Int = 2, startPosition: AxialCoord = AxialCoord.zero) {
         self.id = UUID()
         self.owningPlayerID = owningPlayer
         self.name = name
         self.visibility = visibility
         self.position = startPosition
-        Self.onUnitCreate?(self)
     }
-    
-    /*func step(in world: World) {
-        print("step for unit \(self)")
-
-        for component in components {
-            component.step(in: world)
-        }
-    }*/
     
     static func Rabbit(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
         var newRabbit = Unit(owningPlayer: owningPlayer, name: "Rabbit", startPosition: startPosition)

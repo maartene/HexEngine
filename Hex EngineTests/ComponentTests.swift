@@ -24,13 +24,14 @@ class ComponentTests: XCTestCase {
         unitWithAllComponents.components = [AttackComponent(ownerID: unitID),
                                             HealthComponent(ownerID: unitID),
                                             MovementComponent(ownerID: unitID),
-                                            SettlerComponent(ownerID: unitID)]
+                                            SettlerComponent(ownerID: unitID),
+                                            AutoExploreComponent(ownerID: unitID)]
         
         world.addUnit(unitWithAllComponents)
         
         cityWithAllComponents = City(owningPlayer: world.currentPlayer!.id, name: "CityWithAllComponents", position: AxialCoord.zero)
-        let cityID = cityWithAllComponents.id
-        cityWithAllComponents.components = [BuildComponent(ownerID: cityID)]
+        // let cityID = cityWithAllComponents.id
+        // cityWithAllComponents.components = [BuildComponent(ownerID: cityID)]
         world.addCity(cityWithAllComponents)
     }
 
@@ -82,11 +83,13 @@ class ComponentTests: XCTestCase {
     }
     
     func testBuildComponent() throws {
+        world.nextTurn()
+        cityWithAllComponents = try world.getCityWithID(cityWithAllComponents.id)
         if var buildComponent = cityWithAllComponents.getComponent(BuildComponent.self) {
-            
             // this test assumes the buildComponent has a production of at least 1
-            XCTAssertGreaterThanOrEqual(buildComponent.production, 1)
-            let command = BuildUnitCommand(ownerID: buildComponent.ownerID, unitToBuildName: "Rabbit", productionRequired: buildComponent.production + 1)
+            XCTAssertGreaterThanOrEqual(cityWithAllComponents.production, 1)
+            var command = BuildUnitCommand(ownerID: buildComponent.ownerID, unitToBuildName: "Rabbit")
+            command.productionRemaining = cityWithAllComponents.production + 1
             
             // entries in buildQueue should increase from 0 to 1
             XCTAssertEqual(buildComponent.buildQueue.count, 0)
@@ -95,17 +98,19 @@ class ComponentTests: XCTestCase {
             
             cityWithAllComponents.replaceComponent(component: buildComponent)
             world.replace(cityWithAllComponents)
-            
             let unitsInWorld = world.units.count
             
             // Production remaining for command in build queue should decrease
             let productionRemainingBefore = buildComponent.buildQueue.first!.productionRemaining
-            buildComponent.step(in: world)
+            world.nextTurn()
             buildComponent = try world.getCityWithID(cityWithAllComponents.id).getComponent(BuildComponent.self)!
             XCTAssertLessThan(buildComponent.buildQueue.first!.productionRemaining, productionRemainingBefore)
             
-            buildComponent.step(in: world)
+            world.nextTurn()
             buildComponent = try world.getCityWithID(cityWithAllComponents.id).getComponent(BuildComponent.self)!
+            let updatedCity = try world.getCityWithID(cityWithAllComponents.id)
+            XCTAssertGreaterThan(updatedCity.production, 0)
+            //print("Production remaining: \(buildComponent.buildQueue.first!.productionRemaining)")
             // Unit should be done
             XCTAssertEqual(buildComponent.buildQueue.count, 0)
             XCTAssertGreaterThan(world.units.count, unitsInWorld)
@@ -114,6 +119,47 @@ class ComponentTests: XCTestCase {
         }
     }
     
+    func testAutoExploreComponent() throws {
+        if var aec = unitWithAllComponents.getComponent(AutoExploreComponent.self) {
+            aec.active = true
+            
+            XCTAssertEqual(unitWithAllComponents.getComponent(MovementComponent.self)?.path.count ?? -1, 0, "There shouldn't be a path.")
+            
+            unitWithAllComponents.replaceComponent(component: aec)
+            world.replace(unitWithAllComponents)
+            
+            aec.step(in: world)
+            
+            let updatedUnit = try world.getUnitWithID(unitWithAllComponents.id)
+            
+            XCTAssertGreaterThan(updatedUnit.getComponent(MovementComponent.self)?.path.count ?? 0, 0, "There should now be a path.")
+            XCTAssertNotEqual(unitWithAllComponents.position, updatedUnit.position, "Positions should not be the same.")
+        }
+    }
+    
+    func testGrowthComponent() throws {
+        if let gc = cityWithAllComponents.getComponent(GrowthComponent.self) {
+            XCTAssertEqual(cityWithAllComponents.population, gc.population)
+            XCTAssertEqual(cityWithAllComponents.savedFood, 0)
+            
+            gc.step(in: world)
+            var updatedCity = try world.getCityWithID(cityWithAllComponents.id)
+            XCTAssertGreaterThan(updatedCity.getComponent(GrowthComponent.self)?.workingTiles.count ?? 0, 0)
+            
+            updatedCity.step(in: world)
+            updatedCity = try world.getCityWithID(cityWithAllComponents.id)
+            XCTAssertGreaterThan(updatedCity.savedFood, 0)
+            
+            for _ in 0 ..< 1000 {
+                updatedCity.step(in: world)
+                updatedCity = try world.getCityWithID(cityWithAllComponents.id)
+            }
+            
+            updatedCity = try world.getCityWithID(cityWithAllComponents.id)
+            print("Final population: \(updatedCity.population)")
+            XCTAssertGreaterThan(updatedCity.population, cityWithAllComponents.population, "Population should be larger by now.")
+        }
+    }
     
     
     func testComponentCodable() throws {

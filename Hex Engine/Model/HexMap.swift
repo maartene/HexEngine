@@ -40,8 +40,6 @@ struct HexMap: Codable {
     let width: Int
     let height: Int
     
-    //var tileDidChangedEventHandlers = [(tile: AxialCoord, oldValue: Tile?, newValue: Tile) -> Void]()
-    
     private var tiles = [AxialCoord: Tile]()
     
     init(width: Int, height: Int) {
@@ -237,7 +235,7 @@ struct HexMap: Codable {
         return Array(visited)
     }
     
-    // GameplayKit Pathfinding
+    // MARK: GameplayKit Pathfinding
     
     // we use this function to rebuild the pathfinding graph. this is required for instance
     // when terrain changes. 

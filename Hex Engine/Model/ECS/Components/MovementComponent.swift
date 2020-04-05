@@ -48,7 +48,6 @@ struct MovementComponent : Component {
             }
         }
         owner.replaceComponent(component: updatedComponent)
-        Unit.onUnitChanged?(owner)
         return owner
     }
     
