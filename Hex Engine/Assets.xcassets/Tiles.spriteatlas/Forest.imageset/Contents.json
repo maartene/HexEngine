@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Unknown.png",
+      "filename" : "Forest.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Unknown@2x.png",
+      "filename" : "Forest@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Unknown@3x.png",
+      "filename" : "Forest@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
