@@ -38,6 +38,10 @@ final class WorldBox: ObservableObject {
     }
     
     func executeCommand(_ command: Command) {
+        if isUpdating {
+            return
+        }
+        
         let updatedWorld = world.executeCommand(command)
         world = updatedWorld.updateVisibilityForPlayer(player: updatedWorld.currentPlayer!)
     }

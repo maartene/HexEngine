@@ -20,7 +20,7 @@ struct World: Codable {
     var units = [UUID: Unit]()
     var cities = [UUID: City]()
     
-    var onVisibilityMapUpdated: (() -> Void)?
+    //var onVisibilityMapUpdated: (() -> Void)?
     
     var players = [UUID: Player]()
     var playerTurnSequence = [UUID]()
@@ -171,7 +171,6 @@ struct World: Codable {
             
             assert(updatedWorld.players.keys.contains(player.id))
             updatedWorld = updatedWorld.updateVisibilityForPlayer(player: player)
-            //updatedWorld.players[player.id] = player.calculateVisibility(in: updatedWorld)
             
             if let ai = player.ai {
                 updatedWorld = ai.performTurn(for: player.id, in: updatedWorld)
@@ -179,8 +178,6 @@ struct World: Codable {
         }
         
         return updatedWorld
-        
-        //onVisibilityMapUpdated?()
     }
     
     func nextPlayer() -> World {
