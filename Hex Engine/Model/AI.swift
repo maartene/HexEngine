@@ -28,7 +28,8 @@ extension AI {
             changedWorld = self.decide(for: player, in: changedWorld)
             
           //  DispatchQueue.main.async {
-            return changedWorld.nextTurn()
+            //return changedWorld.nextTurn()
+            return changedWorld
           //  }
         //}
     }

@@ -17,7 +17,7 @@ final class LensController {
     let tileYOffsetFactor: Double
 
     var coordSpriteMap = [AxialCoord: LensSprite]()
-    var world: World!
+    var boxedWorld: WorldBox!
     //var getColorForPlayerFunction: ((UUID) -> SKColor)?
 
     private var cancellables: Set<AnyCancellable>
@@ -30,9 +30,10 @@ final class LensController {
         self.tileYOffsetFactor = tileYOffsetFactor
     }
 
-    func subscribeToCommandsIn(hexMapController: HexMapController, world: World) {
-        self.world = world
+    func subscribeToCommandsIn(hexMapController: HexMapController, boxedWorld: WorldBox) {
+        self.boxedWorld = boxedWorld
         hexMapController.$queuedCommands.sink(receiveValue: { [weak self] commands in
+            //print("update lens")
             self?.resetLens()
             
             if let currentCommand = commands.first {
@@ -53,7 +54,7 @@ final class LensController {
     func displayLensFor(_ command: Command) {
         if let ttc = command as? TileTargettingCommand {
             if ttc.hasFilter {
-                if let coordsToMark = try? ttc.getValidTargets(in: world) {
+                if let coordsToMark = try? ttc.getValidTargets(in: boxedWorld.world) {
                     for coord in coordsToMark {
                         let sprite = LensSprite(hexPosition: coord)
                         sprite.tintSprite(color: ttc.lensColor)

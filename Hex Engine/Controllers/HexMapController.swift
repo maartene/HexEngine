@@ -81,7 +81,7 @@ class HexMapController: ObservableObject {
         
                 
         lensController = LensController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
-        lensController.subscribeToCommandsIn(hexMapController: self, world: world)
+        lensController.subscribeToCommandsIn(hexMapController: self, boxedWorld: boxedWorld)
         
         unitController.subscribeToUnitsIn(boxedWorld: boxedWorld, hexMapController: self)
         cityController.subscribeToCitiesIn(boxedWorld: boxedWorld)
@@ -223,7 +223,7 @@ class HexMapController: ObservableObject {
             if let command = queuedCommands[guiPlayer] {
                 if var ttc = command as? TileTargettingCommand {
                     ttc.targetTile = tile
-                    boxedWorld.world.executeCommand(ttc)
+                    boxedWorld.executeCommand(ttc)
                     uiState = .map
                     queuedCommands.removeValue(forKey: guiPlayer)
                 }

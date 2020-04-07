@@ -27,6 +27,12 @@ final class WorldBox: ObservableObject {
                 print("Update done!")
                 self.world = updatedWorld
                 self.isUpdating = false
+                
+                // if currentPlayer is an AI, then we need to press "Next Turn" for it.
+                if self.world.currentPlayer?.ai != nil{
+                    //self.world = aiPlayer.performTurn(for: self.world.currentPlayer!.id, in: self.world)
+                    self.nextTurn()
+                }
             }
         }
     }

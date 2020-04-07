@@ -30,7 +30,7 @@ struct BuildComponent: Component {
         }
         var updatedWorld = world
         
-        var changedCity = try world.getCityWithID(buildQueue[0].ownerID)
+        var changedCity = try updatedWorld.getCityWithID(buildQueue[0].ownerID)
         
         var changedBuildComponent = self
         var changedBuildQueue = buildQueue
@@ -40,7 +40,7 @@ struct BuildComponent: Component {
         print("Added \(production) production. \(itemToBuild.productionRemaining) production remaining.")
     
         if itemToBuild.productionRemaining <= 0 {
-            updatedWorld = try itemToBuild.execute(in: world)
+            updatedWorld = try itemToBuild.execute(in: updatedWorld)
         } else {
             changedBuildQueue.insert(itemToBuild, at: 0)
         }
@@ -60,7 +60,12 @@ struct BuildComponent: Component {
     
     func step(in world: World) -> World {
         if let owner = try? world.getCityWithID(ownerID) {
-            return (try? build(in: world, production: owner.production)) ?? world
+            do {
+                return try build(in: world, production: owner.production)
+            } catch {
+                print(error)
+                return world
+            }
         }
         return world
     }
