@@ -16,7 +16,7 @@ protocol AI: Codable {
 extension AI {
     // default implementation of a "brainless AI".
     func performTurn(for playerID: UUID, in world: World) {
-        DispatchQueue.global().async {
+        //DispatchQueue.global().async {
             guard let player = world.players[playerID] else {
                 print("Player with id \(playerID) not found in world.")
                 return
@@ -27,10 +27,10 @@ extension AI {
             // skip turn (do nothing)
             self.decide(for: player, in: world)
             
-            DispatchQueue.main.async {
+          //  DispatchQueue.main.async {
                 world.nextTurn()
-            }
-        }
+          //  }
+        //}
     }
     
     func decide(for player: Player, in world: World) {

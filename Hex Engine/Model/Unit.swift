@@ -20,7 +20,7 @@ struct Unit: Entity {
     var visibility: Int
     var actionsRemaining = 2.0
 
-    init(owningPlayer: UUID, name: String, visibility: Int = 2, startPosition: AxialCoord = AxialCoord.zero) {
+    init(owningPlayer: UUID, name: String, visibility: Int = 1, startPosition: AxialCoord = AxialCoord.zero) {
         self.id = UUID()
         self.owningPlayerID = owningPlayer
         self.name = name
@@ -53,7 +53,7 @@ struct Unit: Entity {
     }
     
     static func Reindeer(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
-        var newReindeer = Unit(owningPlayer: owningPlayer, name: "Reindeer", startPosition: startPosition)
+        var newReindeer = Unit(owningPlayer: owningPlayer, name: "Reindeer", visibility: 1, startPosition: startPosition)
         var movementCosts = Tile.defaultCostsToEnter
         movementCosts[.Forest] = 0.5
         movementCosts[.Grass] = 0.75

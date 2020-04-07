@@ -33,6 +33,7 @@ class HexMapScene: SKScene {
         }
         
         let world = World(playerCount: 4, width: 84, height: 54, hexMapFactory: WorldFactory.CreateWorld)
+        //let world = World(playerCount: 4, width: 42, height: 27, hexMapFactory: WorldFactory.CreateWorld)
         
         hexMapController = HexMapController(scene: self, world: world, tileWidth: 120.0, tileHeight: 140.0, tileYOffsetFactor: 0.74)
         
@@ -189,6 +190,13 @@ class HexMapScene: SKScene {
         if event.keyCode == 125 {
             if let camera = camera {
                 camera.position = camera.position + CGPoint(x: 0, y: -cameraMoveDistance)
+            }
+        }
+        
+        // 'F' key
+        if event.keyCode == 3 {
+            if let camera = camera {
+                camera.position = hexMapController.middleOfMapInWorldSpace()
             }
         }
     }

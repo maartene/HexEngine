@@ -28,7 +28,7 @@ class HexMapController: ObservableObject {
 
     var tileSKSpriteNodeMap = [AxialCoord: TileSprite]()
     
-    var guiPlayer: UUID
+    @Published var guiPlayer: UUID
         
     @Published var uiState = UI_State.map
     @Published var queuedCommands = [UUID: Command]()
@@ -58,7 +58,7 @@ class HexMapController: ObservableObject {
         self.tileWidth = tileWidth
         self.tileHeight = tileHeight
         self.tileYOffsetFactor = tileYOffsetFactor
-        unitController = UnitController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
+        unitController = UnitController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor, guiPlayer: world.currentPlayer!.id)
         unitController.getColorForPlayerFunction = { playerID in
             if let playerIndex = world.playerTurnSequence.firstIndex(of: playerID) {
                 return HexMapController.colors[playerIndex]
@@ -67,7 +67,7 @@ class HexMapController: ObservableObject {
             }
         }
         
-        unitController.subscribeToUnitsIn(world: world)
+        
         
         highlighter = SKShapeNode(circleOfRadius: CGFloat(tileWidth / 2.0))
         cityController = CityController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
@@ -82,6 +82,8 @@ class HexMapController: ObservableObject {
                 
         lensController = LensController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
         lensController.subscribeToCommandsIn(hexMapController: self, world: world)
+        
+        unitController.subscribeToUnitsIn(world: world, hexMapController: self)
         
         world.$cities.sink(receiveValue: { [weak self] cities in
             guard let hc = self else {
@@ -207,6 +209,8 @@ class HexMapController: ObservableObject {
             }
         } else if let tileNode = node as? TileSprite {
             return tileNode.hexPosition
+        } else if let lensNode = node as? LensSprite {
+            return lensNode.hexPosition
         }
         return nil
     }

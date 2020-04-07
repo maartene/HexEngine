@@ -21,4 +21,10 @@ extension CGPoint {
     static prefix func -(point: CGPoint) -> CGPoint {
         return CGPoint(x: -point.x, y: -point.y)
     }
+    
+    var sqrMagnitude: CGFloat {
+        let xx = self.x * self.x
+        let yy = self.y * self.y
+        return xx + yy
+    }
 }

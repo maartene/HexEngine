@@ -81,12 +81,22 @@ class World: ObservableObject, Codable {
         
         let narwhal = Unit.Narwhal(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 2, r: 1))
         units[narwhal.id] = narwhal
-	        
+        
+        let anotherRabbit = Unit.Reindeer(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: -1))
+        units[anotherRabbit.id] = anotherRabbit
+        
         if playerCount > 1 {
             // TESTING only: add another rabbit (with a different owner to the map
             let anotherUnit = Unit.Rabbit(owningPlayer: playerTurnSequence[1], startPosition: AxialCoord(q: -1, r: -1))
             units[anotherUnit.id] = anotherUnit
         }
+        
+        /*for _ in 0 ..< 100 {
+            let newUnit = Unit.Rabbit(owningPlayer: players.randomElement()!.key, startPosition: hexMap.getTileCoordinates().randomElement() ?? AxialCoord.zero)
+            units[newUnit.id] = newUnit
+            let command = EnableAutoExploreCommand(ownerID: newUnit.id)
+            executeCommand(command)
+        }*/
         
         // TESTING only: add a city with a fixed command
         let city = City(owningPlayer: currentPlayer!.id, name: "New City", position: AxialCoord(q: 1, r: 1), isCapital: true)
@@ -134,6 +144,7 @@ class World: ObservableObject, Codable {
     func nextTurn() {
         nextPlayer()
         // process current player
+        
         if let player = currentPlayer {
             // gives units new action points
             for unit in units.values.filter({$0.owningPlayerID == player.id}) {

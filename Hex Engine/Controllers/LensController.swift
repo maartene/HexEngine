@@ -16,7 +16,7 @@ final class LensController {
     let tileHeight: Double
     let tileYOffsetFactor: Double
 
-    var coordSpriteMap = [AxialCoord: SKShapeNode]()
+    var coordSpriteMap = [AxialCoord: LensSprite]()
     var world: World!
     //var getColorForPlayerFunction: ((UUID) -> SKColor)?
 
@@ -55,10 +55,9 @@ final class LensController {
             if ttc.hasFilter {
                 if let coordsToMark = try? ttc.getValidTargets(in: world) {
                     for coord in coordsToMark {
-                        let sprite = SKShapeNode(circleOfRadius: CGFloat(tileWidth / 2.0))
+                        let sprite = LensSprite(hexPosition: coord)
+                        sprite.tintSprite(color: ttc.lensColor)
                         sprite.position = HexMapController.hexToPixel(coord, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
-                        sprite.fillColor = SKColor(calibratedRed: 1.0, green: 0.0, blue: 0.0, alpha: 0.5)
-                        sprite.strokeColor = SKColor.red
                         sprite.zPosition = 100
                         coordSpriteMap[coord] = sprite
                         scene.addChild(sprite)
@@ -71,5 +70,11 @@ final class LensController {
     func reset() {
         resetLens()
         cancellables.removeAll()
+    }
+}
+
+extension AttackCommand {
+    var lensColor: SKColor {
+        return SKColor.red
     }
 }

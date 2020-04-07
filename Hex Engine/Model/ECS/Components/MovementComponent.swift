@@ -19,6 +19,8 @@ struct MovementComponent : Component {
     var tileCoordToNodeMap = [AxialCoord : HexGraphNode]()
     var path = [AxialCoord]()
     
+    var visitedTilesDuringTurn = [AxialCoord]()
+    
     let possibleCommands: [Command]
     
     init(ownerID: UUID, movementCosts: [Tile: Double] = Tile.defaultCostsToEnter) {
@@ -31,6 +33,7 @@ struct MovementComponent : Component {
     func move(in world: World) throws -> Unit {
         var owner = try world.getUnitWithID(ownerID)
         var updatedComponent = self
+        updatedComponent.visitedTilesDuringTurn.removeAll()
         
         while owner.actionsRemaining > 0 && updatedComponent.path.count > 0 {
             if updatedComponent.path.first! == owner.position {
@@ -44,6 +47,7 @@ struct MovementComponent : Component {
                 } else {
                     owner.actionsRemaining -= updatedComponent.movementCosts[tile, default: 0]
                 }
+                updatedComponent.visitedTilesDuringTurn.append(nextStep)
                 owner.position = nextStep
             }
         }
@@ -79,7 +83,10 @@ struct MoveUnitCommand: TileTargettingCommand, Codable {
     var targetTile: AxialCoord?
     
     func execute(in world: World) throws {
-        var owner = try world.getUnitWithID(ownerID)
+        guard var owner = try? world.getUnitWithID(ownerID) else {
+            return
+        }
+        
         guard var moveComponent = owner.getComponent(MovementComponent.self) else {
             return
         }
@@ -94,11 +101,12 @@ struct MoveUnitCommand: TileTargettingCommand, Codable {
             city.position
         }
         
+        
         let pathfindingResult = world.hexMap.rebuildPathFindingGraph(movementCosts: moveComponent.movementCosts, additionalEnterableTiles: friendlyCityLocations)
         moveComponent.pathfindingGraph = pathfindingResult.graph
         moveComponent.tileCoordToNodeMap = pathfindingResult.tileCoordToNodeMap
-        
-        guard let targetPosition = targetTile else {
+
+        guard let targetPosition = self.targetTile else {
             throw CommandErrors.missingTarget
         }
         

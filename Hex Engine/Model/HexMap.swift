@@ -12,10 +12,12 @@ import GameplayKit
 
 struct HexMap: Codable {
     
-    /*enum CodingKeys: CodingKey {
-        case tiles
+    enum MapWrapType: Int, Codable {
+        case none
+        case horizontal
     }
     
+    /*
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(tiles, forKey: .tiles)
@@ -39,20 +41,25 @@ struct HexMap: Codable {
     
     let width: Int
     let height: Int
+    let wrapType: MapWrapType
     
     private var tiles = [AxialCoord: Tile]()
     
-    init(width: Int, height: Int) {
+    func qOffsetFor(row: Int) -> Int {
+        return (Double(row) / 2.0).roundToZero()
+    }
+    
+    init(width: Int, height: Int, mapWrapType: MapWrapType = .none) {
         self.width = width;
         self.height = height;
-        
+        self.wrapType = mapWrapType
         
         let halfR = height / 2
         let halfQ = (width / 2)
         
         for r in -halfR ... halfR {
             
-            for q in (-halfQ - (Double(r) / 2.0).roundToZero()) ... (halfQ - (Double(r) / 2.0).roundToZero()) {
+            for q in (-halfQ - qOffsetFor(row: r)) ... (halfQ - qOffsetFor(row: r)) {
                     self[q, r] = .void
             }
         }
@@ -64,11 +71,13 @@ struct HexMap: Codable {
     
     subscript(tile: AxialCoord) -> Tile {
         get {
-            if indexIsValid(q: tile.q, r: tile.r) {
+            let wrappedCoord = toWrappedCoord(tile)
+            return tiles[wrappedCoord, default: .void]
+            /*if indexIsValid(q: tile.q, r: tile.r) {
                 return tiles[tile] ?? .void
             } else {
                 return .void
-            }
+            }*/
         }
         set {
             //let oldValue = tiles[tile]
@@ -222,7 +231,7 @@ struct HexMap: Codable {
             fringes.append(Set<CubeCoord>())
             for hex in fringes[k - 1] {
                 for dir in 0 ..< 6 {
-                    let neighbourCube = HexMap.cubeNeighbourCoord(tile: hex, directionIndex: dir)
+                    let neighbourCube = toWrappedCoord(HexMap.cubeNeighbourCoord(tile: hex, directionIndex: dir).toAxial()).toCube()
                     let neighbourHexCoord = neighbourCube.toAxial()
                     let tile = self[neighbourHexCoord.q, neighbourHexCoord.r]
                     if visited.contains(neighbourCube) == false && movementCosts[tile, default: -1] >=	 0 {
@@ -233,6 +242,26 @@ struct HexMap: Codable {
             }
         }
         return Array(visited)
+    }
+    
+    func toWrappedCoord(_ coord: AxialCoord) -> AxialCoord {
+        switch wrapType {
+        case .none:
+            return coord
+        case .horizontal:
+            let halfQ = width / 2
+            if coord.q < -halfQ - qOffsetFor(row: coord.r) {
+                return AxialCoord(q: halfQ - qOffsetFor(row: coord.r), r: coord.r)
+            } else if coord.q > halfQ - qOffsetFor(row: coord.r) {
+                return AxialCoord(q: -halfQ - qOffsetFor(row: coord.r), r: coord.r)
+            } else {
+                return coord
+            }
+        }
+    }
+    
+    func toWrappedCoordinates(_ coords: [AxialCoord]) -> [AxialCoord] {
+        coords.map { toWrappedCoord($0) }
     }
     
     // MARK: GameplayKit Pathfinding
@@ -262,7 +291,8 @@ struct HexMap: Codable {
             let node = $0
             let coord = $0.hexMapCoordinate
             
-            let neighbours = HexMap.getAxialNeighbourCoordinates(tile: coord)
+            let rawNeighbours = HexMap.getAxialNeighbourCoordinates(tile: coord)
+            let neighbours = toWrappedCoordinates(rawNeighbours)
             
             neighbours.forEach {
                 if movementCosts[self[$0], default: -1] >= 0 || additionalEnterableTiles.contains($0){
@@ -385,13 +415,14 @@ enum Tile: Int, Codable {
     case Sand
     case Grass
     case Forest
+    case Hill
     case Mountain
     
     //var blocksMovement: Bool {
     //    return costToEnter < 0
     //}
     
-    var costToEnter: Double {
+    /*var costToEnter: Double {
         switch self {
         case .Grass:
             return 1.0
@@ -399,10 +430,12 @@ enum Tile: Int, Codable {
             return 1.0
         case .Forest:
             return 2
+        case .Hill:
+            return 1.5
         default:
             return -1
         }
-    }
+    }*/
     
     static var defaultCostsToEnter: [Tile: Double] {
         [
@@ -411,6 +444,7 @@ enum Tile: Int, Codable {
         .Sand: 1,
         .Grass: 1,
         .Forest: 2,
+        .Hill: 1.5,
         .Mountain: -1
         ]
     }
@@ -429,6 +463,8 @@ enum Tile: Int, Codable {
             return "Forest"
         case .Mountain:
             return "Mountain"
+        case .Hill:
+            return "Hills"
         }
     }
     
@@ -441,11 +477,13 @@ enum Tile: Int, Codable {
         case .Sand:
             return TileYield(food: 1, production: 1, gold: 1)
         case .Grass:
-            return TileYield(food: 1, production: 2, gold: 1)
-        case .Forest:
             return TileYield(food: 2, production: 1, gold: 1)
+        case .Forest:
+            return TileYield(food: 1, production: 1, gold: 1)
         case .Mountain:
             return TileYield(food: 1, production: 0, gold: 2)
+        case .Hill:
+            return TileYield(food: 1, production: 2, gold: 1)
         }
     }
 }

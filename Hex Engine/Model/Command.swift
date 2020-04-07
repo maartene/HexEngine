@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SpriteKit
 
 enum CommandErrors: Error {
     case cannotExecute
@@ -45,6 +46,7 @@ protocol TileTargettingCommand: Command {
     var targetTile: AxialCoord? { get set }
     func getValidTargets(in world: World) throws -> [AxialCoord]
     var hasFilter: Bool { get }
+    var lensColor: SKColor { get }
 }
 
 extension TileTargettingCommand {
@@ -54,5 +56,9 @@ extension TileTargettingCommand {
     
     func getValidTargets(in world: World) throws -> [AxialCoord] {
         return []
+    }
+    
+    var lensColor: SKColor {
+        return SKColor.white
     }
 }
