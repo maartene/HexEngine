@@ -11,23 +11,23 @@ import Combine
 
 struct SwiftUIGUI: View {
     
-    @ObservedObject var world: World
+    @ObservedObject var boxedWorld: WorldBox
     @ObservedObject var unitController: UnitController
     @ObservedObject var hexMapController: HexMapController
     
     init(unitController: UnitController, hexMapController: HexMapController) {
         self.hexMapController = hexMapController
         self.unitController = unitController
-        self.world = hexMapController.world
+        self.boxedWorld = hexMapController.boxedWorld
     }
     
     var body: some View {
         VStack {
             HStack(alignment: .top) {
-                UnitInfoView(unitController: unitController, world: world, hexMapController: hexMapController).shadow(radius: 4).padding().disabled(hexMapController.guiPlayerIsCurrentPlayer == false)
+                UnitInfoView(unitController: unitController, boxedWorld: boxedWorld, hexMapController: hexMapController).shadow(radius: 4).padding().disabled(hexMapController.guiPlayerIsCurrentPlayer == false)
                 Spacer()
                 //Text("Number of units in the world: \(world.units.count)")
-                CityInfoView(cityController: hexMapController.cityController, hexMapController: hexMapController, world: world).shadow(radius: 4).padding().transition(.opacity).disabled(hexMapController.guiPlayerIsCurrentPlayer == false)
+                CityInfoView(cityController: hexMapController.cityController, hexMapController: hexMapController, boxedWorld: boxedWorld).shadow(radius: 4).padding().transition(.opacity).disabled(hexMapController.guiPlayerIsCurrentPlayer == false)
             }
             
             //Text("SwiftUI for SpriteKit gui!")
@@ -38,13 +38,13 @@ struct SwiftUIGUI: View {
             HStack(alignment: .bottom) {
                 TileInfoLabel(hexMapController: hexMapController).shadow(radius: 4).padding()
                 Spacer()
-                PlayersView(world: world).shadow(radius: 4).padding()
+                PlayersView(boxedWorld: boxedWorld).shadow(radius: 4).padding()
                 Spacer()
                 Button(action:
                     { print("next turn")
                     //print("Units in hexMapController: \(HexMapController.instance.world.allUnits)")
                     //print("number of units: \(self.numberOfUnits)")
-                        self.world.executeCommand(NextTurnCommand(ownerID: UUID()))
+                        self.boxedWorld.nextTurn()
                     
                 }) {
                     Text("Next Turn")
@@ -56,6 +56,7 @@ struct SwiftUIGUI: View {
                 .overlay(RoundedRectangle(cornerRadius: 10).stroke(lineWidth: 1))
                 .shadow(radius: 4)
                 .padding()
+                .disabled(boxedWorld.isUpdating)
             }
         }.font(Font.custom("American Typewriter", size: 12))
     }

@@ -14,17 +14,18 @@ enum IDArrayError: Error {
     case indexOutOfBounds
 }
 
-class World: ObservableObject, Codable {
+struct World: Codable {
     var hexMap: HexMap
     
-    @Published var units = [UUID: Unit]()
-    @Published var cities = [UUID: City]()
+    var units = [UUID: Unit]()
+    var cities = [UUID: City]()
     
     var onVisibilityMapUpdated: (() -> Void)?
     
     var players = [UUID: Player]()
     var playerTurnSequence = [UUID]()
-    @Published var currentPlayerIndex = 0
+    var currentPlayerIndex = 0
+    
     var currentPlayer: Player? {
         assert(currentPlayerIndex < playerTurnSequence.count)
         return players[playerTurnSequence[currentPlayerIndex]]
@@ -49,7 +50,7 @@ class World: ObservableObject, Codable {
         try container.encode(currentPlayerIndex, forKey: .currentPlayerIndex)
     }
     
-    required init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         hexMap = try values.decode(HexMap.self, forKey: .hexMap)
         units = try values.decode([UUID: Unit].self, forKey: .units)
@@ -95,7 +96,7 @@ class World: ObservableObject, Codable {
             let newUnit = Unit.Rabbit(owningPlayer: players.randomElement()!.key, startPosition: hexMap.getTileCoordinates().randomElement() ?? AxialCoord.zero)
             units[newUnit.id] = newUnit
             let command = EnableAutoExploreCommand(ownerID: newUnit.id)
-            executeCommand(command)
+            self = executeCommand(command)
         }*/
         
         // TESTING only: add a city with a fixed command
@@ -141,60 +142,69 @@ class World: ObservableObject, Codable {
         return Array(cities.values)
     }
     
-    func nextTurn() {
-        nextPlayer()
+    func nextTurn() -> World {
+        var updatedWorld = self
+        updatedWorld = updatedWorld.nextPlayer()
         // process current player
         
-        if let player = currentPlayer {
+        if let player = updatedWorld.currentPlayer {
             // gives units new action points
-            for unit in units.values.filter({$0.owningPlayerID == player.id}) {
+            for unit in updatedWorld.units.values.filter({$0.owningPlayerID == player.id}) {
                 var changedUnit = unit
                 changedUnit.actionsRemaining = 2.0
-                replace(changedUnit)
+                updatedWorld.replace(changedUnit)
             }
             
-            for unit in units.values.filter({$0.owningPlayerID == player.id}) {
-                    unit.step(in: self)
+            for unit in updatedWorld.units.values.filter({$0.owningPlayerID == player.id}) {
+                    updatedWorld = unit.step(in: updatedWorld)
                 }
             
-            for unit in units.values {
+            for unit in updatedWorld.units.values {
                 if unit.getComponent(HealthComponent.self)?.isDead ?? false {
-                    removeUnit(unit)
+                    updatedWorld.removeUnit(unit)
                 }
             }
             
-            for city in cities.values.filter({$0.owningPlayerID == player.id}) {
-                    city.step(in: self)
+            for city in updatedWorld.cities.values.filter({$0.owningPlayerID == player.id}) {
+                    updatedWorld = city.step(in: updatedWorld)
                 }
             
-            assert(players.keys.contains(player.id))
-            players[player.id] = player.calculateVisibility(in: self)
+            assert(updatedWorld.players.keys.contains(player.id))
+            updatedWorld = updatedWorld.updateVisibilityForPlayer(player: player)
+            //updatedWorld.players[player.id] = player.calculateVisibility(in: updatedWorld)
             
             if let ai = player.ai {
-                ai.performTurn(for: player.id, in: self)
+                updatedWorld = ai.performTurn(for: player.id, in: updatedWorld)
             }
         }
         
-        onVisibilityMapUpdated?()
+        return updatedWorld
+        
+        //onVisibilityMapUpdated?()
     }
     
-    func nextPlayer() {
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.count
+    func nextPlayer() -> World {
+        var changedWorld = self
+        changedWorld.currentPlayerIndex = (currentPlayerIndex + 1) % players.count
         assert(players.count == playerTurnSequence.count)
+        return changedWorld
     }
     
-    func updateVisibilityForPlayer(player: Player) {
+    func updateVisibilityForPlayer(player: Player) -> World {
+        var updatedWorld = self
         let player = player.calculateVisibility(in: self)
         assert(players.keys.contains(player.id))
-        players[player.id] = player
-        onVisibilityMapUpdated?()
+        updatedWorld.players[player.id] = player
+        return updatedWorld
+        //onVisibilityMapUpdated?()
     }
     
-    func executeCommand(_ command: Command) {
+    func executeCommand(_ command: Command) -> World {
         do {
-            try command.execute(in: self)
+            return try command.execute(in: self)
         } catch {
             print("An error of type '\(error)' occored.")
+            return self
         }
     }
     
@@ -204,7 +214,7 @@ class World: ObservableObject, Codable {
         }.first
     }
     
-    func addCity(_ city: City) {
+    mutating func addCity(_ city: City) {
         guard cities[city.id] == nil else {
             print("ID \(city.id) for city already in use.")
             return
@@ -218,7 +228,7 @@ class World: ObservableObject, Codable {
         cities[city.id] = city
     }
     
-    func addUnit(_ unit: Unit) {
+    mutating func addUnit(_ unit: Unit) {
         guard units[unit.id] == nil else {
             print("ID \(unit.id) for unit already in use.")
             return
@@ -226,14 +236,14 @@ class World: ObservableObject, Codable {
         units[unit.id] = unit
     }
     
-    func removeUnit(_ unit: Unit) {
+    mutating func removeUnit(_ unit: Unit) {
         print("Removing unit \(units.removeValue(forKey: unit.id).debugDescription)")
         if let owningPlayer = players[unit.owningPlayerID] {
-            updateVisibilityForPlayer(player: owningPlayer)
+            self = updateVisibilityForPlayer(player: owningPlayer)
         }
     }
     
-    func replace(_ city: City) {
+    mutating func replace(_ city: City) {
         guard cities[city.id] != nil else {
             print("Could not replace city with id \(city.id), because it does not exist in the world.")
             return
@@ -242,7 +252,7 @@ class World: ObservableObject, Codable {
         cities[city.id] = city
     }
     
-    func replace(_ unit: Unit) {
+    mutating func replace(_ unit: Unit) {
         guard units[unit.id] != nil else {
             print("Could not replace unit with id \(unit.id), because it does not exist in the world.")
             return
@@ -251,8 +261,17 @@ class World: ObservableObject, Codable {
         units[unit.id] = unit
         
         if let owningPlayer = players[unit.owningPlayerID] {
-            updateVisibilityForPlayer(player: owningPlayer)
+            self = updateVisibilityForPlayer(player: owningPlayer)
         }
+    }
+    
+    mutating func replace(_ player: Player) {
+        guard players[player.id] != nil else {
+            print("Could not replace player with id \(player.id), because it does not exist in the world.")
+            return
+        }
+        
+        players[player.id] = player
     }
 }
 

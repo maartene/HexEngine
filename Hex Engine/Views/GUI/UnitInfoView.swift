@@ -10,12 +10,12 @@ import SwiftUI
 
 struct UnitInfoView: View {
     @ObservedObject var unitController: UnitController
-    @ObservedObject var world: World
+    @ObservedObject var boxedWorld: WorldBox
     @ObservedObject var hexMapController: HexMapController
     
     var unit: Unit? {
         if let id = unitController.selectedUnit {
-            return try? world.getUnitWithID(id)
+            return try? boxedWorld.world.getUnitWithID(id)
         }
         return nil
     }
@@ -25,7 +25,7 @@ struct UnitInfoView: View {
             return "unknown unit"
         }
         
-        if let player = world.players[unit.owningPlayerID] {
+        if let player = boxedWorld.world.players[unit.owningPlayerID] {
             return player.name
         } else {
             return "unknown owning player"
@@ -47,10 +47,10 @@ struct UnitInfoView: View {
                                             self.hexMapController.uiState = UI_State.selectTargetTile
                                             self.hexMapController.queuedCommands[self.unit!.owningPlayerID] = ttc
                                         } else {
-                                            self.world.executeCommand(command)
+                                            self.boxedWorld.executeCommand(command)
                                         }
                                     }.overlay(Capsule().stroke(lineWidth: 1))
-                                        .disabled(command.canExecute(in: self.world) == false || self.unit?.owningPlayerID != self.hexMapController.guiPlayer)
+                                        .disabled(command.canExecute(in: self.boxedWorld.world) == false || self.unit?.owningPlayerID != self.hexMapController.guiPlayer || self.boxedWorld.isUpdating)
                                 }
                             }
                         }

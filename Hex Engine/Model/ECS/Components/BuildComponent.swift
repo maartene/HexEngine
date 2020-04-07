@@ -24,10 +24,11 @@ struct BuildComponent: Component {
         self.possibleCommands = possibleCommands
     }
     
-    func build(in world: World, production: Double) throws {
+    func build(in world: World, production: Double) throws -> World {
         guard buildQueue.count > 0 else {
-            return
+            return world
         }
+        var updatedWorld = world
         
         var changedCity = try world.getCityWithID(buildQueue[0].ownerID)
         
@@ -39,15 +40,16 @@ struct BuildComponent: Component {
         print("Added \(production) production. \(itemToBuild.productionRemaining) production remaining.")
     
         if itemToBuild.productionRemaining <= 0 {
-            try itemToBuild.execute(in: world)
+            updatedWorld = try itemToBuild.execute(in: world)
         } else {
             changedBuildQueue.insert(itemToBuild, at: 0)
         }
         
         changedBuildComponent.buildQueue = changedBuildQueue
         changedCity.replaceComponent(component: changedBuildComponent)
-        world.replace(changedCity)
-        return
+        
+        updatedWorld.replace(changedCity)
+        return updatedWorld
     }
     
     func addToBuildQueue(_ command: BuildCommand) -> BuildComponent {
@@ -56,10 +58,11 @@ struct BuildComponent: Component {
         return changedComponent
     }
     
-    func step(in world: World) {
+    func step(in world: World) -> World {
         if let owner = try? world.getCityWithID(ownerID) {
-            try? build(in: world, production: owner.production)
+            return (try? build(in: world, production: owner.production)) ?? world
         }
+        return world
     }
 }
 
@@ -75,7 +78,7 @@ struct QueueBuildUnitCommand: Command, Codable {
         self.title = "Build \(unitToBuildName)"
     }
     
-    func execute(in world: World) throws {
+    func execute(in world: World) throws -> World {
         var owner = try world.getCityWithID(ownerID)
         guard let buildComponent = owner.getComponent(BuildComponent.self) else {
             throw EntityErrors.componentNotFound(componentName: "BuildComponent")
@@ -86,8 +89,9 @@ struct QueueBuildUnitCommand: Command, Codable {
         let changedBC = buildComponent.addToBuildQueue(buildUnitCommand)
         
         owner.replaceComponent(component: changedBC)
-        world.replace(owner)
-        return
+        var updatedWorld = world
+        updatedWorld.replace(owner)
+        return updatedWorld
     }
 }
 
@@ -110,12 +114,13 @@ struct BuildUnitCommand: BuildCommand, Codable {
         title = "Build \(unitToBuildName)"
     }
     
-    func execute(in world: World) throws {
+    func execute(in world: World) throws -> World {
         let owner = try world.getCityWithID(ownerID)
         let newUnit = unitToBuild(owner.owningPlayerID, owner.position)
         
-        world.addUnit(newUnit)
-        return
+        var updatedWorld = world
+        updatedWorld.addUnit(newUnit)
+        return updatedWorld
     }
 }
 
@@ -125,12 +130,15 @@ struct RemoveFromBuildQueueCommand: Command, Codable {
     
     let commandToRemoveIndex: Int
     
-    func execute(in world: World) throws {
+    func execute(in world: World) throws -> World {
         var city = try world.getCityWithID(ownerID)
         if var buildComponent = city.getComponent(BuildComponent.self) {
             buildComponent.buildQueue.remove(at: commandToRemoveIndex)
             city.replaceComponent(component: buildComponent)
-            world.replace(city)
+            var updatedWorld = world
+            updatedWorld.replace(city)
+            return updatedWorld
         }
+        return world
     }
 }

@@ -36,7 +36,7 @@ class WorldTests: XCTestCase {
         // Rebuilding the pathfinding graph is notoriously expensive
         // This tests how long it takes to rebuild the pathfinding graph for a Civ VI HUGE map (106x66 tiles)
         //let world = World(playerCount: 1, width: 106, height: 66, hexMapFactory: WorldFactory.CreateWorld(width:height:))
-        let world = World(playerCount: 1, width: 212, height: 132, hexMapFactory: WorldFactory.CreateWorld(width:height:))
+        var world = World(playerCount: 1, width: 212, height: 132, hexMapFactory: WorldFactory.CreateWorld(width:height:))
         
         var tileSKSpriteNodeMap = [AxialCoord: SKSpriteNode]()
         for coord in world.hexMap.getTileCoordinates() {
@@ -88,8 +88,10 @@ class WorldTests: XCTestCase {
     }
     
     func testNextTurn() throws {
-        let world = World(playerCount: 2, width: 20, height: 20, hexMapFactory: getTestMap(width:height:))
-        
+        var world = World(playerCount: 2, width: 20, height: 20, hexMapFactory: getTestMap(width:height:))
+        var player1 = world.players[world.playerTurnSequence[1]]!
+        player1.aiName = ""
+        world.replace(player1)
         XCTAssertGreaterThan(world.allUnits.count, 0)
         
         for unit in world.allUnits {
@@ -104,7 +106,7 @@ class WorldTests: XCTestCase {
         XCTAssertEqual(unit.getComponent(CountingComponent.self)?.count, 0)
         
         let currentPlayer = world.currentPlayer
-        world.nextTurn()
+        world = world.nextTurn()
         XCTAssertNotEqual(currentPlayer, world.currentPlayer)
         
         XCTAssertGreaterThan(try world.getUnitWithID(unit.id).getComponent(CountingComponent.self)!.count, 0)
@@ -114,28 +116,28 @@ class WorldTests: XCTestCase {
         }
         
         for _ in 0 ..< world.players.keys.count * 10 {
-            world.nextTurn()
+           world = world.nextTurn()
         }
     }
     
     func testNextPlayer() throws {
-        let world = World(playerCount: 2, width: 20, height: 20, hexMapFactory: getTestMap(width:height:))
+        var world = World(playerCount: 2, width: 20, height: 20, hexMapFactory: getTestMap(width:height:))
         
         let currentPlayer = world.currentPlayer!
-        world.nextPlayer()
+        world = world.nextPlayer()
         XCTAssertNotEqual(currentPlayer, world.currentPlayer!)
         
 
     }
     
     func testExecuteCommand() throws {
-        let world = World.init(playerCount: 2, width: 20, height: 20, hexMapFactory: getTestMap(width:height:))
+        var world = World.init(playerCount: 2, width: 20, height: 20, hexMapFactory: getTestMap(width:height:))
         var unit = Hex_Engine.Unit(owningPlayer: world.playerTurnSequence[1], name: "countingUnit")
         unit.components = [CountingComponent(ownerID: unit.id)]
         world.addUnit(unit)
         XCTAssertEqual(unit.getComponent(CountingComponent.self)?.count, 0)
         
-        world.executeCommand(NextTurnCommand(ownerID: world.currentPlayer!.id))
+        world = world.nextTurn()
         
         XCTAssertGreaterThan(try world.getUnitWithID(unit.id).getComponent(CountingComponent.self)!.count, 0)
     }

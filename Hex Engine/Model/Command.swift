@@ -19,18 +19,18 @@ protocol Command: Codable {
     var title: String { get }
     var ownerID: UUID { get }
     
-    func execute(in world: World) throws
+    func execute(in world: World) throws -> World
     func canExecute(in world: World) -> Bool
 }
 
 extension Command {
-    func execute(in world: World) throws {
+    func execute(in world: World) throws -> World {
         guard canExecute(in: world) else {
             throw CommandErrors.cannotExecute
         }
         
         print("Executing command: \(title) by owner with ID: \(ownerID).")
-        return
+        return world
     }
     
     func canExecute(in world: World) -> Bool {

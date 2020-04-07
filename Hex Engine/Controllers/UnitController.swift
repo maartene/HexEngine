@@ -33,20 +33,20 @@ final class UnitController: ObservableObject {
         self.guiPlayer = guiPlayer
     }
     
-    func subscribeToUnitsIn(world: World, hexMapController: HexMapController) {
-       world.$units.sink(receiveCompletion: { completion in
+    func subscribeToUnitsIn(boxedWorld: WorldBox, hexMapController: HexMapController) {
+       boxedWorld.$world.sink(receiveCompletion: { completion in
             print("Print UnitController received completion \(completion) from world.units")
-        }, receiveValue: { [weak self] units in
+        }, receiveValue: { [weak self] world in
             // there are three cases
-            for unitID in units.keys {
+            for unitID in world.units.keys {
                 
                 // case 1: unit is known to both UnitController and World:
-                if self?.unitSpriteMap[unitID] != nil, let unit = units[unitID]{
+                if self?.unitSpriteMap[unitID] != nil, let unit = world.units[unitID]{
                     self?.updateUnitSprite(unit: unit)
                 }
             
                 // case 2: unit is known to world, but not yet to UnitController
-                if self?.unitSpriteMap[unitID] == nil, let unit = units[unitID] {
+                if self?.unitSpriteMap[unitID] == nil, let unit = world.units[unitID] {
                     self?.createUnitSprite(unit: unit)
                 }
             }
@@ -54,10 +54,11 @@ final class UnitController: ObservableObject {
             // case 3: the final case is where a unit is known to the UnitController, but not the world
             // i.e. when the unit is removed
             for unitID in (self?.unitSpriteMap ?? [UUID: UnitSprite]()).keys {
-                if units[unitID] == nil {
+                if world.units[unitID] == nil {
                     self?.removeUnitSprite(unitID: unitID)
                 }
             }
+            
             }).store(in: &cancellables)
         
         hexMapController.$guiPlayer.sink(receiveValue: { [weak self] newGuiPlayer in

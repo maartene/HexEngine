@@ -36,10 +36,10 @@ class CombineTest: XCTestCase {
         }
         
         var cancellables = Set<AnyCancellable>()
-        
+        let worldBox = WorldBox(world: world)
         var count = 0
-        world.$units.sink(receiveValue: { units in
-            for _ in units.values {
+        worldBox.$world.sink(receiveValue: { world in
+            for _ in world.units.values {
                 // do something
                 count += 1
             }
@@ -56,7 +56,7 @@ class CombineTest: XCTestCase {
                 changedUnit.position = world.hexMap.getTileCoordinates().randomElement() ?? AxialCoord.zero
                 changedUnits[changedUnit.id] = changedUnit
             }
-            world.units = changedUnits
+            worldBox.world.units = changedUnits
         }
         print("In total, received \(count) units.")
         XCTAssertGreaterThan(count, 0)
@@ -70,10 +70,10 @@ class CombineTest: XCTestCase {
         }
         
         var cancellables = Set<AnyCancellable>()
-        
+        let worldBox = WorldBox(world: world)
         var count = 0
-        world.$units.sink(receiveValue: { units in
-            for _ in units.values {
+        worldBox.$world.sink(receiveValue: { world in
+            for _ in world.units.values {
                 // do something
                 count += 1
             }
@@ -87,7 +87,7 @@ class CombineTest: XCTestCase {
             for unit in world.allUnits {
                 var changedUnit = unit
                 changedUnit.position = world.hexMap.getTileCoordinates().randomElement() ?? AxialCoord.zero
-                world.replace(changedUnit)
+                worldBox.world.replace(changedUnit)
             }
         }
         print("In total, received \(count) units.")

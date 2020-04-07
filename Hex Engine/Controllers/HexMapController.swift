@@ -19,7 +19,7 @@ enum UI_State {
 class HexMapController: ObservableObject {
     //static var instance: HexMapController!
     
-    @Published var world: World
+    @Published var boxedWorld: WorldBox
 
     let scene: SKScene
     let tileWidth: Double           // in points
@@ -43,7 +43,7 @@ class HexMapController: ObservableObject {
     var lensController: LensController
     
     var guiPlayerIsCurrentPlayer: Bool {
-        guiPlayer == world.currentPlayer?.id
+        guiPlayer == boxedWorld.world.currentPlayer?.id
     }
     
     private var cancellables: Set<AnyCancellable>
@@ -53,7 +53,7 @@ class HexMapController: ObservableObject {
     init(scene: SKScene, world: World, tileWidth: Double, tileHeight: Double, tileYOffsetFactor: Double) {
         self.cancellables = Set<AnyCancellable>()
         self.scene = scene
-        self.world = world
+        self.boxedWorld = WorldBox(world: world)
         guiPlayer = world.currentPlayer!.id
         self.tileWidth = tileWidth
         self.tileHeight = tileHeight
@@ -78,38 +78,35 @@ class HexMapController: ObservableObject {
                 return SKColor.white
             }
         }
-        cityController.subscribeToCitiesIn(world: world)
+        
                 
         lensController = LensController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
         lensController.subscribeToCommandsIn(hexMapController: self, world: world)
         
-        unitController.subscribeToUnitsIn(world: world, hexMapController: self)
+        unitController.subscribeToUnitsIn(boxedWorld: boxedWorld, hexMapController: self)
+        cityController.subscribeToCitiesIn(boxedWorld: boxedWorld)
         
-        world.$cities.sink(receiveValue: { [weak self] cities in
+        boxedWorld.$world.sink(receiveValue: { [weak self] world in
+            //print("World updated!")
             guard let hc = self else {
                 return
             }
             
-            for city in cities.values {
+            for city in world.cities.values {
                 if city.id == hc.cityController.selectedCity {
                     for coord in city.getComponent(GrowthComponent.self)?.workingTiles ?? [] {
                         hc.tileSKSpriteNodeMap[coord]?.tintSprite(color: SKColor.green)
                     }
                 }
             }
-        }).store(in: &cancellables)
-        
-        self.world.onVisibilityMapUpdated = showHideTiles
-        self.world.$currentPlayerIndex.sink(receiveValue: { [weak self] playerIndex in
-            guard let hc = self else {
-                return
-            }
             
-            if let player = hc.world.players[world.playerTurnSequence[playerIndex]] {
+            if let player = world.players[world.playerTurnSequence[world.currentPlayerIndex]] {
                 if player.ai == nil {
                     hc.guiPlayer = player.id
                 }
             }
+            
+            hc.showHideTiles(world: world)
         }).store(in: &cancellables)
             
         highlighter.lineWidth = 2
@@ -168,12 +165,12 @@ class HexMapController: ObservableObject {
     }
     
     func showMap() {
-        for coord in world.hexMap.getTileCoordinates() {
+        for coord in boxedWorld.world.hexMap.getTileCoordinates() {
             let q = coord.q
             let r = coord.r
             
-            if world.hexMap[q,r] != .void {
-                let tile = TileSprite(tile: world.hexMap[q,r], hexPosition: AxialCoord(q: q, r: r))
+            if boxedWorld.world.hexMap[q,r] != .void {
+                let tile = TileSprite(tile: boxedWorld.world.hexMap[q,r], hexPosition: AxialCoord(q: q, r: r))
                 
                 //tile.anchorPoint = CGPoint(x: tileWidth / 2, y: tileHeight / 2)
                 let pos = hexToPixel(AxialCoord(q: q, r: r))
@@ -185,8 +182,8 @@ class HexMapController: ObservableObject {
             }
         }
         //print("Players in world: \(world.players) - GUIPlayer: \(guiPlayer)")
-        let player = world.players[guiPlayer]!
-        world.updateVisibilityForPlayer(player: player)
+        let player = boxedWorld.world.players[guiPlayer]!
+        boxedWorld.world = boxedWorld.world.updateVisibilityForPlayer(player: player)
     }
     
     func middleOfMapInWorldSpace() -> CGPoint {
@@ -196,14 +193,14 @@ class HexMapController: ObservableObject {
     func coordOfNode(_ node: SKSpriteNode) -> AxialCoord? {
         if let cityNode = node as? CitySprite {
             if let cityID = cityController.getCityForNode(cityNode) {
-                if let city = try?world.getCityWithID(cityID) {
+                if let city = try? boxedWorld.world.getCityWithID(cityID) {
                     return city.position
                 }
             }
         } else if let unitNode = node as? UnitSprite {
             // get unit for the node
             if let unitID = unitController.getUnitForNode(unitNode) {
-                if let unit = try? world.getUnitWithID(unitID) {
+                if let unit = try? boxedWorld.world.getUnitWithID(unitID) {
                     return unit.position
                 }
             }
@@ -226,7 +223,7 @@ class HexMapController: ObservableObject {
             if let command = queuedCommands[guiPlayer] {
                 if var ttc = command as? TileTargettingCommand {
                     ttc.targetTile = tile
-                    world.executeCommand(ttc)
+                    boxedWorld.world.executeCommand(ttc)
                     uiState = .map
                     queuedCommands.removeValue(forKey: guiPlayer)
                 }
@@ -237,7 +234,7 @@ class HexMapController: ObservableObject {
             if let cityNode = node as? CitySprite {
                 print("Clicked city node: \(node)")
                 if let cityID = cityController.getCityForNode(node) {
-                    if let city = try? world.getCityWithID(cityID) {
+                    if let city = try? boxedWorld.world.getCityWithID(cityID) {
                         cityNode.select()
                         cityController.selectedCity = cityID
                         
@@ -253,7 +250,7 @@ class HexMapController: ObservableObject {
                 print("Clicked unit node: \(node)")
                 // get unit for the node
                 if let unitID = unitController.getUnitForNode(unitNode) {
-                    if let unit = try? world.getUnitWithID(unitID) {
+                    if let unit = try? boxedWorld.world.getUnitWithID(unitID) {
                         unitController.selectUnit(unit)
                         deselectTile()
                         print("clicked unit: \(unit.name)")
@@ -271,7 +268,7 @@ class HexMapController: ObservableObject {
     }
     
     func deselectAll() {
-        for coord in (try? world.getCityWithID(cityController.selectedCity ?? UUID()).getComponent(GrowthComponent.self)?.workingTiles) ?? [] {
+        for coord in (try? boxedWorld.world.getCityWithID(cityController.selectedCity ?? UUID()).getComponent(GrowthComponent.self)?.workingTiles) ?? [] {
             tileSKSpriteNodeMap[coord]?.resetSpriteTint()
         }
         
@@ -313,7 +310,8 @@ class HexMapController: ObservableObject {
         }
     }
         
-    func showHideTiles() {
+    func showHideTiles(world: World) {
+        //print("showHideTiles")
         let player = world.players[guiPlayer]!
         
         for coord in tileSKSpriteNodeMap.keys {

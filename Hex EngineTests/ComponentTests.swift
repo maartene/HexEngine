@@ -70,10 +70,10 @@ class ComponentTests: XCTestCase {
             
             // regain some health
             let hpBefore = healthComponent.currentHitPoints
-            healthComponent.step(in: world)
+            world = healthComponent.step(in: world)
             XCTAssertGreaterThan(try world.getUnitWithID(unitWithAllComponents.id).getComponent(HealthComponent.self)!.currentHitPoints, hpBefore)
             
-            // regain some health
+            // take damage
             XCTAssertFalse(healthComponent.isDead)
             healthComponent.takeDamage(amount: healthComponent.currentHitPoints * 10)
             XCTAssertTrue(healthComponent.isDead)
@@ -83,7 +83,7 @@ class ComponentTests: XCTestCase {
     }
     
     func testBuildComponent() throws {
-        world.nextTurn()
+        world = world.nextTurn()
         cityWithAllComponents = try world.getCityWithID(cityWithAllComponents.id)
         if var buildComponent = cityWithAllComponents.getComponent(BuildComponent.self) {
             // this test assumes the buildComponent has a production of at least 1
@@ -102,11 +102,11 @@ class ComponentTests: XCTestCase {
             
             // Production remaining for command in build queue should decrease
             let productionRemainingBefore = buildComponent.buildQueue.first!.productionRemaining
-            world.nextTurn()
+            world = world.nextTurn()
             buildComponent = try world.getCityWithID(cityWithAllComponents.id).getComponent(BuildComponent.self)!
             XCTAssertLessThan(buildComponent.buildQueue.first!.productionRemaining, productionRemainingBefore)
             
-            world.nextTurn()
+            world = world.nextTurn()
             buildComponent = try world.getCityWithID(cityWithAllComponents.id).getComponent(BuildComponent.self)!
             let updatedCity = try world.getCityWithID(cityWithAllComponents.id)
             XCTAssertGreaterThan(updatedCity.production, 0)
@@ -128,7 +128,7 @@ class ComponentTests: XCTestCase {
             unitWithAllComponents.replaceComponent(component: aec)
             world.replace(unitWithAllComponents)
             
-            aec.step(in: world)
+            world = aec.step(in: world)
             
             let updatedUnit = try world.getUnitWithID(unitWithAllComponents.id)
             
@@ -142,16 +142,16 @@ class ComponentTests: XCTestCase {
             XCTAssertEqual(cityWithAllComponents.population, gc.population)
             XCTAssertEqual(cityWithAllComponents.savedFood, 0)
             
-            gc.step(in: world)
+            world = gc.step(in: world)
             var updatedCity = try world.getCityWithID(cityWithAllComponents.id)
             XCTAssertGreaterThan(updatedCity.getComponent(GrowthComponent.self)?.workingTiles.count ?? 0, 0)
             
-            updatedCity.step(in: world)
+            world = updatedCity.step(in: world)
             updatedCity = try world.getCityWithID(cityWithAllComponents.id)
             XCTAssertGreaterThan(updatedCity.savedFood, 0)
             
             for _ in 0 ..< 1000 {
-                updatedCity.step(in: world)
+                world = updatedCity.step(in: world)
                 updatedCity = try world.getCityWithID(cityWithAllComponents.id)
             }
             

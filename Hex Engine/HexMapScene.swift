@@ -162,7 +162,7 @@ class HexMapScene: SKScene {
         // 'Enter' key - next turn
         if event.keyCode == 36 {
             if hexMapController.guiPlayerIsCurrentPlayer {
-                hexMapController.world.executeCommand(NextTurnCommand(ownerID: UUID()))
+                hexMapController.boxedWorld.nextTurn()
             }
         }
         // 'Right arrow' key
@@ -213,7 +213,7 @@ class HexMapScene: SKScene {
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
         do {
-            let data = try encoder.encode(hexMapController.world)
+            let data = try encoder.encode(hexMapController.boxedWorld.world)
             if let url = url {
                 try data.write(to: url)
             } else {

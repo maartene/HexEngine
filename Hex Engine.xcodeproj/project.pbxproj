@@ -44,6 +44,7 @@
 		DEB0A4DB242A0FC6004E11DF /* UnitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0A4DA242A0FC6004E11DF /* UnitTests.swift */; };
 		DEB0A4DD242A118A004E11DF /* EntityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0A4DC242A118A004E11DF /* EntityTests.swift */; };
 		DEB0A9A1226218AB005770B2 /* WorldFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0A9A0226218AB005770B2 /* WorldFactory.swift */; };
+		DEB1AD75243C89B00069BC42 /* WorldBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB1AD74243C89B00069BC42 /* WorldBox.swift */; };
 		DEB540FC236DC08E00D03062 /* CommandWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB540FB236DC08E00D03062 /* CommandWrapper.swift */; };
 		DEC545952427865300D68FDE /* AutoExploreComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC545942427865300D68FDE /* AutoExploreComponent.swift */; };
 		DECCAD8422665E7C002D820E /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECCAD8322665E7C002D820E /* Double+Extension.swift */; };
@@ -116,6 +117,7 @@
 		DEB0A4DA242A0FC6004E11DF /* UnitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitTests.swift; sourceTree = "<group>"; };
 		DEB0A4DC242A118A004E11DF /* EntityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityTests.swift; sourceTree = "<group>"; };
 		DEB0A9A0226218AB005770B2 /* WorldFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldFactory.swift; sourceTree = "<group>"; };
+		DEB1AD74243C89B00069BC42 /* WorldBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldBox.swift; sourceTree = "<group>"; };
 		DEB540FB236DC08E00D03062 /* CommandWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandWrapper.swift; sourceTree = "<group>"; };
 		DEC545942427865300D68FDE /* AutoExploreComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoExploreComponent.swift; sourceTree = "<group>"; };
 		DECCAD8322665E7C002D820E /* Double+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extension.swift"; sourceTree = "<group>"; };
@@ -289,6 +291,7 @@
 				DEF58EFE22874CCD0020B473 /* Unit.swift */,
 				DEF58F0122874D7C0020B473 /* World.swift */,
 				DEB0A9A0226218AB005770B2 /* WorldFactory.swift */,
+				DEB1AD74243C89B00069BC42 /* WorldBox.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -424,6 +427,7 @@
 				DEF661EA2365E67100EDF9BB /* UnitInfoView.swift in Sources */,
 				DECCAD8422665E7C002D820E /* Double+Extension.swift in Sources */,
 				DE19C3B4238AAF1300BC4034 /* UnitSprite.swift in Sources */,
+				DEB1AD75243C89B00069BC42 /* WorldBox.swift in Sources */,
 				DE6BE6272257E0F20027380C /* HexMap.swift in Sources */,
 				DE19C3BA238AD46500BC4034 /* TileSprite.swift in Sources */,
 				DE78AD9024222F5700A45C01 /* BuildComponent.swift in Sources */,

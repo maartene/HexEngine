@@ -23,9 +23,9 @@ struct AttackComponent: Component {
         possibleCommands = [AttackCommand(ownerID: ownerID, targetTile: nil, range: range)]
     }
     
-    func step(in world: World) {
+    func step(in world: World) -> World{
         print("AttackComponent:Step")
-        // return
+        return world
     }
 }
 
@@ -43,8 +43,9 @@ struct AttackCommand: TileTargettingCommand, Codable {
     var targetTile: AxialCoord?
     let range: Int
     
-    func execute(in world: World) throws {
-        let owner = try world.getUnitWithID(ownerID)
+    func execute(in world: World) throws -> World {
+        var changedWorld = world
+        let owner = try changedWorld.getUnitWithID(ownerID)
         guard let attackComponent = owner.getComponent(AttackComponent.self) else {
             throw EntityErrors.componentNotFound(componentName: "AttackComponent")
         }
@@ -62,32 +63,32 @@ struct AttackCommand: TileTargettingCommand, Codable {
         }
         
         // let's see whether there is a unit on the target coord
-        let units = world.getUnitsOnTile(targetPosition)
+        let units = changedWorld.getUnitsOnTile(targetPosition)
         if var attackedUnit = units.first {
             guard attackedUnit.owningPlayerID != owner.owningPlayerID else {
                 print("You're on the same team!")
-                return
+                return changedWorld
             }
             // we're attacking a unit
             print("attacking unit \(attackedUnit.name)")
             
             guard var attackedUnitHealthComponent = attackedUnit.getComponent(HealthComponent.self) else {
-                return
+                return changedWorld
             }
             
             attackedUnitHealthComponent.takeDamage(amount: attackComponent.attackPower)
             attackedUnit.replaceComponent(component: attackedUnitHealthComponent)
             var changedOwner = owner
             changedOwner.actionsRemaining = 0
-            world.replace(changedOwner)
-            world.replace(attackedUnit)
-            return
+            changedWorld.replace(changedOwner)
+            changedWorld.replace(attackedUnit)
+            return changedWorld
         }
         
-        if let city = world.getCityAt(targetPosition) {
+        if let city = changedWorld.getCityAt(targetPosition) {
             // we're attacking a city
             print("attacking city \(city.name)")
-            return
+            return changedWorld
         }
         
         throw CommandErrors.illegalTarget

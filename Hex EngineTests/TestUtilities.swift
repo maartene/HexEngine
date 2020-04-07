@@ -38,16 +38,18 @@ struct CountingComponent: Component {
         self.ownerID = ownerID
     }
     
-    func step(in world: World) {
+    func step(in world: World) -> World {
         guard var owner = try? world.getUnitWithID(ownerID) else {
-            return
+            return world
         }
             
         var updatedComponent = self
         updatedComponent.count += 1
         
         owner.replaceComponent(component: updatedComponent)
-        world.replace(owner)
+        var changedWorld = world
+        changedWorld.replace(owner)
+        return changedWorld
     }
     
     // just to implement protocol
