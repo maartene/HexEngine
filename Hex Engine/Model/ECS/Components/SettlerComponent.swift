@@ -24,8 +24,8 @@ struct SettlerComponent: Component {
         possibleCommands = [FoundCityCommand(ownerID: ownerID)]
     }
     
-    func step(in world: World) {
-        return
+    func step(in world: World) -> World {
+        return world
     }
 }
 
@@ -36,25 +36,27 @@ struct FoundCityCommand: Command, Codable {
     
     let ownerID: UUID
     
-    func execute(in world: World) throws {
-        let owner = try world.getUnitWithID(ownerID)
+    func execute(in world: World) throws -> World {
+        var updatedWorld = world
         
-        guard world.getCityAt(owner.position) == nil else {
+        let owner = try updatedWorld.getUnitWithID(ownerID)
+        
+        guard updatedWorld.getCityAt(owner.position) == nil else {
             throw FoundCityCommandErrors.tileAlreadyOccupied
         }
         
-        let tile = world.hexMap[owner.position.q, owner.position.r]
+        let tile = updatedWorld.hexMap[owner.position.q, owner.position.r]
         guard tile == .Grass || tile == .Sand else {
             throw FoundCityCommandErrors.tileOfWrongType
         }
         
         let city = City(owningPlayer: owner.owningPlayerID, name: "New city \(Int.random(in: 0...100))", position: owner.position)
-        world.addCity(city)
+        updatedWorld.addCity(city)
         
         // remove unit from world
-        world.removeUnit(owner)
+        updatedWorld.removeUnit(owner)
         
-        return
+        return updatedWorld
     }
     
     func canExecute(in world: World) -> Bool {

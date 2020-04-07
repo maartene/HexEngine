@@ -14,11 +14,12 @@ import SpriteKit
 class TileSprite: SKSpriteNode {
     static private var tileTextureMap: [Tile: SKTexture] = {
         var result = [Tile: SKTexture]()
-        result[.Forest] = SKTexture(imageNamed: "grass_13")
-        result[.Grass] = SKTexture(imageNamed: "grass_05")
+        result[.Forest] = SKTexture(imageNamed: "Forest")
+        result[.Grass] = SKTexture(imageNamed: "Grass")
         result[.Mountain] = SKTexture(imageNamed: "dirt_18")
         result[.Sand] = SKTexture(imageNamed: "sand_07")
         result[.Water] = SKTexture(imageNamed: "water")
+        result[.Hill] = SKTexture(imageNamed: "Hill")
         return result
     }()
     
@@ -43,12 +44,16 @@ class TileSprite: SKSpriteNode {
                 switch visibility {
                 case .unvisited:
                     texture = hiddenTexture
+                    zPosition = 100
                 case .visited:
                     texture = visibleTexture
-                    alpha = 0.25
+                    color = SKColor.gray
+                    zPosition = 0
+                    //alpha = 0.25
                 case .visible:
                     texture = visibleTexture
-                    alpha = 1
+                    zPosition = 0
+                    color = SKColor.white
                 }
             }
         }
@@ -57,11 +62,11 @@ class TileSprite: SKSpriteNode {
     init(tile: Tile, hexPosition: AxialCoord) {
         self.hexPosition = hexPosition
         
-        hiddenTexture = SKTexture(imageNamed: "unknown")
+        hiddenTexture = SKTexture(imageNamed: "Unknown")
         visibleTexture = TileSprite.tileTextureMap[tile] ?? SKTexture()
                 
         super.init(texture: hiddenTexture, color: SKColor.white, size: hiddenTexture.size())
-        
+        zPosition = 100
         color = SKColor.white
         colorBlendFactor = 1.0
 

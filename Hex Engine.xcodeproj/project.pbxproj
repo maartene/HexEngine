@@ -39,9 +39,12 @@
 		DE75E386235B416F0018F1F9 /* CommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE75E385235B416F0018F1F9 /* CommandTests.swift */; };
 		DE78AD9024222F5700A45C01 /* BuildComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE78AD8F24222F5700A45C01 /* BuildComponent.swift */; };
 		DE8EE9B8242F647E00F806A6 /* GrowthComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8EE9B7242F647E00F806A6 /* GrowthComponent.swift */; };
+		DEAE7FD9243A1A7300C76181 /* LensController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAE7FD8243A1A7300C76181 /* LensController.swift */; };
+		DEAE7FDB243B1DD300C76181 /* LensSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAE7FDA243B1DD300C76181 /* LensSprite.swift */; };
 		DEB0A4DB242A0FC6004E11DF /* UnitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0A4DA242A0FC6004E11DF /* UnitTests.swift */; };
 		DEB0A4DD242A118A004E11DF /* EntityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0A4DC242A118A004E11DF /* EntityTests.swift */; };
 		DEB0A9A1226218AB005770B2 /* WorldFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0A9A0226218AB005770B2 /* WorldFactory.swift */; };
+		DEB1AD75243C89B00069BC42 /* WorldBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB1AD74243C89B00069BC42 /* WorldBox.swift */; };
 		DEB540FC236DC08E00D03062 /* CommandWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB540FB236DC08E00D03062 /* CommandWrapper.swift */; };
 		DEC545952427865300D68FDE /* AutoExploreComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC545942427865300D68FDE /* AutoExploreComponent.swift */; };
 		DECCAD8422665E7C002D820E /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECCAD8322665E7C002D820E /* Double+Extension.swift */; };
@@ -109,9 +112,12 @@
 		DE75E385235B416F0018F1F9 /* CommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandTests.swift; sourceTree = "<group>"; };
 		DE78AD8F24222F5700A45C01 /* BuildComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildComponent.swift; sourceTree = "<group>"; };
 		DE8EE9B7242F647E00F806A6 /* GrowthComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthComponent.swift; sourceTree = "<group>"; };
+		DEAE7FD8243A1A7300C76181 /* LensController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LensController.swift; sourceTree = "<group>"; };
+		DEAE7FDA243B1DD300C76181 /* LensSprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LensSprite.swift; sourceTree = "<group>"; };
 		DEB0A4DA242A0FC6004E11DF /* UnitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitTests.swift; sourceTree = "<group>"; };
 		DEB0A4DC242A118A004E11DF /* EntityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityTests.swift; sourceTree = "<group>"; };
 		DEB0A9A0226218AB005770B2 /* WorldFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldFactory.swift; sourceTree = "<group>"; };
+		DEB1AD74243C89B00069BC42 /* WorldBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldBox.swift; sourceTree = "<group>"; };
 		DEB540FB236DC08E00D03062 /* CommandWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandWrapper.swift; sourceTree = "<group>"; };
 		DEC545942427865300D68FDE /* AutoExploreComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoExploreComponent.swift; sourceTree = "<group>"; };
 		DECCAD8322665E7C002D820E /* Double+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extension.swift"; sourceTree = "<group>"; };
@@ -241,6 +247,7 @@
 				DE19C3B3238AAF1300BC4034 /* UnitSprite.swift */,
 				DE19C3B5238AB40C00BC4034 /* CitySprite.swift */,
 				DE19C3B9238AD46500BC4034 /* TileSprite.swift */,
+				DEAE7FDA243B1DD300C76181 /* LensSprite.swift */,
 			);
 			path = Sprites;
 			sourceTree = "<group>";
@@ -284,6 +291,7 @@
 				DEF58EFE22874CCD0020B473 /* Unit.swift */,
 				DEF58F0122874D7C0020B473 /* World.swift */,
 				DEB0A9A0226218AB005770B2 /* WorldFactory.swift */,
+				DEB1AD74243C89B00069BC42 /* WorldBox.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -304,6 +312,7 @@
 				DEFFE28022587EDE00D9AE5A /* HexMapController.swift */,
 				DEF58F0322874FA50020B473 /* UnitController.swift */,
 				DE67A86D236052D500A858D0 /* CityController.swift */,
+				DEAE7FD8243A1A7300C76181 /* LensController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -410,12 +419,15 @@
 			files = (
 				DE13AD0F2257DF5600136AFE /* ViewController.swift in Sources */,
 				DE24EA4924225E430071D0C2 /* SettlerComponent.swift in Sources */,
+				DEAE7FDB243B1DD300C76181 /* LensSprite.swift in Sources */,
 				DE13AD0D2257DF5600136AFE /* HexMapScene.swift in Sources */,
 				DE67A87223605CC400A858D0 /* SKNode+Extension.swift in Sources */,
+				DEAE7FD9243A1A7300C76181 /* LensController.swift in Sources */,
 				DE0DE0692420E5F80077D5EE /* Component.swift in Sources */,
 				DEF661EA2365E67100EDF9BB /* UnitInfoView.swift in Sources */,
 				DECCAD8422665E7C002D820E /* Double+Extension.swift in Sources */,
 				DE19C3B4238AAF1300BC4034 /* UnitSprite.swift in Sources */,
+				DEB1AD75243C89B00069BC42 /* WorldBox.swift in Sources */,
 				DE6BE6272257E0F20027380C /* HexMap.swift in Sources */,
 				DE19C3BA238AD46500BC4034 /* TileSprite.swift in Sources */,
 				DE78AD9024222F5700A45C01 /* BuildComponent.swift in Sources */,

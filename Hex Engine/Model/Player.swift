@@ -48,7 +48,8 @@ struct Player: Identifiable, Hashable, Equatable, Codable {
         for unit in world.units.values.filter({$0.owningPlayerID == self.id }) {
             newVisibilityMap[unit.position] = .visible
             let visibleNeighbours = HexMap.coordinatesWithinRange(from: unit.position, range: unit.visibility)
-            for neighbour in visibleNeighbours {
+            let wrappedVisibleNeighbours = world.hexMap.toWrappedCoordinates(visibleNeighbours)
+            for neighbour in wrappedVisibleNeighbours {
                 newVisibilityMap[neighbour] = .visible
             }
         }
@@ -56,7 +57,8 @@ struct Player: Identifiable, Hashable, Equatable, Codable {
         for city in world.cities.values.filter({$0.owningPlayerID == self.id }) {
             newVisibilityMap[city.position] = .visible
             let visibleNeighbours = HexMap.coordinatesWithinRange(from: city.position, range: city.visibility)
-            for neighbour in visibleNeighbours {
+            let wrappedVisibleNeighbours = world.hexMap.toWrappedCoordinates(visibleNeighbours)
+            for neighbour in wrappedVisibleNeighbours {
                 newVisibilityMap[neighbour] = .visible
             }
         }

@@ -12,8 +12,7 @@ class UnitSprite: SKSpriteNode {
     var playerBadge: SKSpriteNode
     var selectionIndicator: SKShapeNode
     
-    
-    
+    var pathIndicator: SKShapeNode?
     
     init(unit: Unit, playerColor: SKColor = SKColor.white) {
         //print("Looking for texture for \(unit.name)")
@@ -54,6 +53,13 @@ class UnitSprite: SKSpriteNode {
     
     func deselect() {
         selectionIndicator.isHidden = true
+    }
+    
+    func hidePathIndicator() {
+        if let shape = pathIndicator {
+            removeChildren(in: [shape])
+            pathIndicator = nil
+        }
     }
     
     deinit {

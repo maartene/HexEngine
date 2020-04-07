@@ -30,7 +30,7 @@ struct GrowthComponent: Component {
         self.possibleCommands = []
     }
     
-    func step(in world: World) {
+    func step(in world: World) -> World {
         if var changedCity = try? world.getCityWithID(ownerID) {
             var changedComponent = distributePopulation(self, in: world)
             
@@ -48,8 +48,11 @@ struct GrowthComponent: Component {
             }
             
             changedCity.replaceComponent(component: changedComponent)
-            world.replace(changedCity)
+            var updatedWorld = world
+            updatedWorld.replace(changedCity)
+            return updatedWorld
         }
+        return world
     }
     
     func distributePopulation(_ growthComponent: GrowthComponent, in world: World) -> GrowthComponent {

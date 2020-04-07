@@ -7,23 +7,25 @@
 //
 
 import Foundation
+import SpriteKit
 
 struct AttackComponent: Component {
     var ownerID: UUID
     var possibleCommands: [Command]
-    
+    var range: Int
     var attackPower: Double
     
-    init(ownerID: UUID, attackPower: Double = 2) {
+    init(ownerID: UUID, attackPower: Double = 2, range: Int = 1) {
         self.ownerID = ownerID
         self.attackPower = attackPower
+        self.range = range
         
-        possibleCommands = [AttackCommand(ownerID: ownerID, targetTile: nil)]
+        possibleCommands = [AttackCommand(ownerID: ownerID, targetTile: nil, range: range)]
     }
     
-    func step(in world: World) {
+    func step(in world: World) -> World{
         print("AttackComponent:Step")
-        // return
+        return world
     }
 }
 
@@ -31,15 +33,19 @@ struct AttackComponent: Component {
 enum AttackCommandErrors: Error {
     case unitCannotAttack
     case notEnoughActionsLeftToAttack
+    case targetOutOfRange
 }
 
 struct AttackCommand: TileTargettingCommand, Codable {
     let title: String = "Attack"
-    var ownerID: UUID
+    let hasFilter = true
+    let ownerID: UUID
     var targetTile: AxialCoord?
+    let range: Int
     
-    func execute(in world: World) throws {
-        let owner = try world.getUnitWithID(ownerID)
+    func execute(in world: World) throws -> World {
+        var changedWorld = world
+        let owner = try changedWorld.getUnitWithID(ownerID)
         guard let attackComponent = owner.getComponent(AttackComponent.self) else {
             throw EntityErrors.componentNotFound(componentName: "AttackComponent")
         }
@@ -52,33 +58,37 @@ struct AttackCommand: TileTargettingCommand, Codable {
             throw CommandErrors.missingTarget
         }
         
+        guard HexMap.distance(from: owner.position, to: targetPosition) <= range else {
+            throw AttackCommandErrors.targetOutOfRange
+        }
+        
         // let's see whether there is a unit on the target coord
-        let units = world.getUnitsOnTile(targetPosition)
+        let units = changedWorld.getUnitsOnTile(targetPosition)
         if var attackedUnit = units.first {
             guard attackedUnit.owningPlayerID != owner.owningPlayerID else {
                 print("You're on the same team!")
-                return
+                return changedWorld
             }
             // we're attacking a unit
             print("attacking unit \(attackedUnit.name)")
             
             guard var attackedUnitHealthComponent = attackedUnit.getComponent(HealthComponent.self) else {
-                return
+                return changedWorld
             }
             
             attackedUnitHealthComponent.takeDamage(amount: attackComponent.attackPower)
             attackedUnit.replaceComponent(component: attackedUnitHealthComponent)
             var changedOwner = owner
             changedOwner.actionsRemaining = 0
-            world.replace(changedOwner)
-            world.replace(attackedUnit)
-            return
+            changedWorld.replace(changedOwner)
+            changedWorld.replace(attackedUnit)
+            return changedWorld
         }
         
-        if let city = world.getCityAt(targetPosition) {
+        if let city = changedWorld.getCityAt(targetPosition) {
             // we're attacking a city
             print("attacking city \(city.name)")
-            return
+            return changedWorld
         }
         
         throw CommandErrors.illegalTarget
@@ -96,6 +106,20 @@ struct AttackCommand: TileTargettingCommand, Codable {
         return owner.actionsRemaining > 0
         
         
+    }
+    
+    func getValidTargets(in world: World) throws -> [AxialCoord] {
+        let owner = try world.getUnitWithID(ownerID)
+        let player = try world.getPlayerWithID(owner.owningPlayerID)
+        
+        let validTiles =
+            player.visibilityMap.filter({ element in element.value == .visible }).map { element in element.key } // only visible tiles count
+                .filter({ coord in HexMap.distance(from: owner.position, to: coord) <= range }) // only tiles within range count
+                .filter({ coord in
+                    world.getUnitsOnTile(coord).filter( { unit in unit.owningPlayerID != player.id }).count > 0 ||
+                        world.getCityAt(coord)?.owningPlayerID ?? player.id != player.id
+                }) // only tiles with enemy units count
+        return validTiles
     }
 }
 

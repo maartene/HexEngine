@@ -12,5 +12,5 @@ protocol Component: Codable {
     var ownerID: UUID { get }
     var possibleCommands: [Command] { get }
     
-    func step(in world: World)
+    func step(in world: World) -> World
 }

@@ -11,12 +11,12 @@ import SwiftUI
 struct CityInfoView: View {
     @ObservedObject var cityController: CityController
     @ObservedObject var hexMapController: HexMapController
-    @ObservedObject var world: World
+    @ObservedObject var boxedWorld: WorldBox
     
     var city: City? {
         if let cityID = cityController.selectedCity {
             do {
-                return try world.getCityWithID(cityID)
+                return try boxedWorld.world.getCityWithID(cityID)
             } catch {
                 print(error)
             }
@@ -60,7 +60,7 @@ struct CityInfoView: View {
                                 Button(self.city?.possibleCommands[number].title ?? "") {
                                     self.executeBuildCommand(number: number, city: self.city)
                                 }.overlay(Capsule().stroke(lineWidth: 1))
-                                    .disabled(self.city?.owningPlayerID != self.hexMapController.guiPlayer)
+                                    .disabled(self.city?.owningPlayerID != self.hexMapController.guiPlayer || self.boxedWorld.isUpdating)
                             }
                         }
                         
@@ -109,7 +109,7 @@ struct CityInfoView: View {
         }
         
         let command = RemoveFromBuildQueueCommand(ownerID: city.id, commandToRemoveIndex: index)
-        world.executeCommand(command)
+        boxedWorld.executeCommand(command)
     }
     
     func executeBuildCommand(number: Int, city: City?) {
@@ -118,7 +118,7 @@ struct CityInfoView: View {
         }
         
         let command = city.possibleCommands[number]
-        world.executeCommand(command)
+        boxedWorld.executeCommand(command)
     }
 }
 

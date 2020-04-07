@@ -33,6 +33,7 @@ class HexMapScene: SKScene {
         }
         
         let world = World(playerCount: 4, width: 84, height: 54, hexMapFactory: WorldFactory.CreateWorld)
+        //let world = World(playerCount: 4, width: 42, height: 27, hexMapFactory: WorldFactory.CreateWorld)
         
         hexMapController = HexMapController(scene: self, world: world, tileWidth: 120.0, tileHeight: 140.0, tileYOffsetFactor: 0.74)
         
@@ -161,7 +162,7 @@ class HexMapScene: SKScene {
         // 'Enter' key - next turn
         if event.keyCode == 36 {
             if hexMapController.guiPlayerIsCurrentPlayer {
-                hexMapController.world.executeCommand(NextTurnCommand(ownerID: UUID()))
+                hexMapController.boxedWorld.nextTurn()
             }
         }
         // 'Right arrow' key
@@ -191,6 +192,13 @@ class HexMapScene: SKScene {
                 camera.position = camera.position + CGPoint(x: 0, y: -cameraMoveDistance)
             }
         }
+        
+        // 'F' key
+        if event.keyCode == 3 {
+            if let camera = camera {
+                camera.position = hexMapController.middleOfMapInWorldSpace()
+            }
+        }
     }
     
     
@@ -205,7 +213,7 @@ class HexMapScene: SKScene {
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
         do {
-            let data = try encoder.encode(hexMapController.world)
+            let data = try encoder.encode(hexMapController.boxedWorld.world)
             if let url = url {
                 try data.write(to: url)
             } else {

@@ -12,7 +12,7 @@ import GameplayKit
 struct WorldFactory {
     
     static func CreateWorld(width: Int, height: Int) -> HexMap {
-        var hexMap = HexMap(width: width, height: height)
+        var hexMap = HexMap(width: width, height: height, mapWrapType: .horizontal)
         
         let perlinSource = GKPerlinNoiseSource(frequency: 0.2, octaveCount: 5, persistence: 0.7, lacunarity: 1.75, seed: 123)
         
@@ -37,8 +37,10 @@ struct WorldFactory {
                     tile = .Sand
                 case 0.5 ..< 0.7:
                     tile = .Grass
-                case 0.7 ..< 0.9:
+                case 0.7 ..< 0.8:
                     tile = .Forest
+                case 0.8 ..< 0.9:
+                    tile = .Hill
                 case 0.9 ... 1.0:
                     tile = .Mountain
                 default:

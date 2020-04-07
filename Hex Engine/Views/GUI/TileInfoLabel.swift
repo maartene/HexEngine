@@ -14,7 +14,7 @@ struct TileInfoLabel: View {
     
     var selectedTile: Tile {
         if let coord = hexMapController.selectedTile {
-            return hexMapController.world.hexMap[coord]
+            return hexMapController.boxedWorld.world.hexMap[coord]
         } else {
             return .void
         }

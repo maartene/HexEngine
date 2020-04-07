@@ -32,21 +32,21 @@ final class CityController: ObservableObject {
         self.tileYOffsetFactor = tileYOffsetFactor
     }
     
-    func subscribeToCitiesIn( world: World) {
-        world.$cities.sink(receiveCompletion: { completion in
+    func subscribeToCitiesIn(boxedWorld: WorldBox) {
+        boxedWorld.$world.sink(receiveCompletion: { completion in
             print("Print CityController received completion \(completion) from world.cities")
-        }, receiveValue: { [weak self] cities in
+        }, receiveValue: { [weak self] world in
             // there are three cases
             
-            for cityID in cities.keys {
+            for cityID in world.cities.keys {
                 
                 // case 1: city is known to both CityController and World:
-                if self?.citySpriteMap[cityID] != nil, let city = cities[cityID]{
+                if self?.citySpriteMap[cityID] != nil, let city = world.cities[cityID]{
                     self?.updateCitySprite(city: city)
                 }
             
                 // case 2: city is known to world, but not yet to CityController
-                if self?.citySpriteMap[cityID] == nil, let city = cities[cityID] {
+                if self?.citySpriteMap[cityID] == nil, let city = world.cities[cityID] {
                     self?.createCitySprite(city: city)
                 }
             }
@@ -54,7 +54,7 @@ final class CityController: ObservableObject {
             // case 3: the final case is where a city is known to the CityController, but not the world
             // i.e. when the city is destroyed
             for cityID in (self?.citySpriteMap ?? [UUID: CitySprite]()).keys {
-                if cities[cityID] == nil {
+                if world.cities[cityID] == nil {
                     self?.removeCitySprite(cityID: cityID)
                 }
             }

@@ -15,8 +15,8 @@ final class UnitController: ObservableObject {
     let tileWidth: Double
     let tileHeight: Double
     let tileYOffsetFactor: Double
-    
     var unitSpriteMap = [UUID: UnitSprite]()
+    var guiPlayer: UUID
     
     @Published var selectedUnit: UUID?
     
@@ -24,37 +24,29 @@ final class UnitController: ObservableObject {
     
     private var cancellables: Set<AnyCancellable>
     
-    var pathIndicator: SKShapeNode? {
-        didSet {
-            if pathIndicator == nil, let oldValue = oldValue {
-                scene.removeChildren(in: [oldValue])
-            }
-        }
-    }
-    
-    init(with scene: SKScene, tileWidth: Double, tileHeight: Double, tileYOffsetFactor: Double) {
+    init(with scene: SKScene, tileWidth: Double, tileHeight: Double, tileYOffsetFactor: Double, guiPlayer: UUID) {
         self.cancellables = Set<AnyCancellable>()
         self.scene = scene
         self.tileWidth = tileWidth
         self.tileHeight = tileHeight
         self.tileYOffsetFactor = tileYOffsetFactor
+        self.guiPlayer = guiPlayer
     }
     
-    func subscribeToUnitsIn(world: World) {
-        world.$units.sink(receiveCompletion: { completion in
+    func subscribeToUnitsIn(boxedWorld: WorldBox, hexMapController: HexMapController) {
+       boxedWorld.$world.sink(receiveCompletion: { completion in
             print("Print UnitController received completion \(completion) from world.units")
-        }, receiveValue: { [weak self] units in
+        }, receiveValue: { [weak self] world in
             // there are three cases
-            
-            for unitID in units.keys {
+            for unitID in world.units.keys {
                 
                 // case 1: unit is known to both UnitController and World:
-                if self?.unitSpriteMap[unitID] != nil, let unit = units[unitID]{
+                if self?.unitSpriteMap[unitID] != nil, let unit = world.units[unitID]{
                     self?.updateUnitSprite(unit: unit)
                 }
             
                 // case 2: unit is known to world, but not yet to UnitController
-                if self?.unitSpriteMap[unitID] == nil, let unit = units[unitID] {
+                if self?.unitSpriteMap[unitID] == nil, let unit = world.units[unitID] {
                     self?.createUnitSprite(unit: unit)
                 }
             }
@@ -62,11 +54,16 @@ final class UnitController: ObservableObject {
             // case 3: the final case is where a unit is known to the UnitController, but not the world
             // i.e. when the unit is removed
             for unitID in (self?.unitSpriteMap ?? [UUID: UnitSprite]()).keys {
-                if units[unitID] == nil {
+                if world.units[unitID] == nil {
                     self?.removeUnitSprite(unitID: unitID)
                 }
             }
+            
             }).store(in: &cancellables)
+        
+        hexMapController.$guiPlayer.sink(receiveValue: { [weak self] newGuiPlayer in
+            self?.guiPlayer = newGuiPlayer
+        }).store(in: &cancellables)
     }
     
     func createUnitSprite(unit: Unit) {
@@ -96,7 +93,31 @@ final class UnitController: ObservableObject {
         }
         
         // for now, changes are the only thing we care about
-        sprite.position = HexMapController.hexToPixel(unit.position, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
+        let newPosition = HexMapController.hexToPixel(unit.position, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
+        //print("Updating unit: \(unit.name) (\(unit.id) - \((sprite.position - newPosition))")
+        guard (sprite.position - newPosition).sqrMagnitude  > CGFloat(0.1) else {
+            //print("Don't need to update position for unit \(unit.name) (\(unit.id)")
+            return
+        }
+        
+        if unit.owningPlayerID == guiPlayer {
+            drawPath(for: unit)
+        }
+    
+        sprite.removeAllActions()
+        
+        var moveActions = [SKAction]()
+        if let mc = unit.getComponent(MovementComponent.self) {
+            moveActions.append(contentsOf: mc.visitedTilesDuringTurn.map { coord -> SKAction in
+                let newPosition = HexMapController.hexToPixel(coord, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
+                return SKAction.move(to: newPosition, duration: 0.2)
+            })
+        }
+        moveActions.append(SKAction.move(to: newPosition, duration: 0.2))
+        
+        let allMoveActions = SKAction.sequence(moveActions)
+        sprite.run(allMoveActions)
+        //sprite.position = HexMapController.hexToPixel(unit.position, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
         
         // check whether the sprite is dead
         if let hc = unit.getComponent(HealthComponent.self) {
@@ -109,6 +130,7 @@ final class UnitController: ObservableObject {
     func removeUnitSprite(unitID: UUID) {
         // find the sprite for the unit
         if let sprite = unitSpriteMap.removeValue(forKey: unitID) {
+            sprite.removeAllChildren()
             scene.removeChildren(in: [sprite])
         }
     }
@@ -127,11 +149,6 @@ final class UnitController: ObservableObject {
         
         if let sprite = unitSpriteMap[unit.id] {
             sprite.select()
-            if unit.getComponent(MovementComponent.self)?.path.count ?? 0 > 0 {
-                drawPath(for: unit)
-            } else {
-                pathIndicator = nil
-            }
         }
         
         selectedUnit = unit.id
@@ -140,8 +157,6 @@ final class UnitController: ObservableObject {
     }
     
     func deselectUnit(uiState: UI_State = .map) {
-        pathIndicator = nil
-        
         if let selectedUnitID = selectedUnit {
             //unitBecameDeselected?(selectedUnitID)
             if let previousSelectedUnit = unitSpriteMap[selectedUnitID] {
@@ -149,24 +164,6 @@ final class UnitController: ObservableObject {
                 if uiState == .map { selectedUnit = nil }
             }
         }
-    }
-    
-    func drawPath(for unit: Unit) {
-        guard let moveComponent = unit.getComponent(MovementComponent.self) else {
-            return
-        }
-        
-        var points = [HexMapController.hexToPixel(unit.position, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)]
-        let pointsToAdd = moveComponent.path.map { coord in
-            HexMapController.hexToPixel(coord, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
-        }
-        points.append(contentsOf: pointsToAdd)
-        
-        pathIndicator = SKShapeNode(points: &points, count: points.count)
-        pathIndicator?.lineWidth = 4.0
-        pathIndicator?.zPosition = 1
-        pathIndicator?.strokeColor = SKColor.blue
-        scene.addChild(pathIndicator!)
     }
     
     func showHideUnits(in world: World, visibilityMap: [AxialCoord: TileVisibility]) {
@@ -178,6 +175,31 @@ final class UnitController: ObservableObject {
                     unitSpriteMap[unitID]!.alpha = 0
                 }
             }
+        }
+    }
+    
+    func drawPath(for unit: Unit) {
+        guard let moveComponent = unit.getComponent(MovementComponent.self) else {
+            return
+        }
+        
+        guard let sprite = unitSpriteMap[unit.id] else {
+            return
+        }
+        if let pathIndicator = sprite.pathIndicator {
+            scene.removeChildren(in: [pathIndicator])
+        }
+        if moveComponent.path.count > 0 {
+            var points = [HexMapController.hexToPixel(unit.position, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)]
+            let pointsToAdd = moveComponent.path.map { coord in
+                HexMapController.hexToPixel(coord, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
+            }
+            points.append(contentsOf: pointsToAdd)
+            sprite.pathIndicator = SKShapeNode(points: &points, count: points.count)
+            sprite.pathIndicator?.lineWidth = 4.0
+            sprite.pathIndicator?.zPosition = 0.1
+            sprite.pathIndicator?.strokeColor = getColorForPlayerFunction?(unit.owningPlayerID) ?? SKColor.white
+            scene.addChild(sprite.pathIndicator!)
         }
     }
     

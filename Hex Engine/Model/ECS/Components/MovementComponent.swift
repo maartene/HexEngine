@@ -19,6 +19,8 @@ struct MovementComponent : Component {
     var tileCoordToNodeMap = [AxialCoord : HexGraphNode]()
     var path = [AxialCoord]()
     
+    var visitedTilesDuringTurn = [AxialCoord]()
+    
     let possibleCommands: [Command]
     
     init(ownerID: UUID, movementCosts: [Tile: Double] = Tile.defaultCostsToEnter) {
@@ -31,6 +33,7 @@ struct MovementComponent : Component {
     func move(in world: World) throws -> Unit {
         var owner = try world.getUnitWithID(ownerID)
         var updatedComponent = self
+        updatedComponent.visitedTilesDuringTurn.removeAll()
         
         while owner.actionsRemaining > 0 && updatedComponent.path.count > 0 {
             if updatedComponent.path.first! == owner.position {
@@ -44,6 +47,7 @@ struct MovementComponent : Component {
                 } else {
                     owner.actionsRemaining -= updatedComponent.movementCosts[tile, default: 0]
                 }
+                updatedComponent.visitedTilesDuringTurn.append(nextStep)
                 owner.position = nextStep
             }
         }
@@ -51,7 +55,7 @@ struct MovementComponent : Component {
         return owner
     }
     
-    func step(in world: World) {
+    func step(in world: World) -> World {
         /*var attempts = 0
         while path.count == 0 && attempts < 5{
             // find a new target
@@ -62,10 +66,13 @@ struct MovementComponent : Component {
         }*/
         //if let unit = try? world.getUnitWithID(ownerID) {
             //if let updatedUnit = try? unit.getComponent(MovementComponent.self)!.move(in: world) {
-            if let updatedUnit = try? move(in: world) {
-                world.replace(updatedUnit)
+        var changedWorld = world
+            if let updatedUnit = try? move(in: changedWorld) {
+                changedWorld.replace(updatedUnit)
+                return changedWorld
             }
         //}
+        return changedWorld
     }
     
 }
@@ -78,10 +85,13 @@ struct MoveUnitCommand: TileTargettingCommand, Codable {
     
     var targetTile: AxialCoord?
     
-    func execute(in world: World) throws {
-        var owner = try world.getUnitWithID(ownerID)
+    func execute(in world: World) throws -> World {
+        guard var owner = try? world.getUnitWithID(ownerID) else {
+            return world
+        }
+        
         guard var moveComponent = owner.getComponent(MovementComponent.self) else {
-            return
+            return world
         }
         
         //print(moveComponent)
@@ -97,14 +107,14 @@ struct MoveUnitCommand: TileTargettingCommand, Codable {
         let pathfindingResult = world.hexMap.rebuildPathFindingGraph(movementCosts: moveComponent.movementCosts, additionalEnterableTiles: friendlyCityLocations)
         moveComponent.pathfindingGraph = pathfindingResult.graph
         moveComponent.tileCoordToNodeMap = pathfindingResult.tileCoordToNodeMap
-        
-        guard let targetPosition = targetTile else {
+
+        guard let targetPosition = self.targetTile else {
             throw CommandErrors.missingTarget
         }
         
         guard let path = world.hexMap.findPathFrom(owner.position, to: targetPosition, pathfindingGraph: moveComponent.pathfindingGraph, tileCoordToNodeMap: moveComponent.tileCoordToNodeMap, movementCosts: moveComponent.movementCosts) else {
             print("No valid path from \(owner.position) to \(targetPosition).")
-            return
+            return world
         }
         
         print("Calculate path: \(path)")
@@ -113,7 +123,9 @@ struct MoveUnitCommand: TileTargettingCommand, Codable {
         
         owner.replaceComponent(component: moveComponent)
         owner = try moveComponent.move(in: world)
-        world.replace(owner)
+        var updatedWorld = world
+        updatedWorld.replace(owner)
+        return updatedWorld
     }
     
     func canExecute(in world: World) -> Bool {

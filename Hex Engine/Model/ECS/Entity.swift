@@ -43,11 +43,14 @@ extension Entity {
         return result
     }
     
-    func step(in world: World) {
-        print("step for entity \(self.name) (\(self.id))")
+    func step(in world: World) -> World {
+        //print("step for entity \(self.name) (\(self.id))")
+        var changedWorld = world
         
         for component in components {
-            component.step(in: world)
+            changedWorld = component.step(in: changedWorld)
         }
+        
+        return changedWorld
     }
 }

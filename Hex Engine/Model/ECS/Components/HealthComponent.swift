@@ -29,9 +29,9 @@ struct HealthComponent: Component {
         possibleCommands = []
     }
     
-    func step(in world: World) {
+    func step(in world: World) -> World {
         guard var owner = try? world.getUnitWithID(ownerID) else {
-            return
+            return world
         }
         
         // heal a bit
@@ -40,7 +40,9 @@ struct HealthComponent: Component {
         changedComponent.currentHitPoints = min(changedComponent.currentHitPoints, changedComponent.maxHitPoints)
         
         owner.replaceComponent(component: changedComponent)
-        world.replace(owner)
+        var updatedWorld = world
+        updatedWorld.replace(owner)
+        return updatedWorld
     }
     
     mutating func takeDamage(amount: Double) {

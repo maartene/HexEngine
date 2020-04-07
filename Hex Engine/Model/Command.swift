@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SpriteKit
 
 enum CommandErrors: Error {
     case cannotExecute
@@ -18,18 +19,18 @@ protocol Command: Codable {
     var title: String { get }
     var ownerID: UUID { get }
     
-    func execute(in world: World) throws
+    func execute(in world: World) throws -> World
     func canExecute(in world: World) -> Bool
 }
 
 extension Command {
-    func execute(in world: World) throws {
+    func execute(in world: World) throws -> World {
         guard canExecute(in: world) else {
             throw CommandErrors.cannotExecute
         }
         
         print("Executing command: \(title) by owner with ID: \(ownerID).")
-        return
+        return world
     }
     
     func canExecute(in world: World) -> Bool {
@@ -43,4 +44,21 @@ protocol BuildCommand: Command {
 
 protocol TileTargettingCommand: Command {
     var targetTile: AxialCoord? { get set }
+    func getValidTargets(in world: World) throws -> [AxialCoord]
+    var hasFilter: Bool { get }
+    var lensColor: SKColor { get }
+}
+
+extension TileTargettingCommand {
+    var hasFilter: Bool {
+        return false
+    }
+    
+    func getValidTargets(in world: World) throws -> [AxialCoord] {
+        return []
+    }
+    
+    var lensColor: SKColor {
+        return SKColor.white
+    }
 }
