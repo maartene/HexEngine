@@ -21,16 +21,21 @@ struct TileInfoLabel: View {
     }
     
     var body: some View {
-        ZStack {
-            Text("TILE").font(Font.custom("American Typewriter", size: 64)).opacity(0.5)
-            Text("""
-                Tile: \(hexMapController.selectedTile?.description ?? "not a tile")
-                \(selectedTile.stringValue)
-                Movement cost: \(Tile.defaultCostsToEnter[selectedTile, default: -1] < 0 ? "Impassible" : String(Tile.defaultCostsToEnter[selectedTile, default: -1]))
-                Yield: \(tileYield)
-            """)
-            .padding() .background(Color.gray.opacity(0.5)).clipShape(RoundedRectangle(cornerRadius: 10))
-                .overlay(RoundedRectangle(cornerRadius: 10).stroke(lineWidth: 1))
+        VStack {
+            if selectedTile == .void {
+            } else {
+                ZStack {
+                    Text("TILE").font(Font.custom("American Typewriter", size: 64)).opacity(0.5)
+                    Text("""
+                        Tile: \(hexMapController.selectedTile?.description ?? "not a tile")
+                        \(selectedTile.stringValue)
+                        Movement cost: \(Tile.defaultCostsToEnter[selectedTile, default: -1] < 0 ? "Impassible" : String(Tile.defaultCostsToEnter[selectedTile, default: -1]))
+                        Yield: \(tileYield)
+                    """)
+                    .padding() .background(Color.gray.opacity(0.5)).clipShape(RoundedRectangle(cornerRadius: 10))
+                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(lineWidth: 1))
+                }
+            }
         }
     }
     
@@ -41,10 +46,3 @@ struct TileInfoLabel: View {
         return "unknown"
     }
 }
-
-/*
-struct TileInfoLabel_Previews: PreviewProvider {
-    static var previews: some View {
-        TileInfoLabel()
-    }
-}*/
