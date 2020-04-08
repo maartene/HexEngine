@@ -70,8 +70,11 @@ struct UnitInfoView: View {
             result += "Owner: \(owningPlayerName) (\(unit.owningPlayerID))\n"
             result += "Position: \(unit.position.description)\n"
             result += "Actions: \(unit.actionsRemaining.oneDecimal)/2\n"
-            if let defenseComponent = unit.getComponent(HealthComponent.self) {
-                result += "Health: \(defenseComponent.currentHitPoints)/\(defenseComponent.maxHitPoints)\n"
+            if let hc = unit.getComponent(HealthComponent.self) {
+                result += "HP: \(hc.currentHitPoints)/\(hc.maxHitPoints)"
+            }
+            if let bic = unit.getComponent(BuildImprovementComponent.self) {
+                result += "Energy: \(bic.currentEnergy)/\(bic.maxEnergy)"
             }
         } else {
             result = "No unit selected"

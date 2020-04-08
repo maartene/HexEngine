@@ -35,6 +35,13 @@ extension Entity {
         return nil
     }
     
+    func tryGetComponent<T: Component>(_ type: T.Type) throws -> T {
+        if let component = components.first(where: { $0 as? T != nil }) {
+            return component as! T
+        }
+        throw EntityErrors.componentNotFound(componentName: String(describing: T.self))
+    }
+    
     var possibleCommands: [Command] {
         var result = [Command]()
         for component in components {

@@ -22,9 +22,9 @@ enum CommandWrapper: Codable {
     case moveUnitCommand(value: MoveUnitCommand)
     case queueBuildUnitCommand(value: QueueBuildUnitCommand)
     case buildUnitCommand(value: BuildUnitCommand)
-    case nextTurnCommand(value: NextTurnCommand)
     case attackTileCommand(value: AttackCommand)
     case removeFromBuildQueueCommand(value: RemoveFromBuildQueueCommand)
+    case buildTileImprovementCommand(value: BuildTileImprovementCommand)
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -41,14 +41,14 @@ enum CommandWrapper: Codable {
         case .buildUnitCommand(let value):
             try container.encode("buildUnitCommand", forKey: .type)
             try container.encode(value, forKey: .value)
-        case .nextTurnCommand(let value):
-            try container.encode("nextTurnCommand", forKey: .type)
-            try container.encode(value, forKey: .value)
         case .attackTileCommand(let value):
             try container.encode("attackTileCommand", forKey: .type)
             try container.encode(value, forKey: .value)
         case .removeFromBuildQueueCommand(let value):
             try container.encode("removeFromBuildQueueCommand", forKey: .type)
+            try container.encode(value, forKey: .value)
+        case .buildTileImprovementCommand(let value):
+            try container.encode("buildTileImprovementCommand", forKey: .type)
             try container.encode(value, forKey: .value)
         }
     }
@@ -69,15 +69,15 @@ enum CommandWrapper: Codable {
         case "buildUnitCommand":
             let value = try values.decode(BuildUnitCommand.self, forKey: .value)
             self = .buildUnitCommand(value: value)
-        case "nextTurnCommand":
-            let value = try values.decode(NextTurnCommand.self, forKey: .value)
-            self = .nextTurnCommand(value: value)
         case "attackTileCommand":
             let value = try values.decode(AttackCommand.self, forKey: .value)
             self = .attackTileCommand(value: value)
         case "removeFromBuildQueueCommand":
             let value = try values.decode(RemoveFromBuildQueueCommand.self, forKey: .value)
             self = .removeFromBuildQueueCommand(value: value)
+        case "buildTileImprovementCommand":
+            let value = try values.decode(BuildTileImprovementCommand.self, forKey: .value)
+            self = .buildTileImprovementCommand(value: value)
         default:
             throw CommandWrapperErrors.cannotConvertCommandError
         }
@@ -92,12 +92,12 @@ enum CommandWrapper: Codable {
             return .queueBuildUnitCommand(value: c)
         } else if let c = command as? BuildUnitCommand {
             return .buildUnitCommand(value: c)
-        } else if let c = command as? NextTurnCommand {
-            return .nextTurnCommand(value: c)
         } else if let c = command as? AttackCommand {
             return .attackTileCommand(value: c)
         } else if let c = command as? RemoveFromBuildQueueCommand {
             return .removeFromBuildQueueCommand(value: c)
+        } else if let c = command as? BuildTileImprovementCommand {
+            return .buildTileImprovementCommand(value: c)
         } else {
             throw CommandWrapperErrors.cannotConvertCommandError
         }
@@ -113,11 +113,11 @@ enum CommandWrapper: Codable {
             return value
         case .buildUnitCommand(let value):
             return value
-        case .nextTurnCommand(let value):
-            return value
         case .attackTileCommand(let value):
             return value
         case .removeFromBuildQueueCommand(let value):
+            return value
+        case .buildTileImprovementCommand(let value):
             return value
         }
     }

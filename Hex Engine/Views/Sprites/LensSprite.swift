@@ -8,7 +8,7 @@
 
 import SpriteKit
 
-class LensSprite: SKSpriteNode {
+final class LensSprite: SKSpriteNode {
     let hexPosition: AxialCoord
     
     init(hexPosition: AxialCoord) {
@@ -17,6 +17,7 @@ class LensSprite: SKSpriteNode {
         
         super.init(texture: texture, color: SKColor.white, size: texture.size())
         
+        zPosition = SpriteZPositionConstants.LENS_Z
         color = SKColor.white
         colorBlendFactor = 1.0
     }

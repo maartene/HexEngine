@@ -214,3 +214,32 @@ extension AutoExploreComponent {
         possibleCommands = wrappedPossibleCommands.compactMap { try? $0.command() }
     }
 }
+
+extension BuildImprovementComponent {
+    enum CodingKeys: CodingKey {
+        case ownerID
+        case maxEnergy
+        case currentEnergy
+        case possibleCommands
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(ownerID, forKey: .ownerID)
+        try container.encode(maxEnergy, forKey: .maxEnergy)
+        try container.encode(currentEnergy, forKey: .currentEnergy)
+        
+        let wrappedPossibleCommands = possibleCommands.compactMap { command in try? CommandWrapper.wrapperFor(command: command) }
+        try container.encode(wrappedPossibleCommands, forKey: .possibleCommands)
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        ownerID = try values.decode(UUID.self, forKey: .ownerID)
+        maxEnergy = try values.decode(Double.self, forKey: .maxEnergy)
+        currentEnergy = try values.decode(Double.self, forKey: .currentEnergy)
+        
+        let wrappedPossibleCommands = try values.decode([CommandWrapper].self, forKey: .possibleCommands)
+        possibleCommands = wrappedPossibleCommands.compactMap { try? $0.command() }
+    }
+}

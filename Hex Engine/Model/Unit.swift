@@ -62,12 +62,18 @@ struct Unit: Entity {
         return newReindeer
     }
     
+    static func Beaver(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
+        var newBeaver = Unit(owningPlayer: owningPlayer, name: "Beaver", startPosition: startPosition)
+        newBeaver.components = [MovementComponent(ownerID: newBeaver.id), BuildImprovementComponent(ownerID: newBeaver.id)]
+        return newBeaver
+    }
+    
     static func nullUnit(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
         print("WARNING: creating nullUnit. Probably not intentional.")
         assert(false)
         return Unit(owningPlayer: owningPlayer, name: "Null Unit", startPosition: startPosition)
     }
     
-    static let allUnits = ["Narwhal": Unit.Narwhal, "Rabbit": Unit.Rabbit, "Snake": Unit.Snake, "Reindeer": Unit.Reindeer, "Crocodile": Unit.Crocodile]
-    static let unitProductionRequirements: [String: Double] = ["Narwhal": 15, "Rabbit": 10, "Snake": 5, "Reindeer": 20, "Crocodile": 10]
+    static let allUnits = ["Narwhal": Unit.Narwhal, "Rabbit": Unit.Rabbit, "Snake": Unit.Snake, "Reindeer": Unit.Reindeer, "Crocodile": Unit.Crocodile, "Beaver": Unit.Beaver]
+    static let unitProductionRequirements: [String: Double] = ["Narwhal": 15, "Rabbit": 10, "Snake": 5, "Reindeer": 20, "Crocodile": 10, "Beaver": 15]
 }

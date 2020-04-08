@@ -8,7 +8,7 @@
 
 import SpriteKit
 
-class CitySprite: SKSpriteNode {
+final class CitySprite: SKSpriteNode {
     var playerBadge: SKSpriteNode
     var selectionIndicator: SKShapeNode
     var cityNameLabel: SKLabelNode
@@ -40,6 +40,8 @@ class CitySprite: SKSpriteNode {
         
         anchorPoint = CGPoint(x: 0.5, y: 0.25)
         cityNameLabel.position = cityNameLabel.position - CGPoint(x: 0, y: midPointOfFrame.y + cityNameLabel.midPointOfFrame.y)
+        
+        zPosition = SpriteZPositionConstants.CITY_Z
         
         addChild(playerBadge)
         addChild(selectionIndicator)

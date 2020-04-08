@@ -27,13 +27,19 @@ struct TileInfoLabel: View {
                 Tile: \(hexMapController.selectedTile?.description ?? "not a tile")
                 \(selectedTile.stringValue)
                 Movement cost: \(Tile.defaultCostsToEnter[selectedTile, default: -1] < 0 ? "Impassible" : String(Tile.defaultCostsToEnter[selectedTile, default: -1]))
-                Yield: \(selectedTile.baseTileYield.description)
+                Yield: \(tileYield)
             """)
             .padding() .background(Color.gray.opacity(0.5)).clipShape(RoundedRectangle(cornerRadius: 10))
                 .overlay(RoundedRectangle(cornerRadius: 10).stroke(lineWidth: 1))
         }
     }
     
+    var tileYield: String {
+        if let coord = hexMapController.selectedTile {
+            return GrowthComponent.getTileYield(for: coord, in: hexMapController.boxedWorld.world).description
+        }
+        return "unknown"
+    }
 }
 
 /*

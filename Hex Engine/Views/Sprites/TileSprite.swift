@@ -11,7 +11,7 @@ import SpriteKit
 
 
 
-class TileSprite: SKSpriteNode {
+final class TileSprite: SKSpriteNode {
     static private var tileTextureMap: [Tile: SKTexture] = {
         var result = [Tile: SKTexture]()
         result[.Forest] = SKTexture(imageNamed: "Forest")
@@ -44,15 +44,15 @@ class TileSprite: SKSpriteNode {
                 switch visibility {
                 case .unvisited:
                     texture = hiddenTexture
-                    zPosition = 100
+                    zPosition = SpriteZPositionConstants.FOW_Z
                 case .visited:
                     texture = visibleTexture
                     color = SKColor.gray
-                    zPosition = 0
+                    zPosition = SpriteZPositionConstants.TILE_Z
                     //alpha = 0.25
                 case .visible:
                     texture = visibleTexture
-                    zPosition = 0
+                    zPosition = SpriteZPositionConstants.TILE_Z
                     color = SKColor.white
                 }
             }

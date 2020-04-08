@@ -59,7 +59,6 @@ final class LensController {
                         let sprite = LensSprite(hexPosition: coord)
                         sprite.tintSprite(color: ttc.lensColor)
                         sprite.position = HexMapController.hexToPixel(coord, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
-                        sprite.zPosition = 100
                         coordSpriteMap[coord] = sprite
                         scene.addChild(sprite)
                     }
