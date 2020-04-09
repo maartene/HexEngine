@@ -19,7 +19,7 @@ class ComponentTests: XCTestCase {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         world = World(playerCount: 1, width: 10, height: 10, hexMapFactory: getTestMap(width:height:))
         
-        unitWithAllComponents = Unit(owningPlayer: world.currentPlayer!.id, name: "UnitWithAllComponents")
+        unitWithAllComponents = Unit(owningPlayer: world.currentPlayer!.id, name: "UnitWithAllComponents", productionRequired: 5)
         let unitID = unitWithAllComponents.id
         unitWithAllComponents.components = [AttackComponent(ownerID: unitID),
                                             HealthComponent(ownerID: unitID),
@@ -158,6 +158,21 @@ class ComponentTests: XCTestCase {
             updatedCity = try world.getCityWithID(cityWithAllComponents.id)
             print("Final population: \(updatedCity.population)")
             XCTAssertGreaterThan(updatedCity.population, cityWithAllComponents.population, "Population should be larger by now.")
+        }
+    }
+    
+    func testBuildImprovementComponent() throws {
+        if var bic = unitWithAllComponents.getComponent(BuildImprovementComponent.self) {
+            XCTAssertEqual(bic.currentEnergy, bic.maxEnergy)
+            
+            bic.currentEnergy = 0
+            unitWithAllComponents.replaceComponent(component: bic)
+            world.replace(unitWithAllComponents)
+            XCTAssertLessThan(bic.currentEnergy, bic.maxEnergy)
+            world = bic.step(in: world)
+            let updatedBic = try world.getUnitWithID(unitWithAllComponents.id).tryGetComponent(BuildImprovementComponent.self)
+            XCTAssertGreaterThan(updatedBic.currentEnergy, bic.currentEnergy)
+            
         }
     }
     

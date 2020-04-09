@@ -38,7 +38,7 @@ class PlayerTests: XCTestCase {
         if let player = world.currentPlayer?.calculateVisibility(in: world) {
             let visibleCount = player.visibilityMap.values.filter { tile in tile == .visible }.count
             
-            let unit = Hex_Engine.Unit(owningPlayer: player.id, name: "TestUnit", visibility: 5, startPosition: world.hexMap.getTileCoordinates().randomElement()!)
+            let unit = Hex_Engine.Unit(owningPlayer: player.id, name: "TestUnit", visibility: 5, productionRequired: 5, startPosition: world.hexMap.getTileCoordinates().randomElement()!)
             world.addUnit(unit)
             
             let updatedPlayer = world.currentPlayer!.calculateVisibility(in: world)

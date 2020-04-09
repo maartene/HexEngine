@@ -100,7 +100,7 @@ class WorldTests: XCTestCase {
             world.removeUnit(changedUnit)
         }
         
-        var unit = Hex_Engine.Unit(owningPlayer: world.playerTurnSequence[1], name: "countingUnit")
+        var unit = Hex_Engine.Unit(owningPlayer: world.playerTurnSequence[1], name: "countingUnit", productionRequired: 5)
         unit.components = [CountingComponent(ownerID: unit.id)]
         world.addUnit(unit)
         XCTAssertEqual(unit.getComponent(CountingComponent.self)?.count, 0)
@@ -132,7 +132,7 @@ class WorldTests: XCTestCase {
     
     func testExecuteCommand() throws {
         var world = World.init(playerCount: 2, width: 20, height: 20, hexMapFactory: getTestMap(width:height:))
-        var unit = Hex_Engine.Unit(owningPlayer: world.playerTurnSequence[1], name: "countingUnit")
+        var unit = Hex_Engine.Unit(owningPlayer: world.playerTurnSequence[1], name: "countingUnit", productionRequired: 5)
         unit.components = [CountingComponent(ownerID: unit.id)]
         world.addUnit(unit)
         XCTAssertEqual(unit.getComponent(CountingComponent.self)?.count, 0)

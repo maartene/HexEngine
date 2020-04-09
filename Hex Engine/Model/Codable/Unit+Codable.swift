@@ -17,6 +17,7 @@ extension Unit: Codable {
         case components
         case visibility
         case actionsRemaining
+        case productionRequired
     }
 
     func encode(to encoder: Encoder) throws {
@@ -31,6 +32,7 @@ extension Unit: Codable {
         
         try container.encode(visibility, forKey: .visibility)
         try container.encode(actionsRemaining, forKey: .actionsRemaining)
+        try container.encode(productionRequired, forKey: .productionRequired)
     }
     
     init(from decoder: Decoder) throws {
@@ -43,5 +45,6 @@ extension Unit: Codable {
         components = try wrappedComponents.map { try $0.component() }
         visibility = try values.decode(Int.self, forKey: .visibility)
         actionsRemaining = try values.decode(Double.self, forKey: .actionsRemaining)
+        productionRequired = try values.decode(Double.self, forKey: .productionRequired)
     }
 }

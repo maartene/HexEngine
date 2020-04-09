@@ -69,7 +69,7 @@ struct BuildTileImprovementCommand: Command {
         var bic = try owner.tryGetComponent(BuildImprovementComponent.self)
         
         owner.actionsRemaining = 0
-        bic.currentEnergy -= TileImprovement.tileImprovementEnergyCost[componentToBuildName, default: 0]
+        bic.currentEnergy -= newImprovement.energyRequired
         
         owner.replaceComponent(component: bic)
         var changedWorld = world
@@ -88,7 +88,15 @@ struct BuildTileImprovementCommand: Command {
             
             let bic = try owner.tryGetComponent(BuildImprovementComponent.self)
             
-            guard bic.currentEnergy >= TileImprovement.tileImprovementEnergyCost[componentToBuildName, default: 0] else {
+            guard let improvement = TileImprovement.allTileImprovements[componentToBuildName]?( AxialCoord.zero) else {
+                return false
+            }
+            
+            guard improvement.allowedTileTypes.contains(world.hexMap[owner.position]) else {
+                return false
+            }
+            
+            guard bic.currentEnergy >= improvement.energyRequired else {
                 return false
             }
             
