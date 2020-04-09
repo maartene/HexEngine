@@ -8,7 +8,7 @@
 
 import SpriteKit
 
-class UnitSprite: SKSpriteNode {
+final class UnitSprite: SKSpriteNode {
     var playerBadge: SKSpriteNode
     var selectionIndicator: SKShapeNode
     
@@ -36,6 +36,7 @@ class UnitSprite: SKSpriteNode {
         
         anchorPoint = CGPoint(x: 0.5, y: 0.25)
         
+        zPosition = SpriteZPositionConstants.UNIT_Z
         
         addChild(playerBadge)
         addChild(selectionIndicator)

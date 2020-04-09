@@ -73,8 +73,6 @@ final class UnitController: ObservableObject {
         
         let sprite = UnitSprite(unit: unit, playerColor: color)
         
-        sprite.zPosition = 1
-          
         // move sprite to correct position
         sprite.position = HexMapController.hexToPixel(unit.position, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
         

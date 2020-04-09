@@ -386,7 +386,7 @@ struct AxialCoord: Equatable, Hashable, CustomStringConvertible, Codable {
 
 enum Tile: Int, Codable {
     
-    struct TileYield: Codable, CustomStringConvertible {
+    struct TileYield: Codable, CustomStringConvertible, Equatable {
         let food: Double
         let production: Double
         let gold: Double

@@ -16,7 +16,7 @@ enum UI_State {
     case selectTargetTile
 }
 
-class HexMapController: ObservableObject {
+final class HexMapController: ObservableObject {
     //static var instance: HexMapController!
     
     @Published var boxedWorld: WorldBox
@@ -41,6 +41,7 @@ class HexMapController: ObservableObject {
     var unitController: UnitController
     var cityController: CityController
     var lensController: LensController
+    var improvementController: ImprovementController
     
     var guiPlayerIsCurrentPlayer: Bool {
         guiPlayer == boxedWorld.world.currentPlayer?.id
@@ -70,6 +71,8 @@ class HexMapController: ObservableObject {
         
         
         highlighter = SKShapeNode(circleOfRadius: CGFloat(tileWidth / 2.0))
+        highlighter.zPosition = SpriteZPositionConstants.UI_SPRITES_Z
+        
         cityController = CityController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
         cityController.getColorForPlayerFunction = { playerID in
             if let playerIndex = world.playerTurnSequence.firstIndex(of: playerID) {
@@ -81,10 +84,12 @@ class HexMapController: ObservableObject {
         
                 
         lensController = LensController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
+        improvementController = ImprovementController(with: scene, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
         lensController.subscribeToCommandsIn(hexMapController: self, boxedWorld: boxedWorld)
         
         unitController.subscribeToUnitsIn(boxedWorld: boxedWorld, hexMapController: self)
         cityController.subscribeToCitiesIn(boxedWorld: boxedWorld)
+        improvementController.subscribeToImprovementsIn(boxedWorld: boxedWorld)
         
         boxedWorld.$world.sink(receiveValue: { [weak self] world in
             //print("World updated!")

@@ -32,7 +32,7 @@ class UnitTests: XCTestCase {
     }
     
     func testUnitCodable() throws {
-        let unit = Hex_Engine.Unit(owningPlayer: UUID(), name: "testUnit\(Int.random(in: 0...10000))", visibility: Int.random(in: 1...10), startPosition: AxialCoord(q: Int.random(in: -100...100), r: Int.random(in: -100...100)))
+        let unit = Hex_Engine.Unit(owningPlayer: UUID(), name: "testUnit\(Int.random(in: 0...10000))", visibility: Int.random(in: 1...10), productionRequired: 40, startPosition: AxialCoord(q: Int.random(in: -100...100), r: Int.random(in: -100...100)))
         
         let encoder = JSONEncoder()
         let encodedUnit = try encoder.encode(unit)

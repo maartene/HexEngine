@@ -19,6 +19,7 @@ struct World: Codable {
     
     var units = [UUID: Unit]()
     var cities = [UUID: City]()
+    var improvements = [AxialCoord: TileImprovement]()
     
     //var onVisibilityMapUpdated: (() -> Void)?
     
@@ -35,6 +36,7 @@ struct World: Codable {
         case hexMap
         case units
         case cities
+        case improvements
         case players
         case playerTurnSequence
         case currentPlayerIndex
@@ -45,6 +47,7 @@ struct World: Codable {
         try container.encode(hexMap, forKey: .hexMap)
         try container.encode(units, forKey: .units)
         try container.encode(cities, forKey: .cities)
+        try container.encode(improvements, forKey: .improvements)
         try container.encode(players, forKey: .players)
         try container.encode(playerTurnSequence, forKey: .playerTurnSequence)
         try container.encode(currentPlayerIndex, forKey: .currentPlayerIndex)
@@ -55,6 +58,7 @@ struct World: Codable {
         hexMap = try values.decode(HexMap.self, forKey: .hexMap)
         units = try values.decode([UUID: Unit].self, forKey: .units)
         cities = try values.decode([UUID: City].self, forKey: .cities)
+        improvements = try values.decode([AxialCoord: TileImprovement].self, forKey: .improvements)
         players = try values.decode([UUID: Player].self, forKey: .players)
         playerTurnSequence = try values.decode([UUID].self, forKey: .playerTurnSequence)
         currentPlayerIndex = try values.decode(Int.self, forKey: .currentPlayerIndex)
@@ -270,10 +274,24 @@ struct World: Codable {
         
         players[player.id] = player
     }
+    
+    func addImprovement(_ improvement: TileImprovement) throws -> World {
+        guard improvements[improvement.position] == nil else {
+            throw TileImprovement.TileImprovementErrors.tileAlreadyOccupiedError
+        }
+        
+        var changedWorld = self
+        changedWorld.improvements[improvement.position] = improvement
+        return changedWorld
+    }
+    
+    func getImprovementAt(_ coord: AxialCoord) -> TileImprovement? {
+        return improvements[coord]
+    }
 }
 
 // MARK: Commands
-struct NextTurnCommand: Command, Codable {
+/*struct NextTurnCommand: Command, Codable {
     let title = "Next turn"
     
     var ownerID: UUID
@@ -281,4 +299,4 @@ struct NextTurnCommand: Command, Codable {
     func execute(in world: World) throws {
         world.nextTurn()
     }
-}
+}*/

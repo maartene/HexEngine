@@ -34,7 +34,7 @@ class CommandTests: XCTestCase {
     func testMovementCommand() throws {
         var world = World(playerCount: 1, width: 30, height: 30, hexMapFactory: getTestMap(width:height:))
         let coord = AxialCoord(q: -5, r: -5)
-        var unit = Unit(owningPlayer: world.currentPlayer!.id, name: "Rabbit", startPosition: coord)
+        var unit = Unit(owningPlayer: world.currentPlayer!.id, name: "Rabbit", productionRequired: 5, startPosition: coord)
         unit.components = [MovementComponent(ownerID: unit.id)]
         world.addUnit(unit)
         XCTAssertEqual(unit.getComponent(MovementComponent.self)?.path.count ?? -1, 0)
@@ -111,7 +111,9 @@ class CommandTests: XCTestCase {
         let rabbit = Unit.Rabbit(owningPlayer: world.players[world.playerTurnSequence[world.currentPlayerIndex+1]]!.id, startPosition: AxialCoord(q: 0, r: 1))
         world.addUnit(snake)
         world.addUnit(rabbit)
-        
+        world = world.nextTurn()
+        world = world.nextTurn()
+        //print(world.currentPlayer?.visibilityMap)
         XCTAssertEqual(rabbit.getComponent(HealthComponent.self)!.maxHitPoints, rabbit.getComponent(HealthComponent.self)?.currentHitPoints)
         
         let command = AttackCommand(ownerID: snake.id, targetTile: AxialCoord(q: 0, r: 1), range: 1)
@@ -154,6 +156,21 @@ class CommandTests: XCTestCase {
         XCTAssertFalse(disabledAERabbit.getComponent(AutoExploreComponent.self)?.active ?? true)
     }
     
+    func testBuildTileImprovementCommand() throws {
+        var world = World(playerCount: 2, width: 30, height: 30, hexMapFactory: getTestMap(width:height:))
+        let coord = AxialCoord.zero
+        
+        world.hexMap[coord] = .Forest
+        
+        let beaver = Unit.Beaver(owningPlayer: world.currentPlayer!.id, startPosition: coord)
+        world.addUnit(beaver)
+        
+        let command = BuildTileImprovementCommand(ownerID: beaver.id, componentToBuildName: "Camp")
+        XCTAssertTrue(command.canExecute(in: world))
+        world = world.executeCommand(command)
+        XCTAssertNotNil(world.improvements[coord])
+        XCTAssertEqual(world.getImprovementAt(coord)!.title, "Camp")
+    }
     
     
     func testCommandCodable() throws {

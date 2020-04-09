@@ -34,6 +34,7 @@ enum AttackCommandErrors: Error {
     case unitCannotAttack
     case notEnoughActionsLeftToAttack
     case targetOutOfRange
+    case targetNotVisible
 }
 
 struct AttackCommand: TileTargettingCommand, Codable {
@@ -60,6 +61,11 @@ struct AttackCommand: TileTargettingCommand, Codable {
         
         guard HexMap.distance(from: owner.position, to: targetPosition) <= range else {
             throw AttackCommandErrors.targetOutOfRange
+        }
+        
+        let player = try world.getPlayerWithID(owner.owningPlayerID)
+        guard player.visibilityMap[targetPosition, default: .unvisited] == .visible else {
+            throw AttackCommandErrors.targetNotVisible
         }
         
         // let's see whether there is a unit on the target coord

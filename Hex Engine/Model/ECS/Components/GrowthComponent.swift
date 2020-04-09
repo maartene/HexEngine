@@ -37,7 +37,7 @@ struct GrowthComponent: Component {
             
             changedComponent.yield = changedCity.isCapital ? Tile.TileYield(food: 1, production: 1, gold: 1) : Tile.TileYield()
             changedComponent.yield += changedComponent.workingTiles.reduce(Tile.TileYield()) { result, coord in
-                result + getTileYield(for: coord, in: world)
+                result + GrowthComponent.getTileYield(for: coord, in: world)
             }
 //            print("Yield: \(yield)")
             changedComponent.savedFood += yield.food
@@ -61,7 +61,7 @@ struct GrowthComponent: Component {
             
             let coordsWithinRange = HexMap.coordinatesWithinRange(from: owner.position, range: owner.visibility)
             // for now, prioritize food
-            let sortedByFood = coordsWithinRange.sorted { coord1, coord2 in getTileYield(for: coord1, in: world).food > getTileYield(for: coord2, in: world).food }
+            let sortedByFood = coordsWithinRange.sorted { coord1, coord2 in GrowthComponent.getTileYield(for: coord1, in: world).food > GrowthComponent.getTileYield(for: coord2, in: world).food }
             
             changedGC.workingTiles = Array(sortedByFood.prefix(population))
             return changedGC
@@ -70,13 +70,12 @@ struct GrowthComponent: Component {
         }
     }
     
-    func getTileYield(for coord: AxialCoord, in world: World) -> Tile.TileYield {
+    static func getTileYield(for coord: AxialCoord, in world: World) -> Tile.TileYield {
         let baseYield = world.hexMap[coord].baseTileYield
-        var production = baseYield.production
-        var food = baseYield.food
-        var gold = baseYield.gold
         
-        return Tile.TileYield(food: food, production: production, gold: gold)
+        let yieldFromImprovement = world.getImprovementAt(coord)?.updateTileYield(baseYield) ?? baseYield
+        
+        return yieldFromImprovement
     }
 }
 

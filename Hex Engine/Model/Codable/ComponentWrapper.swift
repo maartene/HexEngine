@@ -26,6 +26,7 @@ enum ComponentWrapper: Codable {
     case settlerComponent(value: SettlerComponent)
     case growthComponent(value: GrowthComponent)
     case autoExploreComponent(value: AutoExploreComponent)
+    case buildImprovementComponent(value: BuildImprovementComponent)
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -50,6 +51,9 @@ enum ComponentWrapper: Codable {
             try container.encode(value, forKey: .value)
         case .autoExploreComponent(let value):
             try container.encode("autoExploreComponent", forKey: .type)
+            try container.encode(value, forKey: .value)
+        case .buildImprovementComponent(let value):
+            try container.encode("buildImprovementComponent", forKey: .type)
             try container.encode(value, forKey: .value)
         }
     }
@@ -79,6 +83,9 @@ enum ComponentWrapper: Codable {
         case "autoExploreComponent":
             let value = try values.decode(AutoExploreComponent.self, forKey: .value)
             self = .autoExploreComponent(value: value)
+        case "buildImprovementComponent":
+            let value = try values.decode(BuildImprovementComponent.self, forKey: .value)
+            self = .buildImprovementComponent(value: value)
         default:
             throw ComponentWrapperErrors.cannotConvertComponentError
         }
@@ -99,6 +106,8 @@ enum ComponentWrapper: Codable {
             return .growthComponent(value: c)
         } else if let c = component as? AutoExploreComponent {
             return .autoExploreComponent(value: c)
+        } else if let c = component as? BuildImprovementComponent {
+            return .buildImprovementComponent(value: c)
         } else {
             throw ComponentWrapperErrors.cannotConvertComponentError
         }
@@ -119,6 +128,8 @@ enum ComponentWrapper: Codable {
         case .growthComponent(let component):
             return component
         case .autoExploreComponent(let component):
+            return component
+        case .buildImprovementComponent(let component):
             return component
         }
     }

@@ -72,8 +72,6 @@ final class CityController: ObservableObject {
         let color = getColorForPlayerFunction?(city.owningPlayerID) ?? SKColor.white
         let sprite = CitySprite(city: city, playerColor: color)
         
-        sprite.zPosition = 1
-        
         // move sprite to correct position
         sprite.position = HexMapController.hexToPixel(city.position, tileWidth: tileWidth, tileHeight: tileHeight, tileYOffsetFactor: tileYOffsetFactor)
         

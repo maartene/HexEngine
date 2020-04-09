@@ -34,6 +34,11 @@
 		DE67A8702360536200A858D0 /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE67A86F2360536200A858D0 /* City.swift */; };
 		DE67A87223605CC400A858D0 /* SKNode+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE67A87123605CC400A858D0 /* SKNode+Extension.swift */; };
 		DE6BE6272257E0F20027380C /* HexMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6BE6262257E0F20027380C /* HexMap.swift */; };
+		DE71AA05243DB0C100EB7BB2 /* TileImprovement.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE71AA04243DB0C100EB7BB2 /* TileImprovement.swift */; };
+		DE71AA07243DD09400EB7BB2 /* SpriteZPositionConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE71AA06243DD09400EB7BB2 /* SpriteZPositionConstants.swift */; };
+		DE71AA09243DD86000EB7BB2 /* ImprovementSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE71AA08243DD86000EB7BB2 /* ImprovementSprite.swift */; };
+		DE71AA0B243DD93700EB7BB2 /* ImprovementController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE71AA0A243DD93700EB7BB2 /* ImprovementController.swift */; };
+		DE71AA0D243DE3C100EB7BB2 /* BuildImprovementComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE71AA0C243DE3C100EB7BB2 /* BuildImprovementComponent.swift */; };
 		DE75E35F235A3D0A0018F1F9 /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE75E35D235A376B0018F1F9 /* Command.swift */; };
 		DE75E384235B41490018F1F9 /* WorldTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE75E383235B41490018F1F9 /* WorldTests.swift */; };
 		DE75E386235B416F0018F1F9 /* CommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE75E385235B416F0018F1F9 /* CommandTests.swift */; };
@@ -49,6 +54,7 @@
 		DEC545952427865300D68FDE /* AutoExploreComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC545942427865300D68FDE /* AutoExploreComponent.swift */; };
 		DECCAD8422665E7C002D820E /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECCAD8322665E7C002D820E /* Double+Extension.swift */; };
 		DED64EC324387AE800330556 /* CombineTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED64EC224387AE800330556 /* CombineTest.swift */; };
+		DEE91F1B243F069500FB8B4F /* TileImprovementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE91F1A243F069500FB8B4F /* TileImprovementTests.swift */; };
 		DEEB5F622428B18B00669C95 /* TestUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB5F612428B18B00669C95 /* TestUtilities.swift */; };
 		DEEB5F642428CE7100669C95 /* ComponentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB5F632428CE7100669C95 /* ComponentTests.swift */; };
 		DEEDE7AD23816193005E7613 /* PlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEDE7AC23816193005E7613 /* PlayerTests.swift */; };
@@ -107,6 +113,11 @@
 		DE67A86F2360536200A858D0 /* City.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
 		DE67A87123605CC400A858D0 /* SKNode+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SKNode+Extension.swift"; sourceTree = "<group>"; };
 		DE6BE6262257E0F20027380C /* HexMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMap.swift; sourceTree = "<group>"; };
+		DE71AA04243DB0C100EB7BB2 /* TileImprovement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileImprovement.swift; sourceTree = "<group>"; };
+		DE71AA06243DD09400EB7BB2 /* SpriteZPositionConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpriteZPositionConstants.swift; sourceTree = "<group>"; };
+		DE71AA08243DD86000EB7BB2 /* ImprovementSprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImprovementSprite.swift; sourceTree = "<group>"; };
+		DE71AA0A243DD93700EB7BB2 /* ImprovementController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImprovementController.swift; sourceTree = "<group>"; };
+		DE71AA0C243DE3C100EB7BB2 /* BuildImprovementComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildImprovementComponent.swift; sourceTree = "<group>"; };
 		DE75E35D235A376B0018F1F9 /* Command.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Command.swift; sourceTree = "<group>"; };
 		DE75E383235B41490018F1F9 /* WorldTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldTests.swift; sourceTree = "<group>"; };
 		DE75E385235B416F0018F1F9 /* CommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandTests.swift; sourceTree = "<group>"; };
@@ -122,6 +133,7 @@
 		DEC545942427865300D68FDE /* AutoExploreComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoExploreComponent.swift; sourceTree = "<group>"; };
 		DECCAD8322665E7C002D820E /* Double+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extension.swift"; sourceTree = "<group>"; };
 		DED64EC224387AE800330556 /* CombineTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineTest.swift; sourceTree = "<group>"; };
+		DEE91F1A243F069500FB8B4F /* TileImprovementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileImprovementTests.swift; sourceTree = "<group>"; };
 		DEEB5F612428B18B00669C95 /* TestUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestUtilities.swift; sourceTree = "<group>"; };
 		DEEB5F632428CE7100669C95 /* ComponentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentTests.swift; sourceTree = "<group>"; };
 		DEEDE7AC23816193005E7613 /* PlayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerTests.swift; sourceTree = "<group>"; };
@@ -161,6 +173,7 @@
 				DE24EA4A242260860071D0C2 /* Components */,
 				DE0DE0682420E5F80077D5EE /* Component.swift */,
 				DE0DE06A2420FCEF0077D5EE /* Entity.swift */,
+				DE71AA04243DB0C100EB7BB2 /* TileImprovement.swift */,
 			);
 			path = ECS;
 			sourceTree = "<group>";
@@ -215,6 +228,7 @@
 				DEB0A4DA242A0FC6004E11DF /* UnitTests.swift */,
 				DEB0A4DC242A118A004E11DF /* EntityTests.swift */,
 				DED64EC224387AE800330556 /* CombineTest.swift */,
+				DEE91F1A243F069500FB8B4F /* TileImprovementTests.swift */,
 			);
 			path = "Hex EngineTests";
 			sourceTree = "<group>";
@@ -244,10 +258,12 @@
 		DE19C3B8238AD43E00BC4034 /* Sprites */ = {
 			isa = PBXGroup;
 			children = (
+				DE71AA06243DD09400EB7BB2 /* SpriteZPositionConstants.swift */,
 				DE19C3B3238AAF1300BC4034 /* UnitSprite.swift */,
 				DE19C3B5238AB40C00BC4034 /* CitySprite.swift */,
 				DE19C3B9238AD46500BC4034 /* TileSprite.swift */,
 				DEAE7FDA243B1DD300C76181 /* LensSprite.swift */,
+				DE71AA08243DD86000EB7BB2 /* ImprovementSprite.swift */,
 			);
 			path = Sprites;
 			sourceTree = "<group>";
@@ -262,6 +278,7 @@
 				DE0DE0662420E38F0077D5EE /* MovementComponent.swift */,
 				DE24EA4824225E430071D0C2 /* SettlerComponent.swift */,
 				DE8EE9B7242F647E00F806A6 /* GrowthComponent.swift */,
+				DE71AA0C243DE3C100EB7BB2 /* BuildImprovementComponent.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -313,6 +330,7 @@
 				DEF58F0322874FA50020B473 /* UnitController.swift */,
 				DE67A86D236052D500A858D0 /* CityController.swift */,
 				DEAE7FD8243A1A7300C76181 /* LensController.swift */,
+				DE71AA0A243DD93700EB7BB2 /* ImprovementController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -417,8 +435,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE71AA05243DB0C100EB7BB2 /* TileImprovement.swift in Sources */,
 				DE13AD0F2257DF5600136AFE /* ViewController.swift in Sources */,
 				DE24EA4924225E430071D0C2 /* SettlerComponent.swift in Sources */,
+				DE71AA0D243DE3C100EB7BB2 /* BuildImprovementComponent.swift in Sources */,
 				DEAE7FDB243B1DD300C76181 /* LensSprite.swift in Sources */,
 				DE13AD0D2257DF5600136AFE /* HexMapScene.swift in Sources */,
 				DE67A87223605CC400A858D0 /* SKNode+Extension.swift in Sources */,
@@ -433,11 +453,13 @@
 				DE78AD9024222F5700A45C01 /* BuildComponent.swift in Sources */,
 				DEFFE2832258B5C400D9AE5A /* CGPoint+Extension.swift in Sources */,
 				DE12FB432392928A00A58357 /* AI.swift in Sources */,
+				DE71AA07243DD09400EB7BB2 /* SpriteZPositionConstants.swift in Sources */,
 				DE24EA4C242260A30071D0C2 /* HealthComponent.swift in Sources */,
 				DE8EE9B8242F647E00F806A6 /* GrowthComponent.swift in Sources */,
 				DEF58F0222874D7C0020B473 /* World.swift in Sources */,
 				DE67A86E236052D500A858D0 /* CityController.swift in Sources */,
 				DE3A71ED24266F5B00C48421 /* ComponentWrapper.swift in Sources */,
+				DE71AA09243DD86000EB7BB2 /* ImprovementSprite.swift in Sources */,
 				DE75E35F235A3D0A0018F1F9 /* Command.swift in Sources */,
 				DEF58EFF22874CCD0020B473 /* Unit.swift in Sources */,
 				DEC545952427865300D68FDE /* AutoExploreComponent.swift in Sources */,
@@ -452,6 +474,7 @@
 				DE64F7B2237EDE2000C921ED /* Player.swift in Sources */,
 				DE24EA4E242357140071D0C2 /* AttackComponent.swift in Sources */,
 				DEFFE28122587EDE00D9AE5A /* HexMapController.swift in Sources */,
+				DE71AA0B243DD93700EB7BB2 /* ImprovementController.swift in Sources */,
 				DE13AD072257DF5600136AFE /* AppDelegate.swift in Sources */,
 				DE0CE0D0238049190009B3A1 /* PlayersView.swift in Sources */,
 				DEEDE7AF23817888005E7613 /* TitleScreenView.swift in Sources */,
@@ -472,6 +495,7 @@
 				DE75E384235B41490018F1F9 /* WorldTests.swift in Sources */,
 				DE538AE5225DED11007104A9 /* HexMapTests.swift in Sources */,
 				DEB0A4DD242A118A004E11DF /* EntityTests.swift in Sources */,
+				DEE91F1B243F069500FB8B4F /* TileImprovementTests.swift in Sources */,
 				DE13AD202257DF5800136AFE /* Hex_EngineTests.swift in Sources */,
 				DEB0A4DB242A0FC6004E11DF /* UnitTests.swift in Sources */,
 				DED64EC324387AE800330556 /* CombineTest.swift in Sources */,
