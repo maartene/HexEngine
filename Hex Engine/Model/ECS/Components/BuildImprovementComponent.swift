@@ -20,7 +20,7 @@ struct BuildImprovementComponent: Component {
         self.maxEnergy = maxEnergy
         currentEnergy = maxEnergy
         
-        possibleCommands = TileImprovement.allTileImprovements.map { BuildTileImprovementCommand(ownerID: ownerID, componentToBuildName: $0.key) }
+        possibleCommands = TileImprovement.Prototypes.map { BuildTileImprovementCommand(ownerID: ownerID, componentToBuildName: $0.title) }
     }
     
     func step(in world: World) -> World {
@@ -62,9 +62,7 @@ struct BuildTileImprovementCommand: Command {
         
         var owner = try world.getUnitWithID(ownerID)
         
-        guard let newImprovement = TileImprovement.allTileImprovements[componentToBuildName]?(owner.position) else {
-            throw TileImprovement.TileImprovementErrors.unknownTileImprovement
-        }
+        let newImprovement = TileImprovement.getProtype(title: componentToBuildName, at: owner.position)
 
         var bic = try owner.tryGetComponent(BuildImprovementComponent.self)
         
@@ -88,9 +86,7 @@ struct BuildTileImprovementCommand: Command {
             
             let bic = try owner.tryGetComponent(BuildImprovementComponent.self)
             
-            guard let improvement = TileImprovement.allTileImprovements[componentToBuildName]?( AxialCoord.zero) else {
-                return false
-            }
+            let improvement = TileImprovement.getProtype(title: componentToBuildName, at: owner.position)
             
             guard improvement.allowedTileTypes.contains(world.hexMap[owner.position]) else {
                 return false

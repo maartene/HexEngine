@@ -106,6 +106,17 @@ struct World: Codable {
         // TESTING only: add a city with a fixed command
         let city = City(owningPlayer: currentPlayer!.id, name: "New City", position: AxialCoord(q: 1, r: 1), isCapital: true)
         cities[city.id] = city
+        
+        
+        // save tileImprovement prototypes
+        /*let tileImprovements = [TileImprovement.Farm(position: AxialCoord.zero), TileImprovement.Mine(position: AxialCoord.zero), TileImprovement.Temple(position: AxialCoord.zero), TileImprovement.Camp(position: AxialCoord.zero)]
+        
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        let data = try! encoder.encode(tileImprovements)
+        print(String(data: data, encoding: .utf8)!)*/
+        
+        
     }
     
     func getUnitsOnTile(_ tile: AxialCoord) -> [Unit] {

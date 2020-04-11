@@ -14,6 +14,24 @@ struct TileImprovement: Codable {
         case unknownTileImprovement
     }
 
+    static var Prototypes = Bundle.main.decode([TileImprovement].self, from: "tileImprovements.json")
+    static func getProtype(title: String, at position: AxialCoord) -> TileImprovement {
+        if let prototype = Prototypes.first(where: { $0.title == title }) {
+            return TileImprovement(title: prototype.title, position: position, extraTileYield: prototype.extraTileYield, energyRequired: prototype.energyRequired, allowedTileTypes: prototype.allowedTileTypes)
+            
+        } else {
+            fatalError("No prototype with title \(title) found in Prototypes array.")
+        }
+    }
+    
+    static func getPrototype(title: String) -> TileImprovement {
+        if let prototype = Prototypes.first(where: { $0.title == title }) {
+            return prototype
+        } else {
+            fatalError("No prototype with title \(title) found in Prototypes array.")
+        }
+    }
+    
     let title: String
     let position: AxialCoord
     let extraTileYield: Tile.TileYield
@@ -24,7 +42,7 @@ struct TileImprovement: Codable {
         return yield + extraTileYield
     }
     
-    static func Farm(position: AxialCoord) -> TileImprovement{
+    /*static func Farm(position: AxialCoord) -> TileImprovement{
         return TileImprovement(title: "Farm", position: position, extraTileYield: Tile.TileYield(food: 2, production: 0, gold: 0), energyRequired: 2.0, allowedTileTypes: [.Grass, .Hill, .Sand])
     }
     
@@ -40,5 +58,5 @@ struct TileImprovement: Codable {
         return TileImprovement(title: "Camp", position: position, extraTileYield: Tile.TileYield(food: 1, production: 0, gold: 1), energyRequired: 4.0, allowedTileTypes: [.Forest])
     }
     
-    static let allTileImprovements = ["Farm": Farm, "Mine": Mine, "Temple": Temple, "Camp": Camp]
+    static let allTileImprovements = ["Farm": Farm, "Mine": Mine, "Temple": Temple, "Camp": Camp]*/
 }
