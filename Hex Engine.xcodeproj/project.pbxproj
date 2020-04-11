@@ -24,6 +24,9 @@
 		DE24EA4924225E430071D0C2 /* SettlerComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE24EA4824225E430071D0C2 /* SettlerComponent.swift */; };
 		DE24EA4C242260A30071D0C2 /* HealthComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE24EA4B242260A30071D0C2 /* HealthComponent.swift */; };
 		DE24EA4E242357140071D0C2 /* AttackComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE24EA4D242357140071D0C2 /* AttackComponent.swift */; };
+		DE278F902440888300A7675B /* Improvement.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE278F8F2440888300A7675B /* Improvement.swift */; };
+		DE278F962441C63D00A7675B /* Bundle+decode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE278F952441C63D00A7675B /* Bundle+decode.swift */; };
+		DE278F992441CD5900A7675B /* improvements.json in Resources */ = {isa = PBXBuildFile; fileRef = DE278F982441CD5900A7675B /* improvements.json */; };
 		DE3A71ED24266F5B00C48421 /* ComponentWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3A71EC24266F5B00C48421 /* ComponentWrapper.swift */; };
 		DE3A71F424269BD100C48421 /* Components+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3A71F324269BD100C48421 /* Components+Codable.swift */; };
 		DE3A720024269CDB00C48421 /* Unit+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3A71FF24269CDB00C48421 /* Unit+Codable.swift */; };
@@ -103,6 +106,9 @@
 		DE24EA4824225E430071D0C2 /* SettlerComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlerComponent.swift; sourceTree = "<group>"; };
 		DE24EA4B242260A30071D0C2 /* HealthComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthComponent.swift; sourceTree = "<group>"; };
 		DE24EA4D242357140071D0C2 /* AttackComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttackComponent.swift; sourceTree = "<group>"; };
+		DE278F8F2440888300A7675B /* Improvement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Improvement.swift; sourceTree = "<group>"; };
+		DE278F952441C63D00A7675B /* Bundle+decode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+decode.swift"; sourceTree = "<group>"; };
+		DE278F982441CD5900A7675B /* improvements.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = improvements.json; sourceTree = "<group>"; };
 		DE3A71EC24266F5B00C48421 /* ComponentWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentWrapper.swift; sourceTree = "<group>"; };
 		DE3A71F324269BD100C48421 /* Components+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Components+Codable.swift"; sourceTree = "<group>"; };
 		DE3A71FF24269CDB00C48421 /* Unit+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Unit+Codable.swift"; sourceTree = "<group>"; };
@@ -173,7 +179,6 @@
 				DE24EA4A242260860071D0C2 /* Components */,
 				DE0DE0682420E5F80077D5EE /* Component.swift */,
 				DE0DE06A2420FCEF0077D5EE /* Entity.swift */,
-				DE71AA04243DB0C100EB7BB2 /* TileImprovement.swift */,
 			);
 			path = ECS;
 			sourceTree = "<group>";
@@ -199,6 +204,7 @@
 		DE13AD052257DF5600136AFE /* Hex Engine */ = {
 			isa = PBXGroup;
 			children = (
+				DE278F972441C66B00A7675B /* Data */,
 				DEA62F6E2348C2A7004BCF8B /* Views */,
 				DEFFE27F22587EB700D9AE5A /* Controllers */,
 				DE6FEBB92257EA9000F1E495 /* Model */,
@@ -283,6 +289,14 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
+		DE278F972441C66B00A7675B /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				DE278F982441CD5900A7675B /* improvements.json */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
 		DE3A71EE2426727600C48421 /* Codable */ = {
 			isa = PBXGroup;
 			children = (
@@ -291,6 +305,7 @@
 				DE3A71F324269BD100C48421 /* Components+Codable.swift */,
 				DE3A71FF24269CDB00C48421 /* Unit+Codable.swift */,
 				DE3A720124269D2900C48421 /* City+Codable.swift */,
+				DE278F952441C63D00A7675B /* Bundle+decode.swift */,
 			);
 			path = Codable;
 			sourceTree = "<group>";
@@ -309,6 +324,8 @@
 				DEF58F0122874D7C0020B473 /* World.swift */,
 				DEB0A9A0226218AB005770B2 /* WorldFactory.swift */,
 				DEB1AD74243C89B00069BC42 /* WorldBox.swift */,
+				DE278F8F2440888300A7675B /* Improvement.swift */,
+				DE71AA04243DB0C100EB7BB2 /* TileImprovement.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -417,6 +434,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DE13AD112257DF5800136AFE /* Assets.xcassets in Resources */,
+				DE278F992441CD5900A7675B /* improvements.json in Resources */,
 				DE13AD142257DF5800136AFE /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -455,6 +473,7 @@
 				DE12FB432392928A00A58357 /* AI.swift in Sources */,
 				DE71AA07243DD09400EB7BB2 /* SpriteZPositionConstants.swift in Sources */,
 				DE24EA4C242260A30071D0C2 /* HealthComponent.swift in Sources */,
+				DE278F902440888300A7675B /* Improvement.swift in Sources */,
 				DE8EE9B8242F647E00F806A6 /* GrowthComponent.swift in Sources */,
 				DEF58F0222874D7C0020B473 /* World.swift in Sources */,
 				DE67A86E236052D500A858D0 /* CityController.swift in Sources */,
@@ -471,6 +490,7 @@
 				DE3A720024269CDB00C48421 /* Unit+Codable.swift in Sources */,
 				DEF661EC2365E69700EDF9BB /* CityInfoView.swift in Sources */,
 				DE0DE06B2420FCEF0077D5EE /* Entity.swift in Sources */,
+				DE278F962441C63D00A7675B /* Bundle+decode.swift in Sources */,
 				DE64F7B2237EDE2000C921ED /* Player.swift in Sources */,
 				DE24EA4E242357140071D0C2 /* AttackComponent.swift in Sources */,
 				DEFFE28122587EDE00D9AE5A /* HexMapController.swift in Sources */,

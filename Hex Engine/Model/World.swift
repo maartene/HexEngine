@@ -288,6 +288,14 @@ struct World: Codable {
     func getImprovementAt(_ coord: AxialCoord) -> TileImprovement? {
         return improvements[coord]
     }
+    
+    func getTileYield(for coord: AxialCoord) -> Tile.TileYield {
+        let baseYield = hexMap[coord].baseTileYield
+        
+        let yieldFromImprovement = getImprovementAt(coord)?.updateTileYield(baseYield) ?? baseYield
+        
+        return yieldFromImprovement
+    }
 }
 
 // MARK: Commands

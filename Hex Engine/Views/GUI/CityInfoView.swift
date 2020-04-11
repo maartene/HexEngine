@@ -47,6 +47,25 @@ struct CityInfoView: View {
         return result
     }
     
+    var possibleUnitBuildCommands: [QueueBuildUnitCommand] {
+        (city?.possibleCommands ?? []).compactMap { $0 as? QueueBuildUnitCommand }
+    }
+    
+    var possibleBuildingBuildCommands: [QueueBuildBuildingCommand] {
+        (city?.possibleCommands ?? []).compactMap { $0 as? QueueBuildBuildingCommand }
+    }
+    
+    var buildings: String {
+        var result = "(empty)"
+        
+        if let city = city {
+            let buildingTitles = city.buildings.map { $0.title }
+            result = buildingTitles.joined(separator: ", ")
+        }
+        
+        return result
+    }
+    
     var body: some View {
         VStack {
             if city == nil {
@@ -56,9 +75,18 @@ struct CityInfoView: View {
                     
                     VStack(alignment: .leading) {
                         HStack {
-                            ForEach(0 ..< (city?.possibleCommands.count ?? 0)) { number in
-                                Button(self.city?.possibleCommands[number].title ?? "") {
-                                    self.executeBuildCommand(number: number, city: self.city)
+                            ForEach(0 ..< possibleUnitBuildCommands.count) { number in
+                                Button(self.possibleUnitBuildCommands[number].title) {
+                                    self.executeBuildUnitCommand(number: number)
+                                }.overlay(Capsule().stroke(lineWidth: 1))
+                                    .disabled(self.city?.owningPlayerID != self.hexMapController.guiPlayer || self.boxedWorld.isUpdating)
+                            }
+                        }
+                        
+                        HStack {
+                            ForEach(0 ..< possibleBuildingBuildCommands.count) { number in
+                                Button(self.possibleBuildingBuildCommands[number].title) {
+                                    self.executeBuildBuildingCommand(number: number)
                                 }.overlay(Capsule().stroke(lineWidth: 1))
                                     .disabled(self.city?.owningPlayerID != self.hexMapController.guiPlayer || self.boxedWorld.isUpdating)
                             }
@@ -69,6 +97,7 @@ struct CityInfoView: View {
                             Owning player: \(city!.owningPlayerID)
                             Population: \(city?.population ?? -1)
                             Saved food: \(city?.savedFood ?? -1)
+                            Buildings: \(buildings)
                         """)
                         
                         HStack {
@@ -112,12 +141,13 @@ struct CityInfoView: View {
         boxedWorld.executeCommand(command)
     }
     
-    func executeBuildCommand(number: Int, city: City?) {
-        guard let city = city else {
-            return
-        }
-        
-        let command = city.possibleCommands[number]
+    func executeBuildUnitCommand(number: Int) {
+        let command = possibleUnitBuildCommands[number]
+        boxedWorld.executeCommand(command)
+    }
+    
+    func executeBuildBuildingCommand(number: Int) {
+        let command = possibleBuildingBuildCommands[number]
         boxedWorld.executeCommand(command)
     }
 }

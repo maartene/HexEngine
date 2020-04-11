@@ -17,6 +17,7 @@ struct City: Entity {
     var components = [Component]()
     var visibility = 2
     var isCapital = false
+    var buildings: [Improvement]
     
     init(owningPlayer: UUID, name: String, position: AxialCoord, isCapital: Bool = false) {
         self.id = UUID()
@@ -26,5 +27,6 @@ struct City: Entity {
         self.isCapital = isCapital
         
         components = [BuildComponent(ownerID: id), GrowthComponent(ownerID: id)]
+        buildings = [Improvement]()
     }
 }

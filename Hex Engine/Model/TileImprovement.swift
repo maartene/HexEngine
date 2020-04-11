@@ -13,7 +13,7 @@ struct TileImprovement: Codable {
         case tileAlreadyOccupiedError
         case unknownTileImprovement
     }
-    
+
     let title: String
     let position: AxialCoord
     let extraTileYield: Tile.TileYield

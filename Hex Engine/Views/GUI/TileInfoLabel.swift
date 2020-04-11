@@ -41,7 +41,7 @@ struct TileInfoLabel: View {
     
     var tileYield: String {
         if let coord = hexMapController.selectedTile {
-            return GrowthComponent.getTileYield(for: coord, in: hexMapController.boxedWorld.world).description
+            return hexMapController.boxedWorld.world.getTileYield(for: coord).description
         }
         return "unknown"
     }

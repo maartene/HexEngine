@@ -1,0 +1,24 @@
+[
+    {
+      "title" : "Monument",
+      "requiredProduction" : 25,
+      "ownerID" : "00000000-0000-0000-0000-000000000000",
+      "extraTileYield" : {
+        "production" : 0,
+        "gold" : 1,
+        "food" : 0
+      },
+      "unique" : false
+    },
+    {
+      "title" : "Granary",
+      "requiredProduction" : 35,
+      "ownerID" : "00000000-0000-0000-0000-000000000000",
+      "extraTileYield" : {
+        "production" : 0,
+        "gold" : 0,
+        "food" : 2
+      },
+      "unique" : false
+    }
+  ]
