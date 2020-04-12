@@ -22,7 +22,7 @@ extension AttackComponent {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(ownerID, forKey: .ownerID)
         
-        let wrappedPossibleCommands = possibleCommands.compactMap { command in try? CommandWrapper.wrapperFor(command: command) }
+        let wrappedPossibleCommands = try possibleCommands.map { command in try CommandWrapper.wrapperFor(command: command) }
         try container.encode(wrappedPossibleCommands, forKey: .possibleCommands)
         
         try container.encode(attackPower, forKey: .attackPower)
@@ -35,7 +35,7 @@ extension AttackComponent {
         attackPower = try values.decode(Double.self, forKey: .attackPower)
         range = try values.decode(Int.self, forKey: .range)
         let wrappedPossibleCommands = try values.decode([CommandWrapper].self, forKey: .possibleCommands)
-        possibleCommands = wrappedPossibleCommands.compactMap { try? $0.command() }
+        possibleCommands = try wrappedPossibleCommands.map { try $0.command() }
     }
 }
 
@@ -50,10 +50,10 @@ extension BuildComponent {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(ownerID, forKey: .ownerID)
         
-        let wrappedPossibleCommands = possibleCommands.compactMap { command in try? CommandWrapper.wrapperFor(command: command) }
+        let wrappedPossibleCommands = try possibleCommands.map { command in try CommandWrapper.wrapperFor(command: command) }
         try container.encode(wrappedPossibleCommands, forKey: .possibleCommands)
         
-        let wrappedBuildQueue = buildQueue.compactMap { command in try? CommandWrapper.wrapperFor(command: command) }
+        let wrappedBuildQueue = try buildQueue.map { command in try CommandWrapper.wrapperFor(command: command) }
         try container.encode(wrappedBuildQueue, forKey: .buildQueue)
     }
     
@@ -62,7 +62,7 @@ extension BuildComponent {
         ownerID = try values.decode(UUID.self, forKey: .ownerID)
         
         let wrappedPossibleCommands = try values.decode([CommandWrapper].self, forKey: .possibleCommands)
-        possibleCommands = wrappedPossibleCommands.compactMap { try? $0.command() }
+        possibleCommands = try wrappedPossibleCommands.map { try $0.command() }
         
         let wrappedBuildQueue = try values.decode([CommandWrapper].self, forKey: .buildQueue)
         buildQueue = wrappedBuildQueue.compactMap { try? $0.command() as? BuildCommand }
@@ -82,7 +82,7 @@ extension HealthComponent {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(ownerID, forKey: .ownerID)
         
-        let wrappedPossibleCommands = possibleCommands.compactMap { command in try? CommandWrapper.wrapperFor(command: command) }
+        let wrappedPossibleCommands = try possibleCommands.map { command in try CommandWrapper.wrapperFor(command: command) }
         try container.encode(wrappedPossibleCommands, forKey: .possibleCommands)
         
         try container.encode(defencePower, forKey: .defencePower)
@@ -95,7 +95,7 @@ extension HealthComponent {
         ownerID = try values.decode(UUID.self, forKey: .ownerID)
         
         let wrappedPossibleCommands = try values.decode([CommandWrapper].self, forKey: .possibleCommands)
-        possibleCommands = wrappedPossibleCommands.compactMap { try? $0.command() }
+        possibleCommands = try wrappedPossibleCommands.map { try $0.command() }
         
         defencePower = try values.decode(Double.self, forKey: .defencePower)
         maxHitPoints = try values.decode(Double.self, forKey: .maxHitPoints)
@@ -117,7 +117,7 @@ extension MovementComponent {
         try container.encode(movementCosts, forKey: .movementCosts)
         try container.encode(path, forKey: .path)
         
-        let wrappedPossibleCommands = possibleCommands.compactMap { command in try? CommandWrapper.wrapperFor(command: command) }
+        let wrappedPossibleCommands = try possibleCommands.map { command in try CommandWrapper.wrapperFor(command: command) }
         try container.encode(wrappedPossibleCommands, forKey: .possibleCommands)
     }
     
@@ -129,7 +129,7 @@ extension MovementComponent {
         path = try values.decode([AxialCoord].self, forKey: .path)
         
         let wrappedPossibleCommands = try values.decode([CommandWrapper].self, forKey: .possibleCommands)
-        possibleCommands = wrappedPossibleCommands.compactMap { try? $0.command() }
+        possibleCommands = try wrappedPossibleCommands.map { try $0.command() }
     }
 }
 
@@ -143,7 +143,7 @@ extension SettlerComponent {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(ownerID, forKey: .ownerID)
         
-        let wrappedPossibleCommands = possibleCommands.compactMap { command in try? CommandWrapper.wrapperFor(command: command) }
+        let wrappedPossibleCommands = try possibleCommands.map { command in try CommandWrapper.wrapperFor(command: command) }
         try container.encode(wrappedPossibleCommands, forKey: .possibleCommands)
     }
     
@@ -151,7 +151,7 @@ extension SettlerComponent {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         ownerID = try values.decode(UUID.self, forKey: .ownerID)
         let wrappedPossibleCommands = try values.decode([CommandWrapper].self, forKey: .possibleCommands)
-        possibleCommands = wrappedPossibleCommands.compactMap { try? $0.command() }
+        possibleCommands = try wrappedPossibleCommands.map { try $0.command() }
     }
 }
 
@@ -170,7 +170,7 @@ extension GrowthComponent {
         try container.encode(population, forKey: .population)
         try container.encode(savedFood, forKey: .savedFood)
         
-        let wrappedPossibleCommands = possibleCommands.compactMap { command in try? CommandWrapper.wrapperFor(command: command) }
+        let wrappedPossibleCommands = try possibleCommands.map { command in try CommandWrapper.wrapperFor(command: command) }
         try container.encode(wrappedPossibleCommands, forKey: .possibleCommands)
         
         try container.encode(workingTiles, forKey: .workedTiles)
@@ -183,7 +183,7 @@ extension GrowthComponent {
         savedFood = try values.decode(Double.self, forKey: .savedFood)
         
         let wrappedPossibleCommands = try values.decode([CommandWrapper].self, forKey: .possibleCommands)
-        possibleCommands = wrappedPossibleCommands.compactMap { try? $0.command() }
+        possibleCommands = try wrappedPossibleCommands.map { try $0.command() }
         
         workingTiles = try values.decode([AxialCoord].self, forKey: .workedTiles)
     }
@@ -201,7 +201,7 @@ extension AutoExploreComponent {
         try container.encode(ownerID, forKey: .ownerID)
         try container.encode(active, forKey: .active)
         
-        let wrappedPossibleCommands = possibleCommands.compactMap { command in try? CommandWrapper.wrapperFor(command: command) }
+        let wrappedPossibleCommands = try possibleCommands.map { command in try CommandWrapper.wrapperFor(command: command) }
         try container.encode(wrappedPossibleCommands, forKey: .possibleCommands)
     }
     
@@ -211,7 +211,7 @@ extension AutoExploreComponent {
         active = try values.decode(Bool.self, forKey: .active)
         
         let wrappedPossibleCommands = try values.decode([CommandWrapper].self, forKey: .possibleCommands)
-        possibleCommands = wrappedPossibleCommands.compactMap { try? $0.command() }
+        possibleCommands = try wrappedPossibleCommands.map { try $0.command() }
     }
 }
 
@@ -229,7 +229,7 @@ extension BuildImprovementComponent {
         try container.encode(maxEnergy, forKey: .maxEnergy)
         try container.encode(currentEnergy, forKey: .currentEnergy)
         
-        let wrappedPossibleCommands = possibleCommands.compactMap { command in try? CommandWrapper.wrapperFor(command: command) }
+        let wrappedPossibleCommands = try possibleCommands.map { command in try CommandWrapper.wrapperFor(command: command) }
         try container.encode(wrappedPossibleCommands, forKey: .possibleCommands)
     }
     
@@ -240,6 +240,6 @@ extension BuildImprovementComponent {
         currentEnergy = try values.decode(Double.self, forKey: .currentEnergy)
         
         let wrappedPossibleCommands = try values.decode([CommandWrapper].self, forKey: .possibleCommands)
-        possibleCommands = wrappedPossibleCommands.compactMap { try? $0.command() }
+        possibleCommands = try wrappedPossibleCommands.map { try $0.command() }
     }
 }

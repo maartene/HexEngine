@@ -40,7 +40,7 @@ enum AttackCommandErrors: Error {
 struct AttackCommand: TileTargettingCommand, Codable {
     let title: String = "Attack"
     let hasFilter = true
-    let ownerID: UUID
+    var ownerID: UUID
     var targetTile: AxialCoord?
     let range: Int
     

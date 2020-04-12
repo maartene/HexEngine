@@ -80,19 +80,20 @@ struct World: Codable {
         }
         
         // TESTING only: add a rabbit to the map
-        let unit = Unit.Rabbit(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
+        let unit = Unit.getPrototype(unitName: "Rabbit", for: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
+        //let unit = Unit.Rabbit(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
         //let unit = Unit.Snake(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
         units[unit.id] = unit
         
-        let narwhal = Unit.Narwhal(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 2, r: 1))
+        let narwhal = Unit.getPrototype(unitName: "Narwhal", for: currentPlayer!.id, startPosition: AxialCoord(q: 2, r: 1))
         units[narwhal.id] = narwhal
         
-        let anotherRabbit = Unit.Reindeer(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: -1))
+        let anotherRabbit = Unit.getPrototype(unitName: "Rabbit", for: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: -1))
         units[anotherRabbit.id] = anotherRabbit
         
         if playerCount > 1 {
             // TESTING only: add another rabbit (with a different owner to the map
-            let anotherUnit = Unit.Rabbit(owningPlayer: playerTurnSequence[1], startPosition: AxialCoord(q: -1, r: -1))
+            let anotherUnit = Unit.getPrototype(unitName: "Rabbit", for: playerTurnSequence[1], startPosition: AxialCoord(q: -1, r: -1))
             units[anotherUnit.id] = anotherUnit
         }
         
@@ -108,14 +109,15 @@ struct World: Codable {
         cities[city.id] = city
         
         
-        // save tileImprovement prototypes
-        /*let tileImprovements = [TileImprovement.Farm(position: AxialCoord.zero), TileImprovement.Mine(position: AxialCoord.zero), TileImprovement.Temple(position: AxialCoord.zero), TileImprovement.Camp(position: AxialCoord.zero)]
+        // save unit prototypes
+        /*let id = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
+        let units = [Unit.Rabbit(owningPlayer: id, startPosition: AxialCoord.zero), Unit.Beaver(owningPlayer: id, startPosition: AxialCoord.zero), Unit.Crocodile(owningPlayer: id, startPosition: AxialCoord.zero), Unit.Narwhal(owningPlayer: id, startPosition: AxialCoord.zero), Unit.Reindeer(owningPlayer: id, startPosition: AxialCoord.zero)]
         
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
-        let data = try! encoder.encode(tileImprovements)
-        print(String(data: data, encoding: .utf8)!)*/
-        
+        let data = try! encoder.encode(units)
+        print(String(data: data, encoding: .utf8)!)
+        */
         
     }
     

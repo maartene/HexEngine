@@ -19,7 +19,7 @@ class EntityTests: XCTestCase {
     }
     
     func testReplaceComponent() throws {
-        var unit = Unit.Rabbit(owningPlayer: UUID(), startPosition: AxialCoord.zero)
+        var unit = Rabbit(owningPlayer: UUID(), startPosition: AxialCoord.zero)
         let swimmingComponent = MovementComponent(ownerID: unit.id, movementCosts: [.Water : 1])
         
         XCTAssertEqual(unit.getComponent(MovementComponent.self)?.movementCosts[.Water], -1)
@@ -30,13 +30,13 @@ class EntityTests: XCTestCase {
     }
     
     func testGetComponent() throws {
-        let unit = Unit.Rabbit(owningPlayer: UUID(), startPosition: AxialCoord.zero)
+        let unit = Rabbit(owningPlayer: UUID(), startPosition: AxialCoord.zero)
         let movementComponent = unit.getComponent(MovementComponent.self)
         XCTAssertNotNil(movementComponent)
     }
     
     func testPossibleCommands() throws {
-        let unit = Unit.Rabbit(owningPlayer: UUID(), startPosition: AxialCoord.zero)
+        let unit = Rabbit(owningPlayer: UUID(), startPosition: AxialCoord.zero)
         XCTAssertGreaterThan(unit.possibleCommands.count, 0)
         
         var total = 0

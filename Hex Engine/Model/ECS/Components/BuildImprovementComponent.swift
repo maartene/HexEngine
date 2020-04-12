@@ -11,7 +11,7 @@ import Foundation
 struct BuildImprovementComponent: Component {
     var ownerID: UUID
 
-    let possibleCommands: [Command]
+    var possibleCommands: [Command]
     let maxEnergy: Double
     var currentEnergy: Double
     

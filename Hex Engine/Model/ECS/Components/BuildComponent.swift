@@ -11,15 +11,15 @@ import Foundation
 struct BuildComponent: Component {
     var ownerID: UUID
     
-    let possibleCommands: [Command]
+    var possibleCommands: [Command]
     var buildQueue = [BuildCommand]()
     
     init(ownerID: UUID) {
         self.ownerID = ownerID
         
         var possibleCommands = [Command]()
-        for entry in Unit.allUnits.keys {
-            possibleCommands.append(QueueBuildUnitCommand(ownerID: ownerID, unitToBuildName: entry))
+        for entry in Unit.Prototypes {
+            possibleCommands.append(QueueBuildUnitCommand(ownerID: ownerID, unitToBuildName: entry.name))
         }
         
         for entry in Improvement.Prototypes {
@@ -82,7 +82,7 @@ struct BuildComponent: Component {
 struct QueueBuildUnitCommand: Command, Codable {
     let unitToBuildName: String
     let title: String
-    let ownerID: UUID
+    var ownerID: UUID
     
     init(ownerID: UUID, unitToBuildName: String) {
         self.ownerID = ownerID
@@ -115,23 +115,18 @@ struct BuildUnitCommand: BuildCommand, Codable {
     let title: String
     var productionRemaining: Double
     
-    var unitToBuild: (UUID, AxialCoord) -> Unit {
-        return Unit.allUnits[unitToBuildName, default: Unit.nullUnit]
-    }
-    
     init(ownerID: UUID, unitToBuildName: String) {
         self.ownerID = ownerID
         
         //self.productionRemaining = Unit.unitProductionRequirements[unitToBuildName, default: 9999999]
         self.unitToBuildName = unitToBuildName
-        self.productionRemaining = Unit.getUnitByName(unitName: unitToBuildName
-            , ownerID: ownerID).productionRequired
+        self.productionRemaining = Unit.getPrototype(unitName: unitToBuildName).productionRequired
         title = "Build \(unitToBuildName)"
     }
     
     func execute(in world: World) throws -> World {
         let owner = try world.getCityWithID(ownerID)
-        let newUnit = unitToBuild(owner.owningPlayerID, owner.position)
+        let newUnit = Unit.getPrototype(unitName: unitToBuildName, for: owner.owningPlayerID, startPosition: owner.position)
         
         var updatedWorld = world
         updatedWorld.addUnit(newUnit)
@@ -161,7 +156,7 @@ struct RemoveFromBuildQueueCommand: Command, Codable {
 struct QueueBuildBuildingCommand: Command, Codable {
     let buildingToBuildName: String
     let title: String
-    let ownerID: UUID
+    var ownerID: UUID
     
     init(ownerID: UUID, buildingToBuildName: String) {
         self.ownerID = ownerID

@@ -75,7 +75,7 @@ class WorldTests: XCTestCase {
         
         for i in 0 ..< 100 {
             world.addCity(City(owningPlayer: world.playerTurnSequence[0], name: "Test \(i)", position: world.hexMap.getTileCoordinates().randomElement()!))
-            world.addUnit(Unit.Rabbit(owningPlayer: world.playerTurnSequence[0], startPosition: world.hexMap.getTileCoordinates().randomElement()!))
+            world.addUnit(Rabbit(owningPlayer: world.playerTurnSequence[0], startPosition: world.hexMap.getTileCoordinates().randomElement()!))
         }
         
         var pass = 1

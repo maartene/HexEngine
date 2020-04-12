@@ -9,7 +9,7 @@
 import Foundation
 
 struct GrowthComponent: Component {
-    let ownerID: UUID
+    var ownerID: UUID
     
     var possibleCommands: [Command]
     
@@ -32,7 +32,6 @@ struct GrowthComponent: Component {
     
     func step(in world: World) -> World {
         if var changedCity = try? world.getCityWithID(ownerID) {
-            print(changedCity.buildings)
             var changedComponent = distributePopulation(self, in: world)
             
             // capitals get a base extra yield

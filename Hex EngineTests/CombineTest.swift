@@ -31,7 +31,7 @@ class CombineTest: XCTestCase {
     func testCombinePerformanceWhenSavingUnitChangesExample() throws {
         // This is an example of a performance test case.
         for _ in 0 ..< 100 {
-            let unit = Unit.Rabbit(owningPlayer: world.currentPlayer!.id, startPosition: world.hexMap.getTileCoordinates().randomElement()!)
+            let unit = Rabbit(owningPlayer: world.currentPlayer!.id, startPosition: world.hexMap.getTileCoordinates().randomElement()!)
             world.addUnit(unit)
         }
         
@@ -65,7 +65,7 @@ class CombineTest: XCTestCase {
     func testCombinePerformanceWithDirectUpdatesExample() throws {
         // This is an example of a performance test case.
         for _ in 0 ..< 100 {
-            let unit = Unit.Rabbit(owningPlayer: world.currentPlayer!.id, startPosition: world.hexMap.getTileCoordinates().randomElement()!)
+            let unit = Rabbit(owningPlayer: world.currentPlayer!.id, startPosition: world.hexMap.getTileCoordinates().randomElement()!)
             world.addUnit(unit)
         }
         

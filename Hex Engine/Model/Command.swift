@@ -17,7 +17,7 @@ enum CommandErrors: Error {
 
 protocol Command: Codable {
     var title: String { get }
-    var ownerID: UUID { get }
+    var ownerID: UUID { get set }
     
     func execute(in world: World) throws -> World
     func canExecute(in world: World) -> Bool
