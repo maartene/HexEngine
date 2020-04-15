@@ -1,0 +1,78 @@
+[
+    {
+      "title" : "Farm",
+      "energyRequired" : 2,
+      "extraTileYield" : {
+        "production" : 0,
+        "gold" : 0,
+        "food" : 2,
+        "science" : 0,
+        "culture" : 0
+      },
+      "position" : {
+        "q" : 0,
+        "r" : 0
+      },
+      "allowedTileTypes" : [
+        3,
+        5,
+        2
+      ]
+    },
+    {
+      "title" : "Mine",
+      "energyRequired" : 3,
+      "extraTileYield" : {
+        "production" : 1,
+        "gold" : 1,
+        "food" : 0,
+        "science" : 0,
+        "culture" : 0
+      },
+      "position" : {
+        "q" : 0,
+        "r" : 0
+      },
+      "allowedTileTypes" : [
+        5,
+        2
+      ]
+    },
+    {
+      "title" : "Temple",
+      "energyRequired" : 4,
+      "extraTileYield" : {
+        "production" : 0,
+        "gold" : 2,
+        "food" : 0,
+        "science" : 0,
+        "culture" : 0
+      },
+      "position" : {
+        "q" : 0,
+        "r" : 0
+      },
+      "allowedTileTypes" : [
+        3,
+        5
+      ]
+    },
+    {
+      "title" : "Camp",
+      "energyRequired" : 4,
+      "extraTileYield" : {
+        "production" : 0,
+        "gold" : 1,
+        "food" : 1,
+        "science" : 0,
+        "culture" : 0
+      },
+      "position" : {
+        "q" : 0,
+        "r" : 0
+      },
+      "allowedTileTypes" : [
+        4
+      ]
+    }
+  ]

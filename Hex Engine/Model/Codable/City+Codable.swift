@@ -16,6 +16,7 @@ extension City: Codable {
         case name
         case components
         case visibility
+        case buildings
     }
     
     func encode(to encoder: Encoder) throws {
@@ -31,6 +32,7 @@ extension City: Codable {
         try container.encode(wrappedComponents, forKey: .components)
         
         try container.encode(visibility, forKey: .visibility)
+        try container.encode(buildings, forKey: .buildings)
         
     }
     
@@ -43,5 +45,6 @@ extension City: Codable {
         let wrappedComponents = try values.decode([ComponentWrapper].self, forKey: .components)
         components = wrappedComponents.compactMap { try? $0.component() }
         visibility = try values.decode(Int.self, forKey: .visibility)
+        buildings = try values.decode([Improvement].self, forKey: .buildings)
     }
 }

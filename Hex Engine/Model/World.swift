@@ -26,6 +26,7 @@ struct World: Codable {
     var players = [UUID: Player]()
     var playerTurnSequence = [UUID]()
     var currentPlayerIndex = 0
+    var turn = 0
     
     var currentPlayer: Player? {
         assert(currentPlayerIndex < playerTurnSequence.count)
@@ -40,6 +41,7 @@ struct World: Codable {
         case players
         case playerTurnSequence
         case currentPlayerIndex
+        case turn
     }
     
     func encode(to encoder: Encoder) throws {
@@ -51,6 +53,7 @@ struct World: Codable {
         try container.encode(players, forKey: .players)
         try container.encode(playerTurnSequence, forKey: .playerTurnSequence)
         try container.encode(currentPlayerIndex, forKey: .currentPlayerIndex)
+        try container.encode(turn, forKey: .turn)
     }
     
     init(from decoder: Decoder) throws {
@@ -62,6 +65,7 @@ struct World: Codable {
         players = try values.decode([UUID: Player].self, forKey: .players)
         playerTurnSequence = try values.decode([UUID].self, forKey: .playerTurnSequence)
         currentPlayerIndex = try values.decode(Int.self, forKey: .currentPlayerIndex)
+        turn = try values.decode(Int.self, forKey: .turn)
         assert(players.count == playerTurnSequence.count)
     }
         
@@ -80,19 +84,20 @@ struct World: Codable {
         }
         
         // TESTING only: add a rabbit to the map
-        let unit = Unit.Rabbit(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
+        let unit = Unit.getPrototype(unitName: "Rabbit", for: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
+        //let unit = Unit.Rabbit(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
         //let unit = Unit.Snake(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: 2))
         units[unit.id] = unit
         
-        let narwhal = Unit.Narwhal(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 2, r: 1))
+        let narwhal = Unit.getPrototype(unitName: "Narwhal", for: currentPlayer!.id, startPosition: AxialCoord(q: 2, r: 1))
         units[narwhal.id] = narwhal
         
-        let anotherRabbit = Unit.Reindeer(owningPlayer: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: -1))
-        units[anotherRabbit.id] = anotherRabbit
+        //let anotherRabbit = Unit.getPrototype(unitName: "Rabbit", for: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: -1))
+        //units[anotherRabbit.id] = anotherRabbit
         
         if playerCount > 1 {
             // TESTING only: add another rabbit (with a different owner to the map
-            let anotherUnit = Unit.Rabbit(owningPlayer: playerTurnSequence[1], startPosition: AxialCoord(q: -1, r: -1))
+            let anotherUnit = Unit.getPrototype(unitName: "Rabbit", for: playerTurnSequence[1], startPosition: AxialCoord(q: -1, r: -1))
             units[anotherUnit.id] = anotherUnit
         }
         
@@ -106,6 +111,18 @@ struct World: Codable {
         // TESTING only: add a city with a fixed command
         let city = City(owningPlayer: currentPlayer!.id, name: "New City", position: AxialCoord(q: 1, r: 1), isCapital: true)
         cities[city.id] = city
+        
+        
+        // save unit prototypes
+        /*let id = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
+        let units = [Unit.Rabbit(owningPlayer: id, startPosition: AxialCoord.zero), Unit.Beaver(owningPlayer: id, startPosition: AxialCoord.zero), Unit.Crocodile(owningPlayer: id, startPosition: AxialCoord.zero), Unit.Narwhal(owningPlayer: id, startPosition: AxialCoord.zero), Unit.Reindeer(owningPlayer: id, startPosition: AxialCoord.zero)]
+        
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        let data = try! encoder.encode(units)
+        print(String(data: data, encoding: .utf8)!)
+        */
+        
     }
     
     func getUnitsOnTile(_ tile: AxialCoord) -> [Unit] {
@@ -148,6 +165,7 @@ struct World: Codable {
     
     func nextTurn() -> World {
         var updatedWorld = self
+        updatedWorld.turn += 1
         updatedWorld = updatedWorld.nextPlayer()
         // process current player
         
@@ -287,6 +305,14 @@ struct World: Codable {
     
     func getImprovementAt(_ coord: AxialCoord) -> TileImprovement? {
         return improvements[coord]
+    }
+    
+    func getTileYield(for coord: AxialCoord) -> Tile.TileYield {
+        let baseYield = hexMap[coord].baseTileYield
+        
+        let yieldFromImprovement = getImprovementAt(coord)?.updateTileYield(baseYield) ?? baseYield
+        
+        return yieldFromImprovement
     }
 }
 

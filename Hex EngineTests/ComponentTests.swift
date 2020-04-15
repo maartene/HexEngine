@@ -87,9 +87,9 @@ class ComponentTests: XCTestCase {
         cityWithAllComponents = try world.getCityWithID(cityWithAllComponents.id)
         if var buildComponent = cityWithAllComponents.getComponent(BuildComponent.self) {
             // this test assumes the buildComponent has a production of at least 1
-            XCTAssertGreaterThanOrEqual(cityWithAllComponents.production, 1)
+            XCTAssertGreaterThanOrEqual(cityWithAllComponents.yield.production, 1)
             var command = BuildUnitCommand(ownerID: buildComponent.ownerID, unitToBuildName: "Rabbit")
-            command.productionRemaining = cityWithAllComponents.production + 1
+            command.productionRemaining = cityWithAllComponents.yield.production + 1
             
             // entries in buildQueue should increase from 0 to 1
             XCTAssertEqual(buildComponent.buildQueue.count, 0)
@@ -109,7 +109,7 @@ class ComponentTests: XCTestCase {
             world = world.nextTurn()
             buildComponent = try world.getCityWithID(cityWithAllComponents.id).getComponent(BuildComponent.self)!
             let updatedCity = try world.getCityWithID(cityWithAllComponents.id)
-            XCTAssertGreaterThan(updatedCity.production, 0)
+            XCTAssertGreaterThan(updatedCity.yield.production, 0)
             //print("Production remaining: \(buildComponent.buildQueue.first!.productionRemaining)")
             // Unit should be done
             XCTAssertEqual(buildComponent.buildQueue.count, 0)

@@ -9,7 +9,7 @@
 import Foundation
 
 struct AutoExploreComponent: Component {
-    let ownerID: UUID
+    var ownerID: UUID
     
     var active: Bool
     var possibleCommands: [Command]
@@ -65,7 +65,7 @@ struct AutoExploreComponent: Component {
 // MARK: Commands
 struct EnableAutoExploreCommand: Command {
     let title = "Auto Explore"
-    let ownerID: UUID
+    var ownerID: UUID
     
     func execute(in world: World) throws -> World {
         var owner = try world.getUnitWithID(ownerID)
@@ -94,7 +94,7 @@ struct EnableAutoExploreCommand: Command {
 
 struct DisableAutoExploreCommand: Command {
     let title = "Stop Auto Exploring"
-    let ownerID: UUID
+    var ownerID: UUID
     
     func execute(in world: World) throws -> World {
         var owner = try world.getUnitWithID(ownerID)

@@ -9,14 +9,14 @@
 import Foundation
 
 struct GrowthComponent: Component {
-    let ownerID: UUID
+    var ownerID: UUID
     
     var possibleCommands: [Command]
     
     var population: Int
     var savedFood: Double
     var foodForNextPopulation: Double {
-        return Double(10 + population * population)
+        return 10.0 + pow(3, power: population)
     }
     
     var yield = Tile.TileYield()
@@ -34,12 +34,19 @@ struct GrowthComponent: Component {
         if var changedCity = try? world.getCityWithID(ownerID) {
             var changedComponent = distributePopulation(self, in: world)
             
-            
+            // capitals get a base extra yield
             changedComponent.yield = changedCity.isCapital ? Tile.TileYield(food: 1, production: 1, gold: 1) : Tile.TileYield()
+            
             changedComponent.yield += changedComponent.workingTiles.reduce(Tile.TileYield()) { result, coord in
-                result + GrowthComponent.getTileYield(for: coord, in: world)
+                result + world.getTileYield(for: coord)
             }
-//            print("Yield: \(yield)")
+            // always work first tile
+            changedComponent.yield += world.getTileYield(for: changedCity.position)
+            
+            // yield from buildings
+            changedComponent.yield += yieldFromBuildings(city: changedCity)
+            
+            //print("Yield: \(changedComponent.yield)")
             changedComponent.savedFood += yield.food
             
             while changedComponent.savedFood >= foodForNextPopulation {
@@ -59,9 +66,13 @@ struct GrowthComponent: Component {
         if let owner = try? world.getCityWithID(ownerID) {
             var changedGC = growthComponent
             
-            let coordsWithinRange = HexMap.coordinatesWithinRange(from: owner.position, range: owner.visibility)
+            var coordsWithinRange = HexMap.coordinatesWithinRange(from: owner.position, range: owner.visibility)
+            
+            // prevent the city tile from being worked (this one is always worked)
+            coordsWithinRange.removeAll { coord in coord == owner.position }
+            
             // for now, prioritize food
-            let sortedByFood = coordsWithinRange.sorted { coord1, coord2 in GrowthComponent.getTileYield(for: coord1, in: world).food > GrowthComponent.getTileYield(for: coord2, in: world).food }
+            let sortedByFood = coordsWithinRange.sorted { coord1, coord2 in world.getTileYield(for: coord1).food > world.getTileYield(for: coord2).food }
             
             changedGC.workingTiles = Array(sortedByFood.prefix(population))
             return changedGC
@@ -70,12 +81,12 @@ struct GrowthComponent: Component {
         }
     }
     
-    static func getTileYield(for coord: AxialCoord, in world: World) -> Tile.TileYield {
-        let baseYield = world.hexMap[coord].baseTileYield
-        
-        let yieldFromImprovement = world.getImprovementAt(coord)?.updateTileYield(baseYield) ?? baseYield
-        
-        return yieldFromImprovement
+    func yieldFromBuildings(city: City) -> Tile.TileYield {
+        let buildingYield = city.buildings.reduce(Tile.TileYield()) { tempResult, improvement in
+            improvement.updateTileYield(tempResult)
+        }
+        //print("buildingYield: \(buildingYield)")
+        return buildingYield
     }
 }
 
@@ -88,6 +99,7 @@ extension City {
         }
     }
     
+    @available(*, deprecated, message: "Use '.yield.production' instead.")
     var production: Double {
         if let gc = self.getComponent(GrowthComponent.self) {
             return gc.yield.production
@@ -103,4 +115,21 @@ extension City {
             return 1
         }
     }
+    
+    var yield: Tile.TileYield {
+        if let gc = self.getComponent(GrowthComponent.self) {
+            return gc.yield
+        } else {
+            return isCapital ? Tile.TileYield(food: 3, production: 3, gold: 3) : Tile.TileYield(food: 2, production: 2, gold: 2)
+        }
+    }
+}
+
+func pow(_ base: Double, power: Int) -> Double {
+    assert(power >= 0)
+    var result = 1.0
+    for _ in 0 ..< power {
+        result *= base
+    }
+    return result
 }

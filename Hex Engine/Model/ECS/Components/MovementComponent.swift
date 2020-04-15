@@ -10,7 +10,7 @@ import Foundation
 import GameplayKit
 
 struct MovementComponent : Component {
-    let ownerID: UUID
+    var ownerID: UUID
     let movementCosts: [Tile: Double]
     
     // pathfinding stuff
@@ -21,7 +21,7 @@ struct MovementComponent : Component {
     
     var visitedTilesDuringTurn = [AxialCoord]()
     
-    let possibleCommands: [Command]
+    var possibleCommands: [Command]
     
     init(ownerID: UUID, movementCosts: [Tile: Double] = Tile.defaultCostsToEnter) {
         self.ownerID = ownerID

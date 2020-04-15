@@ -9,8 +9,8 @@
 import Foundation
 
 protocol Component: Codable {
-    var ownerID: UUID { get }
-    var possibleCommands: [Command] { get }
+    var ownerID: UUID { get set }
+    var possibleCommands: [Command] { get set }
     
     func step(in world: World) -> World
 }

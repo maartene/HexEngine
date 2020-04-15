@@ -92,7 +92,7 @@ class CommandTests: XCTestCase {
         if world.hexMap[coord] != .Grass {
             world.hexMap[coord] = .Grass
         }
-        let rabbit = Unit.Rabbit(owningPlayer: world.currentPlayer!.id, startPosition: coord)
+        let rabbit = Rabbit(owningPlayer: world.currentPlayer!.id, startPosition: coord)
         XCTAssertNil(world.getCityAt(coord))
         world.addUnit(rabbit)
         
@@ -107,8 +107,8 @@ class CommandTests: XCTestCase {
     func testAttackCommand() throws {
         var world = World(playerCount: 2, width: 30, height: 30, hexMapFactory: getTestMap(width:height:))
         let coord = AxialCoord.zero
-        let snake = Unit.Snake(owningPlayer: world.currentPlayer!.id, startPosition: coord)
-        let rabbit = Unit.Rabbit(owningPlayer: world.players[world.playerTurnSequence[world.currentPlayerIndex+1]]!.id, startPosition: AxialCoord(q: 0, r: 1))
+        let snake = Snake(owningPlayer: world.currentPlayer!.id, startPosition: coord)
+        let rabbit = Rabbit(owningPlayer: world.players[world.playerTurnSequence[world.currentPlayerIndex+1]]!.id, startPosition: AxialCoord(q: 0, r: 1))
         world.addUnit(snake)
         world.addUnit(rabbit)
         world = world.nextTurn()
@@ -125,7 +125,7 @@ class CommandTests: XCTestCase {
     func testEnableAutoExploreCommand() throws {
         var world = World(playerCount: 2, width: 30, height: 30, hexMapFactory: getTestMap(width:height:))
         let coord = AxialCoord.zero
-        let rabbit = Unit.Rabbit(owningPlayer: world.currentPlayer!.id, startPosition: coord)
+        let rabbit = Rabbit(owningPlayer: world.currentPlayer!.id, startPosition: coord)
         world.addUnit(rabbit)
         
         XCTAssertFalse(rabbit.getComponent(AutoExploreComponent.self)?.active ?? true)
@@ -140,7 +140,7 @@ class CommandTests: XCTestCase {
     func testDisableAutoExploreCommand() throws {
         var world = World(playerCount: 2, width: 30, height: 30, hexMapFactory: getTestMap(width:height:))
         let coord = AxialCoord.zero
-        let rabbit = Unit.Rabbit(owningPlayer: world.currentPlayer!.id, startPosition: coord)
+        let rabbit = Rabbit(owningPlayer: world.currentPlayer!.id, startPosition: coord)
         world.addUnit(rabbit)
         
         XCTAssertFalse(rabbit.getComponent(AutoExploreComponent.self)?.active ?? true)
@@ -162,7 +162,7 @@ class CommandTests: XCTestCase {
         
         world.hexMap[coord] = .Forest
         
-        let beaver = Unit.Beaver(owningPlayer: world.currentPlayer!.id, startPosition: coord)
+        let beaver = Beaver(owningPlayer: world.currentPlayer!.id, startPosition: coord)
         world.addUnit(beaver)
         
         let command = BuildTileImprovementCommand(ownerID: beaver.id, componentToBuildName: "Camp")
@@ -191,4 +191,30 @@ class CommandTests: XCTestCase {
             XCTAssertEqual(decodedCommand.title, command.title)
         }
     }
+    
+    func testBuildBuildingCommandTest() throws {
+        var world = World(playerCount: 1, width: 30, height: 30, hexMapFactory: getTestMap(width:height:))
+        let coord = AxialCoord.zero
+        
+        var city = City(owningPlayer: world.currentPlayer!.id, name: "Test City", position: coord)
+        world.addCity(city)
+        XCTAssertFalse(city.buildings.contains(where: {building in building.title == "Granary" }))
+        let command = BuildBuildingCommand(ownerID: city.id, buildingToBuildName: "Granary")
+        world = world.executeCommand(command)
+        city = try world.getCityWithID(city.id)
+        XCTAssertTrue(city.buildings.contains(where: {building in building.title == "Granary" }))
+    }
+    
+    func testQueueBuildBuildingCommand() throws {
+        var world = World(playerCount: 1, width: 30, height: 30, hexMapFactory: getTestMap(width:height:))
+        let city = City(owningPlayer: world.currentPlayer!.id, name: "testplayer", position: AxialCoord.zero)
+        world.addCity(city)
+        XCTAssertEqual(city.getComponent(BuildComponent.self)?.buildQueue.count, 0)
+        let command = QueueBuildBuildingCommand(ownerID: city.id, buildingToBuildName: "Granary")
+        world = world.executeCommand(command)
+        let updatedCity = try world.getCityWithID(city.id)
+        XCTAssertGreaterThan(updatedCity.getComponent(BuildComponent.self)?.buildQueue.count ?? 0, 0)
+        XCTAssertTrue(updatedCity.getComponent(BuildComponent.self)?.buildQueue.contains(where: { bc in bc.title == "Build Granary" }) ?? false)
+    }
+    
 }

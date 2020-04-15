@@ -19,6 +19,8 @@ protocol Entity {
     var visibility: Int { get }
     var position: AxialCoord { get set }
     var components: [Component] { get set }
+    
+    func step(in world: World) -> World
 }
 
 extension Entity {

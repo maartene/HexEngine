@@ -9,8 +9,8 @@
 import Foundation
 
 struct HealthComponent: Component {
-    let ownerID: UUID
-    let possibleCommands: [Command]
+    var ownerID: UUID
+    var possibleCommands: [Command]
     
     var defencePower: Double
     var maxHitPoints: Double

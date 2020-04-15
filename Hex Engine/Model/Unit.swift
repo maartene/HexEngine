@@ -11,8 +11,25 @@ import SpriteKit
 
 struct Unit: Entity {
     
-    let id: UUID
-    let owningPlayerID: UUID
+    static var Prototypes: [Unit] = Bundle.main.decode([Unit].self, from: "units.json")
+    static func getPrototype(unitName: String) -> Unit {
+        if var unit = Prototypes.first(where: { $0.name == unitName }) {
+            // the prototype comes with a default ID. Make sure it gets a unique ID.
+            unit.assignUniqueID()
+            return unit
+        } else {
+            fatalError("No Unit prototype with name \(unitName) found.")
+        }
+    }
+    static func getPrototype(unitName: String, for owningPlayerID: UUID, startPosition: AxialCoord = AxialCoord.zero) -> Unit {
+        var unit = getPrototype(unitName: unitName)
+        unit.position = startPosition
+        unit.owningPlayerID = owningPlayerID
+        return unit
+    }
+    
+    var id: UUID
+    var owningPlayerID: UUID
     var position: AxialCoord
     
     let name: String
@@ -31,6 +48,21 @@ struct Unit: Entity {
         self.position = startPosition
     }
     
+    mutating func assignUniqueID() {
+        id = UUID()
+        components = components.map { component in
+            var changedComponent = component
+            changedComponent.ownerID = id
+            changedComponent.possibleCommands = changedComponent.possibleCommands.map { command in
+                var changedCommand = command
+                changedCommand.ownerID = id
+                return changedCommand
+            }
+            return changedComponent
+        }
+    }
+    
+    /*
     static func Rabbit(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
         var newRabbit = Unit(owningPlayer: owningPlayer, name: "Rabbit", productionRequired: 10, startPosition: startPosition)
         newRabbit.components = [MovementComponent(ownerID: newRabbit.id), SettlerComponent(ownerID: newRabbit.id), HealthComponent(ownerID: newRabbit.id), AutoExploreComponent(ownerID: newRabbit.id)]
@@ -86,4 +118,5 @@ struct Unit: Entity {
     }
     
     static let allUnits = ["Narwhal": Unit.Narwhal, "Rabbit": Unit.Rabbit, "Snake": Unit.Snake, "Reindeer": Unit.Reindeer, "Crocodile": Unit.Crocodile, "Beaver": Unit.Beaver]
+     */
 }

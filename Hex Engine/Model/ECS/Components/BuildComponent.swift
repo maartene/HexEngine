@@ -11,16 +11,21 @@ import Foundation
 struct BuildComponent: Component {
     var ownerID: UUID
     
-    let possibleCommands: [Command]
+    var possibleCommands: [Command]
     var buildQueue = [BuildCommand]()
     
     init(ownerID: UUID) {
         self.ownerID = ownerID
         
         var possibleCommands = [Command]()
-        for entry in Unit.allUnits.keys {
-            possibleCommands.append(QueueBuildUnitCommand(ownerID: ownerID, unitToBuildName: entry))
+        for entry in Unit.Prototypes {
+            possibleCommands.append(QueueBuildUnitCommand(ownerID: ownerID, unitToBuildName: entry.name))
         }
+        
+        for entry in Improvement.Prototypes {
+            possibleCommands.append(QueueBuildBuildingCommand(ownerID: ownerID, buildingToBuildName: entry.title))
+        }
+        
         self.possibleCommands = possibleCommands
     }
     
@@ -36,7 +41,7 @@ struct BuildComponent: Component {
         var changedBuildQueue = buildQueue
         var itemToBuild = changedBuildQueue.removeFirst()
         
-        itemToBuild.productionRemaining -= changedCity.production
+        itemToBuild.productionRemaining -= changedCity.yield.production
         print("Added \(production) production. \(itemToBuild.productionRemaining) production remaining.")
     
         if itemToBuild.productionRemaining <= 0 {
@@ -44,6 +49,8 @@ struct BuildComponent: Component {
         } else {
             changedBuildQueue.insert(itemToBuild, at: 0)
         }
+        
+        changedCity = try updatedWorld.getCityWithID(itemToBuild.ownerID)
         
         changedBuildComponent.buildQueue = changedBuildQueue
         changedCity.replaceComponent(component: changedBuildComponent)
@@ -61,7 +68,7 @@ struct BuildComponent: Component {
     func step(in world: World) -> World {
         if let owner = try? world.getCityWithID(ownerID) {
             do {
-                return try build(in: world, production: owner.production)
+                return try build(in: world, production: owner.yield.production)
             } catch {
                 print(error)
                 return world
@@ -75,7 +82,7 @@ struct BuildComponent: Component {
 struct QueueBuildUnitCommand: Command, Codable {
     let unitToBuildName: String
     let title: String
-    let ownerID: UUID
+    var ownerID: UUID
     
     init(ownerID: UUID, unitToBuildName: String) {
         self.ownerID = ownerID
@@ -108,23 +115,18 @@ struct BuildUnitCommand: BuildCommand, Codable {
     let title: String
     var productionRemaining: Double
     
-    var unitToBuild: (UUID, AxialCoord) -> Unit {
-        return Unit.allUnits[unitToBuildName, default: Unit.nullUnit]
-    }
-    
     init(ownerID: UUID, unitToBuildName: String) {
         self.ownerID = ownerID
         
         //self.productionRemaining = Unit.unitProductionRequirements[unitToBuildName, default: 9999999]
         self.unitToBuildName = unitToBuildName
-        self.productionRemaining = Unit.getUnitByName(unitName: unitToBuildName
-            , ownerID: ownerID).productionRequired
+        self.productionRemaining = Unit.getPrototype(unitName: unitToBuildName).productionRequired
         title = "Build \(unitToBuildName)"
     }
     
     func execute(in world: World) throws -> World {
         let owner = try world.getCityWithID(ownerID)
-        let newUnit = unitToBuild(owner.owningPlayerID, owner.position)
+        let newUnit = Unit.getPrototype(unitName: unitToBuildName, for: owner.owningPlayerID, startPosition: owner.position)
         
         var updatedWorld = world
         updatedWorld.addUnit(newUnit)
@@ -148,5 +150,61 @@ struct RemoveFromBuildQueueCommand: Command, Codable {
             return updatedWorld
         }
         return world
+    }
+}
+
+struct QueueBuildBuildingCommand: Command, Codable {
+    let buildingToBuildName: String
+    let title: String
+    var ownerID: UUID
+    
+    init(ownerID: UUID, buildingToBuildName: String) {
+        self.ownerID = ownerID
+        self.buildingToBuildName = buildingToBuildName
+        self.title = "Build \(buildingToBuildName)"
+    }
+    
+    func execute(in world: World) throws -> World {
+        var owner = try world.getCityWithID(ownerID)
+        guard let buildComponent = owner.getComponent(BuildComponent.self) else {
+            throw EntityErrors.componentNotFound(componentName: "BuildComponent")
+        }
+        
+        let buildBuildingCommand = BuildBuildingCommand(ownerID: ownerID, buildingToBuildName: buildingToBuildName)
+        
+        let changedBC = buildComponent.addToBuildQueue(buildBuildingCommand)
+        
+        owner.replaceComponent(component: changedBC)
+        var updatedWorld = world
+        updatedWorld.replace(owner)
+        return updatedWorld
+    }
+}
+
+// Don't call this command directly, but execute it from QueueBuildBuildingCommand instead.
+struct BuildBuildingCommand: BuildCommand, Codable {
+    var ownerID: UUID
+    
+    let buildingToBuildName: String
+    let title: String
+    var productionRemaining: Double
+    
+    init(ownerID: UUID, buildingToBuildName: String) {
+        self.ownerID = ownerID
+        
+        //self.productionRemaining = Unit.unitProductionRequirements[unitToBuildName, default: 9999999]
+        self.buildingToBuildName = buildingToBuildName
+        
+        self.productionRemaining = Improvement.getPrototype(title: buildingToBuildName).requiredProduction
+        title = "Build \(buildingToBuildName)"
+    }
+    
+    func execute(in world: World) throws -> World {
+        var owner = try world.getCityWithID(ownerID)
+        let newBuilding = Improvement.getProtype(title: buildingToBuildName, for: ownerID)
+        owner.buildings.append(newBuilding)
+        var updatedWorld = world
+        updatedWorld.replace(owner)
+        return updatedWorld
     }
 }

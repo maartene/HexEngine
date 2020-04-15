@@ -21,10 +21,14 @@ enum CommandWrapper: Codable {
     case foundCityCommand(value: FoundCityCommand)
     case moveUnitCommand(value: MoveUnitCommand)
     case queueBuildUnitCommand(value: QueueBuildUnitCommand)
+    case queueBuildBuildingCommand(value: QueueBuildBuildingCommand)
     case buildUnitCommand(value: BuildUnitCommand)
+    case buildBuildingCommand(value: BuildBuildingCommand)
     case attackTileCommand(value: AttackCommand)
     case removeFromBuildQueueCommand(value: RemoveFromBuildQueueCommand)
     case buildTileImprovementCommand(value: BuildTileImprovementCommand)
+    case enableAutoExploreCommand(value: EnableAutoExploreCommand)
+    case disableAutoExploreCommand(value: DisableAutoExploreCommand)
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -49,6 +53,18 @@ enum CommandWrapper: Codable {
             try container.encode(value, forKey: .value)
         case .buildTileImprovementCommand(let value):
             try container.encode("buildTileImprovementCommand", forKey: .type)
+            try container.encode(value, forKey: .value)
+        case .buildBuildingCommand(let value):
+            try container.encode("buildBuildingCommand", forKey: .type)
+            try container.encode(value, forKey: .value)
+        case .queueBuildBuildingCommand(let value):
+            try container.encode("queueBuildBuildingCommand", forKey: .type)
+            try container.encode(value, forKey: .value)
+        case .enableAutoExploreCommand(let value):
+            try container.encode("enableAutoExploreCommand", forKey: .type)
+            try container.encode(value, forKey: .value)
+        case .disableAutoExploreCommand(let value):
+            try container.encode("disableAutoExploreCommand", forKey: .type)
             try container.encode(value, forKey: .value)
         }
     }
@@ -78,6 +94,19 @@ enum CommandWrapper: Codable {
         case "buildTileImprovementCommand":
             let value = try values.decode(BuildTileImprovementCommand.self, forKey: .value)
             self = .buildTileImprovementCommand(value: value)
+        case "buildBuildingCommand":
+            let value = try values.decode(BuildBuildingCommand.self, forKey: .value)
+            self = .buildBuildingCommand(value: value)
+        case "queueBuildBuildingCommand":
+            let value = try values.decode(QueueBuildBuildingCommand.self, forKey: .value)
+            self = .queueBuildBuildingCommand(value: value)
+        case "enableAutoExploreCommand":
+            let value = try values.decode(EnableAutoExploreCommand.self, forKey: .value)
+            self = .enableAutoExploreCommand(value: value)
+        case "disableAutoExploreCommand":
+            let value = try values.decode(DisableAutoExploreCommand.self, forKey: .value)
+            self = .disableAutoExploreCommand(value: value)
+            
         default:
             throw CommandWrapperErrors.cannotConvertCommandError
         }
@@ -98,6 +127,14 @@ enum CommandWrapper: Codable {
             return .removeFromBuildQueueCommand(value: c)
         } else if let c = command as? BuildTileImprovementCommand {
             return .buildTileImprovementCommand(value: c)
+        } else if let c = command as? BuildBuildingCommand {
+            return .buildBuildingCommand(value: c)
+        } else if let c = command as? QueueBuildBuildingCommand {
+            return .queueBuildBuildingCommand(value: c)
+        } else if let c = command as? EnableAutoExploreCommand {
+            return .enableAutoExploreCommand(value: c)
+        } else if let c = command as? DisableAutoExploreCommand {
+            return .disableAutoExploreCommand(value: c)
         } else {
             throw CommandWrapperErrors.cannotConvertCommandError
         }
@@ -118,6 +155,14 @@ enum CommandWrapper: Codable {
         case .removeFromBuildQueueCommand(let value):
             return value
         case .buildTileImprovementCommand(let value):
+            return value
+        case .buildBuildingCommand(let value):
+            return value
+        case .queueBuildBuildingCommand(let value):
+            return value
+        case .enableAutoExploreCommand(let value):
+            return value
+        case .disableAutoExploreCommand(let value):
             return value
         }
     }

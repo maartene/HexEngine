@@ -34,7 +34,7 @@ struct SettlerComponent: Component {
 struct FoundCityCommand: Command, Codable {
     let title = "Found city"
     
-    let ownerID: UUID
+    var ownerID: UUID
     
     func execute(in world: World) throws -> World {
         var updatedWorld = world

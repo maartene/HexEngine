@@ -390,15 +390,19 @@ enum Tile: Int, Codable {
         let food: Double
         let production: Double
         let gold: Double
+        let science: Double
+        let culture: Double
         
-        init(food: Double = 0, production: Double = 0, gold: Double = 0) {
+        init(food: Double = 0, production: Double = 0, gold: Double = 0, science: Double = 0, culture: Double = 0) {
             self.food = food
             self.production = production
             self.gold = gold
+            self.science = science
+            self.culture = culture
         }
         
         static func +(lhs: TileYield, rhs: TileYield) -> TileYield {
-            return TileYield(food: lhs.food + rhs.food, production: lhs.production + rhs.production, gold: lhs.gold + rhs.gold)
+            return TileYield(food: lhs.food + rhs.food, production: lhs.production + rhs.production, gold: lhs.gold + rhs.gold, science: lhs.science + rhs.science, culture: lhs.culture + rhs.culture)
         }
         
         static func += (left: inout TileYield, right: TileYield) {
@@ -406,7 +410,7 @@ enum Tile: Int, Codable {
         }
         
         var description: String {
-            "\(food)f, \(production)p, \(gold)g"
+            "\(food)🥖, \(production)⚒️, \(gold)💎, \(science)🧪, \(culture)🎵"
         }
     }
     

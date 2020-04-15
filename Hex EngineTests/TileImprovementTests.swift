@@ -23,12 +23,12 @@ class TileImprovementTests: XCTestCase {
     func testTileImprovementChangesTileYield() throws {
         var world = World(playerCount: 1, width: 10, height: 10, hexMapFactory: getTestMap(width:height:))
         world.hexMap[AxialCoord.zero] = .Forest
-        let originalYield = GrowthComponent.getTileYield(for: AxialCoord.zero, in: world)
+        let originalYield = world.getTileYield(for: AxialCoord.zero)
         
-        let camp = TileImprovement.Camp(position: AxialCoord.zero)
+        let camp = TileImprovement.getProtype(title: "Camp", at: AxialCoord.zero)
         world = try world.addImprovement(camp)
         
-        let newYield = GrowthComponent.getTileYield(for: AxialCoord.zero, in: world)
+        let newYield = world.getTileYield(for: AxialCoord.zero)
         
         XCTAssertNotEqual(originalYield, newYield)
     }
