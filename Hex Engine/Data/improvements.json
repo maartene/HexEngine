@@ -5,8 +5,10 @@
       "ownerID" : "00000000-0000-0000-0000-000000000000",
       "extraTileYield" : {
         "production" : 0,
-        "gold" : 1,
-        "food" : 0
+        "gold" : 0,
+        "food" : 0,
+        "science" : 0,
+        "culture" : 2
       },
       "unique" : false
     },
@@ -17,8 +19,62 @@
       "extraTileYield" : {
         "production" : 0,
         "gold" : 0,
-        "food" : 2
+        "food" : 2,
+        "science" : 0,
+        "culture" : 0
       },
       "unique" : false
+    },
+    {
+      "title" : "Library",
+      "requiredProduction" : 60,
+      "ownerID" : "00000000-0000-0000-0000-000000000000",
+      "extraTileYield" : {
+        "production" : 0,
+        "gold" : 0,
+        "food" : 0,
+        "science" : 2,
+        "culture" : 0
+      },
+      "unique" : false
+    },
+    {
+      "title" : "Market",
+      "requiredProduction" : 40,
+      "ownerID" : "00000000-0000-0000-0000-000000000000",
+      "extraTileYield" : {
+        "production" : 0,
+        "gold" : 2,
+        "food" : 0,
+        "science" : 0,
+        "culture" : 0
+      },
+      "unique" : false
+    },
+    {
+      "title" : "Workshop",
+      "requiredProduction" : 100,
+      "ownerID" : "00000000-0000-0000-0000-000000000000",
+      "extraTileYield" : {
+        "production" : 2,
+        "gold" : 0,
+        "food" : 0,
+        "science" : 0,
+        "culture" : 0
+      },
+      "unique" : false
+    },
+    {
+      "title" : "Stonehenge",
+      "requiredProduction" : 100,
+      "ownerID" : "00000000-0000-0000-0000-000000000000",
+      "extraTileYield" : {
+        "production" : 0,
+        "gold" : 0,
+        "food" : 0,
+        "science" : 0,
+        "culture" : 10
+      },
+      "unique" : true
     }
   ]

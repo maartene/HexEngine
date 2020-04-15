@@ -26,6 +26,7 @@ struct World: Codable {
     var players = [UUID: Player]()
     var playerTurnSequence = [UUID]()
     var currentPlayerIndex = 0
+    var turn = 0
     
     var currentPlayer: Player? {
         assert(currentPlayerIndex < playerTurnSequence.count)
@@ -40,6 +41,7 @@ struct World: Codable {
         case players
         case playerTurnSequence
         case currentPlayerIndex
+        case turn
     }
     
     func encode(to encoder: Encoder) throws {
@@ -51,6 +53,7 @@ struct World: Codable {
         try container.encode(players, forKey: .players)
         try container.encode(playerTurnSequence, forKey: .playerTurnSequence)
         try container.encode(currentPlayerIndex, forKey: .currentPlayerIndex)
+        try container.encode(turn, forKey: .turn)
     }
     
     init(from decoder: Decoder) throws {
@@ -62,6 +65,7 @@ struct World: Codable {
         players = try values.decode([UUID: Player].self, forKey: .players)
         playerTurnSequence = try values.decode([UUID].self, forKey: .playerTurnSequence)
         currentPlayerIndex = try values.decode(Int.self, forKey: .currentPlayerIndex)
+        turn = try values.decode(Int.self, forKey: .turn)
         assert(players.count == playerTurnSequence.count)
     }
         
@@ -88,8 +92,8 @@ struct World: Codable {
         let narwhal = Unit.getPrototype(unitName: "Narwhal", for: currentPlayer!.id, startPosition: AxialCoord(q: 2, r: 1))
         units[narwhal.id] = narwhal
         
-        let anotherRabbit = Unit.getPrototype(unitName: "Rabbit", for: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: -1))
-        units[anotherRabbit.id] = anotherRabbit
+        //let anotherRabbit = Unit.getPrototype(unitName: "Rabbit", for: currentPlayer!.id, startPosition: AxialCoord(q: 1, r: -1))
+        //units[anotherRabbit.id] = anotherRabbit
         
         if playerCount > 1 {
             // TESTING only: add another rabbit (with a different owner to the map
@@ -161,6 +165,7 @@ struct World: Codable {
     
     func nextTurn() -> World {
         var updatedWorld = self
+        updatedWorld.turn += 1
         updatedWorld = updatedWorld.nextPlayer()
         // process current player
         

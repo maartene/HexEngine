@@ -5,7 +5,9 @@
       "extraTileYield" : {
         "production" : 0,
         "gold" : 0,
-        "food" : 2
+        "food" : 2,
+        "science" : 0,
+        "culture" : 0
       },
       "position" : {
         "q" : 0,
@@ -23,7 +25,9 @@
       "extraTileYield" : {
         "production" : 1,
         "gold" : 1,
-        "food" : 0
+        "food" : 0,
+        "science" : 0,
+        "culture" : 0
       },
       "position" : {
         "q" : 0,
@@ -40,7 +44,9 @@
       "extraTileYield" : {
         "production" : 0,
         "gold" : 2,
-        "food" : 0
+        "food" : 0,
+        "science" : 0,
+        "culture" : 0
       },
       "position" : {
         "q" : 0,
@@ -57,7 +63,9 @@
       "extraTileYield" : {
         "production" : 0,
         "gold" : 1,
-        "food" : 1
+        "food" : 1,
+        "science" : 0,
+        "culture" : 0
       },
       "position" : {
         "q" : 0,
