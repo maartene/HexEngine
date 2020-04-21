@@ -1,0 +1,26 @@
+[
+    {
+      "title" : "Pottery",
+      "costRemaining" : 20,
+      "cost" : 20,
+      "prerequisiteTechs" : []
+    },
+    {
+      "title" : "The Wheel",
+      "costRemaining" : 50,
+      "cost" : 50,
+      "prerequisiteTechs" : ["Pottery"]
+    },
+    {
+      "title" : "Archery",
+      "costRemaining" : 30,
+      "cost" : 30,
+      "prerequisiteTechs" : ["Pottery"]
+    },
+    {
+      "title" : "Sailing",
+      "costRemaining" : 40,
+      "cost" : 40,
+      "prerequisiteTechs" : []
+    }
+  ] 

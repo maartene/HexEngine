@@ -26,7 +26,8 @@ struct World: Codable {
     var players = [UUID: Player]()
     var playerTurnSequence = [UUID]()
     var currentPlayerIndex = 0
-    var turn = 0
+    var turn = 1
+    var flags = Set<String>()
     
     var currentPlayer: Player? {
         assert(currentPlayerIndex < playerTurnSequence.count)
@@ -42,6 +43,7 @@ struct World: Codable {
         case playerTurnSequence
         case currentPlayerIndex
         case turn
+        case flags
     }
     
     func encode(to encoder: Encoder) throws {
@@ -54,6 +56,7 @@ struct World: Codable {
         try container.encode(playerTurnSequence, forKey: .playerTurnSequence)
         try container.encode(currentPlayerIndex, forKey: .currentPlayerIndex)
         try container.encode(turn, forKey: .turn)
+        try container.encode(flags, forKey: .flags)
     }
     
     init(from decoder: Decoder) throws {
@@ -66,6 +69,7 @@ struct World: Codable {
         playerTurnSequence = try values.decode([UUID].self, forKey: .playerTurnSequence)
         currentPlayerIndex = try values.decode(Int.self, forKey: .currentPlayerIndex)
         turn = try values.decode(Int.self, forKey: .turn)
+        flags = try values.decode(Set<String>.self, forKey: .flags)
         assert(players.count == playerTurnSequence.count)
     }
         
@@ -115,11 +119,11 @@ struct World: Codable {
         
         // save unit prototypes
         /*let id = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-        let units = [Unit.Rabbit(owningPlayer: id, startPosition: AxialCoord.zero), Unit.Beaver(owningPlayer: id, startPosition: AxialCoord.zero), Unit.Crocodile(owningPlayer: id, startPosition: AxialCoord.zero), Unit.Narwhal(owningPlayer: id, startPosition: AxialCoord.zero), Unit.Reindeer(owningPlayer: id, startPosition: AxialCoord.zero)]
+        let techs = [Technology(title: "Pottery", cost: 20), Technology(title: "The Wheel", cost: 50)]
         
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
-        let data = try! encoder.encode(units)
+        let data = try! encoder.encode(techs)
         print(String(data: data, encoding: .utf8)!)
         */
         
@@ -165,11 +169,10 @@ struct World: Codable {
     
     func nextTurn() -> World {
         var updatedWorld = self
-        updatedWorld.turn += 1
         updatedWorld = updatedWorld.nextPlayer()
         // process current player
         
-        if let player = updatedWorld.currentPlayer {
+        if var player = updatedWorld.currentPlayer {
             // gives units new action points
             for unit in updatedWorld.units.values.filter({$0.owningPlayerID == player.id}) {
                 var changedUnit = unit
@@ -191,6 +194,9 @@ struct World: Codable {
                     updatedWorld = city.step(in: updatedWorld)
                 }
             
+            // by this time, the player might have changed, so we will refresh it.
+            player = updatedWorld.currentPlayer!
+            
             assert(updatedWorld.players.keys.contains(player.id))
             updatedWorld = updatedWorld.updateVisibilityForPlayer(player: player)
             
@@ -205,6 +211,11 @@ struct World: Codable {
     func nextPlayer() -> World {
         var changedWorld = self
         changedWorld.currentPlayerIndex = (currentPlayerIndex + 1) % players.count
+        
+        // when we are back at currentPlayerIndex == 0, then all players processed their turn and we can increase the turn count.
+        if changedWorld.currentPlayerIndex == 0 {
+            changedWorld.turn += 1
+        }
         assert(players.count == playerTurnSequence.count)
         return changedWorld
     }

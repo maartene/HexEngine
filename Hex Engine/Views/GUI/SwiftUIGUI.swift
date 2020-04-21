@@ -15,6 +15,8 @@ struct SwiftUIGUI: View {
     @ObservedObject var unitController: UnitController
     @ObservedObject var hexMapController: HexMapController
     
+    @State var showingTechSelection = false
+    
     init(unitController: UnitController, hexMapController: HexMapController) {
         self.hexMapController = hexMapController
         self.unitController = unitController
@@ -23,6 +25,7 @@ struct SwiftUIGUI: View {
     
     var body: some View {
         VStack {
+            StatisticsBarView(boxedWorld: boxedWorld, hexMapController: hexMapController, shouldShowTechSelection: $showingTechSelection)
             HStack(alignment: .top) {
                 UnitInfoView(unitController: unitController, boxedWorld: boxedWorld, hexMapController: hexMapController).shadow(radius: 4).padding().disabled(hexMapController.guiPlayerIsCurrentPlayer == false)
                 Spacer()
@@ -32,6 +35,12 @@ struct SwiftUIGUI: View {
             
             //Text("SwiftUI for SpriteKit gui!")
             //    .background(Color.gray.opacity(0.5))
+            
+            Spacer()
+            
+            if showingTechSelection {
+                SelectTechToResearchView(boxedWorld: boxedWorld, hexMapController: hexMapController, shouldShowTechSelection: $showingTechSelection)
+            }
             
             Spacer()
             

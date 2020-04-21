@@ -26,7 +26,7 @@ struct City: Entity {
         self.position = position
         self.isCapital = isCapital
         
-        components = [BuildComponent(ownerID: id), GrowthComponent(ownerID: id)]
+        components = [BuildComponent(ownerID: id), GrowthComponent(ownerID: id), ProgressComponent(ownerID: id)]
         buildings = [Improvement]()
     }
 }

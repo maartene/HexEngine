@@ -17,11 +17,17 @@ struct Player: Identifiable, Hashable, Equatable, Codable {
     }
     var aiName: String = ""
     
-    var visibilityMap = [AxialCoord: TileVisibility]()
+    var currentlyResearchingTechnology: Technology?
+    var technologies: [Technology]
+    var gold: Double = 0
     
+    var visibilityMap = [AxialCoord: TileVisibility]()
+        
     init(name: String) {
         self.id = UUID()
         self.name = name
+        self.technologies = [Technology]()
+        self.currentlyResearchingTechnology = nil
     }
     
     static func == (lhs: Player, rhs: Player) -> Bool {

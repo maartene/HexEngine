@@ -28,6 +28,8 @@
 		DE278F962441C63D00A7675B /* Bundle+decode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE278F952441C63D00A7675B /* Bundle+decode.swift */; };
 		DE278F992441CD5900A7675B /* improvements.json in Resources */ = {isa = PBXBuildFile; fileRef = DE278F982441CD5900A7675B /* improvements.json */; };
 		DE278F9B2441E7DA00A7675B /* tileImprovements.json in Resources */ = {isa = PBXBuildFile; fileRef = DE278F9A2441E7DA00A7675B /* tileImprovements.json */; };
+		DE355ECD2447865C00874F93 /* Technology.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE355ECC2447865C00874F93 /* Technology.swift */; };
+		DE355ECF244874D100874F93 /* ProgressComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE355ECE244874D100874F93 /* ProgressComponent.swift */; };
 		DE3A71ED24266F5B00C48421 /* ComponentWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3A71EC24266F5B00C48421 /* ComponentWrapper.swift */; };
 		DE3A71F424269BD100C48421 /* Components+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3A71F324269BD100C48421 /* Components+Codable.swift */; };
 		DE3A720024269CDB00C48421 /* Unit+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3A71FF24269CDB00C48421 /* Unit+Codable.swift */; };
@@ -49,6 +51,7 @@
 		DE78AD9024222F5700A45C01 /* BuildComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE78AD8F24222F5700A45C01 /* BuildComponent.swift */; };
 		DE88832B24434B69005E195F /* ImprovementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE88832A24434B69005E195F /* ImprovementTests.swift */; };
 		DE8EE9B8242F647E00F806A6 /* GrowthComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8EE9B7242F647E00F806A6 /* GrowthComponent.swift */; };
+		DE9535AD244B42A200D849E9 /* technologies.json in Resources */ = {isa = PBXBuildFile; fileRef = DE9535AC244B42A200D849E9 /* technologies.json */; };
 		DEAE7FD9243A1A7300C76181 /* LensController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAE7FD8243A1A7300C76181 /* LensController.swift */; };
 		DEAE7FDB243B1DD300C76181 /* LensSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAE7FDA243B1DD300C76181 /* LensSprite.swift */; };
 		DEB0A4DB242A0FC6004E11DF /* UnitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0A4DA242A0FC6004E11DF /* UnitTests.swift */; };
@@ -56,10 +59,12 @@
 		DEB0A9A1226218AB005770B2 /* WorldFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0A9A0226218AB005770B2 /* WorldFactory.swift */; };
 		DEB1AD75243C89B00069BC42 /* WorldBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB1AD74243C89B00069BC42 /* WorldBox.swift */; };
 		DEB540FC236DC08E00D03062 /* CommandWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB540FB236DC08E00D03062 /* CommandWrapper.swift */; };
+		DEC413FD2448A46700D6B8D5 /* StatisticsBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC413FC2448A46700D6B8D5 /* StatisticsBarView.swift */; };
 		DEC545952427865300D68FDE /* AutoExploreComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC545942427865300D68FDE /* AutoExploreComponent.swift */; };
 		DECCAD8422665E7C002D820E /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECCAD8322665E7C002D820E /* Double+Extension.swift */; };
 		DED1735C24420AAC00629A89 /* units.json in Resources */ = {isa = PBXBuildFile; fileRef = DED1735B24420AAC00629A89 /* units.json */; };
 		DED64EC324387AE800330556 /* CombineTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED64EC224387AE800330556 /* CombineTest.swift */; };
+		DEDA91A8244B410E003D5EF6 /* SelectTechToResearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA91A7244B410E003D5EF6 /* SelectTechToResearchView.swift */; };
 		DEE91F1B243F069500FB8B4F /* TileImprovementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE91F1A243F069500FB8B4F /* TileImprovementTests.swift */; };
 		DEEB5F622428B18B00669C95 /* TestUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB5F612428B18B00669C95 /* TestUtilities.swift */; };
 		DEEB5F642428CE7100669C95 /* ComponentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB5F632428CE7100669C95 /* ComponentTests.swift */; };
@@ -113,6 +118,8 @@
 		DE278F952441C63D00A7675B /* Bundle+decode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+decode.swift"; sourceTree = "<group>"; };
 		DE278F982441CD5900A7675B /* improvements.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = improvements.json; sourceTree = "<group>"; };
 		DE278F9A2441E7DA00A7675B /* tileImprovements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = tileImprovements.json; sourceTree = "<group>"; };
+		DE355ECC2447865C00874F93 /* Technology.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Technology.swift; sourceTree = "<group>"; };
+		DE355ECE244874D100874F93 /* ProgressComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressComponent.swift; sourceTree = "<group>"; };
 		DE3A71EC24266F5B00C48421 /* ComponentWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentWrapper.swift; sourceTree = "<group>"; };
 		DE3A71F324269BD100C48421 /* Components+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Components+Codable.swift"; sourceTree = "<group>"; };
 		DE3A71FF24269CDB00C48421 /* Unit+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Unit+Codable.swift"; sourceTree = "<group>"; };
@@ -134,6 +141,7 @@
 		DE78AD8F24222F5700A45C01 /* BuildComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildComponent.swift; sourceTree = "<group>"; };
 		DE88832A24434B69005E195F /* ImprovementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImprovementTests.swift; sourceTree = "<group>"; };
 		DE8EE9B7242F647E00F806A6 /* GrowthComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthComponent.swift; sourceTree = "<group>"; };
+		DE9535AC244B42A200D849E9 /* technologies.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = technologies.json; sourceTree = "<group>"; };
 		DEAE7FD8243A1A7300C76181 /* LensController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LensController.swift; sourceTree = "<group>"; };
 		DEAE7FDA243B1DD300C76181 /* LensSprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LensSprite.swift; sourceTree = "<group>"; };
 		DEB0A4DA242A0FC6004E11DF /* UnitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitTests.swift; sourceTree = "<group>"; };
@@ -141,10 +149,12 @@
 		DEB0A9A0226218AB005770B2 /* WorldFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldFactory.swift; sourceTree = "<group>"; };
 		DEB1AD74243C89B00069BC42 /* WorldBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldBox.swift; sourceTree = "<group>"; };
 		DEB540FB236DC08E00D03062 /* CommandWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandWrapper.swift; sourceTree = "<group>"; };
+		DEC413FC2448A46700D6B8D5 /* StatisticsBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsBarView.swift; sourceTree = "<group>"; };
 		DEC545942427865300D68FDE /* AutoExploreComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoExploreComponent.swift; sourceTree = "<group>"; };
 		DECCAD8322665E7C002D820E /* Double+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extension.swift"; sourceTree = "<group>"; };
 		DED1735B24420AAC00629A89 /* units.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = units.json; sourceTree = "<group>"; };
 		DED64EC224387AE800330556 /* CombineTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineTest.swift; sourceTree = "<group>"; };
+		DEDA91A7244B410E003D5EF6 /* SelectTechToResearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTechToResearchView.swift; sourceTree = "<group>"; };
 		DEE91F1A243F069500FB8B4F /* TileImprovementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileImprovementTests.swift; sourceTree = "<group>"; };
 		DEEB5F612428B18B00669C95 /* TestUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestUtilities.swift; sourceTree = "<group>"; };
 		DEEB5F632428CE7100669C95 /* ComponentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentTests.swift; sourceTree = "<group>"; };
@@ -264,6 +274,8 @@
 				DEF661EB2365E69700EDF9BB /* CityInfoView.swift */,
 				DEF661ED2365E6D400EDF9BB /* TileInfoLabel.swift */,
 				DE0CE0CF238049190009B3A1 /* PlayersView.swift */,
+				DEC413FC2448A46700D6B8D5 /* StatisticsBarView.swift */,
+				DEDA91A7244B410E003D5EF6 /* SelectTechToResearchView.swift */,
 			);
 			path = GUI;
 			sourceTree = "<group>";
@@ -292,6 +304,7 @@
 				DE24EA4824225E430071D0C2 /* SettlerComponent.swift */,
 				DE8EE9B7242F647E00F806A6 /* GrowthComponent.swift */,
 				DE71AA0C243DE3C100EB7BB2 /* BuildImprovementComponent.swift */,
+				DE355ECE244874D100874F93 /* ProgressComponent.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -299,6 +312,7 @@
 		DE278F972441C66B00A7675B /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				DE9535AC244B42A200D849E9 /* technologies.json */,
 				DE278F982441CD5900A7675B /* improvements.json */,
 				DE278F9A2441E7DA00A7675B /* tileImprovements.json */,
 				DED1735B24420AAC00629A89 /* units.json */,
@@ -335,6 +349,7 @@
 				DEB1AD74243C89B00069BC42 /* WorldBox.swift */,
 				DE278F8F2440888300A7675B /* Improvement.swift */,
 				DE71AA04243DB0C100EB7BB2 /* TileImprovement.swift */,
+				DE355ECC2447865C00874F93 /* Technology.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -445,6 +460,7 @@
 				DE278F9B2441E7DA00A7675B /* tileImprovements.json in Resources */,
 				DED1735C24420AAC00629A89 /* units.json in Resources */,
 				DE13AD112257DF5800136AFE /* Assets.xcassets in Resources */,
+				DE9535AD244B42A200D849E9 /* technologies.json in Resources */,
 				DE278F992441CD5900A7675B /* improvements.json in Resources */,
 				DE13AD142257DF5800136AFE /* Main.storyboard in Resources */,
 			);
@@ -466,11 +482,13 @@
 			files = (
 				DE71AA05243DB0C100EB7BB2 /* TileImprovement.swift in Sources */,
 				DE13AD0F2257DF5600136AFE /* ViewController.swift in Sources */,
+				DE355ECF244874D100874F93 /* ProgressComponent.swift in Sources */,
 				DE24EA4924225E430071D0C2 /* SettlerComponent.swift in Sources */,
 				DE71AA0D243DE3C100EB7BB2 /* BuildImprovementComponent.swift in Sources */,
 				DEAE7FDB243B1DD300C76181 /* LensSprite.swift in Sources */,
 				DE13AD0D2257DF5600136AFE /* HexMapScene.swift in Sources */,
 				DE67A87223605CC400A858D0 /* SKNode+Extension.swift in Sources */,
+				DE355ECD2447865C00874F93 /* Technology.swift in Sources */,
 				DEAE7FD9243A1A7300C76181 /* LensController.swift in Sources */,
 				DE0DE0692420E5F80077D5EE /* Component.swift in Sources */,
 				DEF661EA2365E67100EDF9BB /* UnitInfoView.swift in Sources */,
@@ -483,6 +501,7 @@
 				DEFFE2832258B5C400D9AE5A /* CGPoint+Extension.swift in Sources */,
 				DE12FB432392928A00A58357 /* AI.swift in Sources */,
 				DE71AA07243DD09400EB7BB2 /* SpriteZPositionConstants.swift in Sources */,
+				DEDA91A8244B410E003D5EF6 /* SelectTechToResearchView.swift in Sources */,
 				DE24EA4C242260A30071D0C2 /* HealthComponent.swift in Sources */,
 				DE278F902440888300A7675B /* Improvement.swift in Sources */,
 				DE8EE9B8242F647E00F806A6 /* GrowthComponent.swift in Sources */,
@@ -494,6 +513,7 @@
 				DEF58EFF22874CCD0020B473 /* Unit.swift in Sources */,
 				DEC545952427865300D68FDE /* AutoExploreComponent.swift in Sources */,
 				DE0DE0672420E38F0077D5EE /* MovementComponent.swift in Sources */,
+				DEC413FD2448A46700D6B8D5 /* StatisticsBarView.swift in Sources */,
 				DEF487362364B48F001E47A5 /* SwiftUIGUI.swift in Sources */,
 				DE19C3B6238AB40C00BC4034 /* CitySprite.swift in Sources */,
 				DEB0A9A1226218AB005770B2 /* WorldFactory.swift in Sources */,

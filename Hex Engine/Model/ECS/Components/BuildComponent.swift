@@ -105,6 +105,24 @@ struct QueueBuildUnitCommand: Command, Codable {
         updatedWorld.replace(owner)
         return updatedWorld
     }
+    
+    func canExecute(in world: World) -> Bool {
+        if let owner = try? world.getCityWithID(ownerID) {
+            if let player = try? world.getPlayerWithID(owner.owningPlayerID) {
+                let unitToBuild = Unit.getPrototype(unitName: unitToBuildName)
+                
+                if world.flags.contains("IGNORE_TECH_REQUIREMENTS") == false && unitToBuild.prerequisiteTechs.count > 0 {
+                    return unitToBuild.prerequisiteTechs.reduce(true) { result, requiredTechName in
+                        result && player.technologies.contains(where: { tech in tech.title == requiredTechName })
+                    }
+                } else {
+                    return true
+                }
+            }
+        }
+        
+        return false
+    }
 }
 
 // Don't call this command directly, but execute it from QueueBuildUnitCommand instead.

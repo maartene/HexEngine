@@ -243,3 +243,26 @@ extension BuildImprovementComponent {
         possibleCommands = try wrappedPossibleCommands.map { try $0.command() }
     }
 }
+
+extension ProgressComponent {
+    enum CodingKeys: CodingKey {
+        case ownerID
+        case possibleCommands
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(ownerID, forKey: .ownerID)
+        
+        let wrappedPossibleCommands = try possibleCommands.map { command in try CommandWrapper.wrapperFor(command: command) }
+        try container.encode(wrappedPossibleCommands, forKey: .possibleCommands)
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        ownerID = try values.decode(UUID.self, forKey: .ownerID)
+        
+        let wrappedPossibleCommands = try values.decode([CommandWrapper].self, forKey: .possibleCommands)
+        possibleCommands = try wrappedPossibleCommands.map { try $0.command() }
+    }
+}

@@ -73,7 +73,13 @@
           "value" : {
             "ownerID" : "00000000-0000-0000-0000-000000000000",
             "possibleCommands" : [
-  
+              {
+                "type" : "enableAutoExploreCommand",
+                "value" : {
+                  "title" : "Auto Explore",
+                  "ownerID" : "00000000-0000-0000-0000-000000000000"
+                }
+              }
             ],
             "active" : false
           }
@@ -82,7 +88,8 @@
       "actionsRemaining" : 2,
       "productionRequired" : 10,
       "name" : "Rabbit",
-      "visibility" : 1
+      "visibility" : 1,
+      "prerequisiteTechs" : []
     },
     {
       "position" : {
@@ -172,7 +179,8 @@
       "actionsRemaining" : 2,
       "productionRequired" : 15,
       "name" : "Beaver",
-      "visibility" : 1
+      "visibility" : 1,
+      "prerequisiteTechs" : []
     },
     {
       "position" : {
@@ -251,8 +259,13 @@
           "type" : "autoExploreComponent",
           "value" : {
             "ownerID" : "00000000-0000-0000-0000-000000000000",
-            "possibleCommands" : [
-  
+            "possibleCommands" : [{
+              "type" : "enableAutoExploreCommand",
+              "value" : {
+                "title" : "Auto Explore",
+                "ownerID" : "00000000-0000-0000-0000-000000000000"
+              }
+            }
             ],
             "active" : false
           }
@@ -261,7 +274,8 @@
       "actionsRemaining" : 2,
       "productionRequired" : 10,
       "name" : "Crocodile",
-      "visibility" : 1
+      "visibility" : 1,
+      "prerequisiteTechs" : []
     },
     {
       "position" : {
@@ -290,7 +304,7 @@
                 }
               }
             ],
-            "ownerID" : "EA98D421-D109-4FDC-82D5-750D6A230EDF"
+            "ownerID" : "00000000-0000-0000-0000-000000000000"
           }
         },
         {
@@ -300,7 +314,7 @@
   
             ],
             "defencePower" : 1,
-            "ownerID" : "EA98D421-D109-4FDC-82D5-750D6A230EDF",
+            "ownerID" : "00000000-0000-0000-0000-000000000000",
             "maxHitPoints" : 10,
             "currentHitPoints" : 10
           }
@@ -308,9 +322,15 @@
         {
           "type" : "autoExploreComponent",
           "value" : {
-            "ownerID" : "EA98D421-D109-4FDC-82D5-750D6A230EDF",
+            "ownerID" : "00000000-0000-0000-0000-000000000000",
             "possibleCommands" : [
-  
+              {
+                "type" : "enableAutoExploreCommand",
+                "value" : {
+                  "title" : "Auto Explore",
+                  "ownerID" : "00000000-0000-0000-0000-000000000000"
+                }
+              }
             ],
             "active" : false
           }
@@ -319,7 +339,8 @@
       "actionsRemaining" : 2,
       "productionRequired" : 15,
       "name" : "Narwhal",
-      "visibility" : 1
+      "visibility" : 1,
+      "prerequisiteTechs" : ["Sailing"]
     },
     {
       "position" : {
@@ -380,7 +401,13 @@
           "value" : {
             "ownerID" : "ABE84E6C-B2BA-4BEF-B973-5531C5593A04",
             "possibleCommands" : [
-  
+              {
+                "type" : "enableAutoExploreCommand",
+                "value" : {
+                  "title" : "Auto Explore",
+                  "ownerID" : "00000000-0000-0000-0000-000000000000"
+                }
+              }
             ],
             "active" : false
           }
@@ -389,7 +416,8 @@
       "actionsRemaining" : 2,
       "productionRequired" : 20,
       "name" : "Reindeer",
-      "visibility" : 1
+      "visibility" : 1,
+      "prerequisiteTechs" : ["Archery"]
     },
     {
       "position" : {
@@ -469,7 +497,13 @@
           "value" : {
             "ownerID" : "00000000-0000-0000-0000-000000000000",
             "possibleCommands" : [
-  
+              {
+                "type" : "enableAutoExploreCommand",
+                "value" : {
+                  "title" : "Auto Explore",
+                  "ownerID" : "00000000-0000-0000-0000-000000000000"
+                }
+              }
             ],
             "active" : false
           }
@@ -478,6 +512,7 @@
       "actionsRemaining" : 2,
       "productionRequired" : 20,
       "name" : "Snake",
-      "visibility" : 1
+      "visibility" : 1,
+      "prerequisiteTechs" : ["Archery"]
     }
   ]

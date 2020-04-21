@@ -38,14 +38,16 @@ struct Unit: Entity {
     var visibility: Int
     var actionsRemaining = 2.0
     let productionRequired: Double
+    let prerequisiteTechs: [String]
 
-    init(owningPlayer: UUID, name: String, visibility: Int = 1, productionRequired: Double, startPosition: AxialCoord = AxialCoord.zero) {
+    init(owningPlayer: UUID, name: String, visibility: Int = 1, productionRequired: Double, startPosition: AxialCoord = AxialCoord.zero, prerequisiteTechs: [String] = []) {
         self.id = UUID()
         self.owningPlayerID = owningPlayer
         self.name = name
         self.visibility = visibility
         self.productionRequired = productionRequired
         self.position = startPosition
+        self.prerequisiteTechs = prerequisiteTechs
     }
     
     mutating func assignUniqueID() {
@@ -61,62 +63,4 @@ struct Unit: Entity {
             return changedComponent
         }
     }
-    
-    /*
-    static func Rabbit(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
-        var newRabbit = Unit(owningPlayer: owningPlayer, name: "Rabbit", productionRequired: 10, startPosition: startPosition)
-        newRabbit.components = [MovementComponent(ownerID: newRabbit.id), SettlerComponent(ownerID: newRabbit.id), HealthComponent(ownerID: newRabbit.id), AutoExploreComponent(ownerID: newRabbit.id)]
-        return newRabbit
-    }
-    
-    static func Snake(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
-        var newSnake = Unit(owningPlayer: owningPlayer, name: "Snake",productionRequired: 5, startPosition: startPosition)
-        newSnake.components = [MovementComponent(ownerID: newSnake.id), HealthComponent(ownerID: newSnake.id), AttackComponent(ownerID: newSnake.id, attackPower: 8, range: 2), AutoExploreComponent(ownerID: newSnake.id)]
-        return newSnake
-    }
-    
-    static func Crocodile(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
-        var newCrocodile = Unit(owningPlayer: owningPlayer, name: "Crocodile", productionRequired: 10, startPosition: startPosition)
-        newCrocodile.components = [MovementComponent(ownerID: newCrocodile.id), HealthComponent(ownerID: newCrocodile.id), AttackComponent(ownerID: newCrocodile.id, attackPower: 8), AutoExploreComponent(ownerID: newCrocodile.id)]
-        return newCrocodile
-    }
-    
-    static func Narwhal(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
-        var newNarwhal = Unit(owningPlayer: owningPlayer, name: "Narwhal", productionRequired: 15, startPosition: startPosition)
-        newNarwhal.components = [MovementComponent(ownerID: newNarwhal.id, movementCosts: [.Water: 0.5]), HealthComponent(ownerID: newNarwhal.id), AutoExploreComponent(ownerID: newNarwhal.id)]
-        return newNarwhal
-    }
-    
-    static func Reindeer(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
-        var newReindeer = Unit(owningPlayer: owningPlayer, name: "Reindeer", visibility: 1, productionRequired: 20,  startPosition: startPosition)
-        var movementCosts = Tile.defaultCostsToEnter
-        movementCosts[.Forest] = 0.5
-        movementCosts[.Grass] = 0.75
-        movementCosts[.Sand] = 0.75
-        newReindeer.components = [MovementComponent(ownerID: newReindeer.id, movementCosts: movementCosts), HealthComponent(ownerID: newReindeer.id, maxHitPoints: 15), AutoExploreComponent(ownerID: newReindeer.id)]
-        return newReindeer
-    }
-    
-    static func Beaver(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
-        var newBeaver = Unit(owningPlayer: owningPlayer, name: "Beaver", productionRequired: 15, startPosition: startPosition)
-        newBeaver.components = [MovementComponent(ownerID: newBeaver.id), BuildImprovementComponent(ownerID: newBeaver.id)]
-        return newBeaver
-    }
-    
-    static func nullUnit(owningPlayer: UUID, startPosition: AxialCoord) -> Unit {
-        print("WARNING: creating nullUnit. Probably not intentional.")
-        assert(false)
-        return Unit(owningPlayer: owningPlayer, name: "Null Unit", productionRequired: 0, startPosition: startPosition)
-    }
-    
-    static func getUnitByName(unitName: String, ownerID: UUID, startPosition: AxialCoord = AxialCoord.zero) -> Unit {
-        if let unit = allUnits[unitName]?(ownerID, startPosition) {
-            return unit
-        } else {
-            return nullUnit(owningPlayer: ownerID, startPosition: startPosition)
-        }
-    }
-    
-    static let allUnits = ["Narwhal": Unit.Narwhal, "Rabbit": Unit.Rabbit, "Snake": Unit.Snake, "Reindeer": Unit.Reindeer, "Crocodile": Unit.Crocodile, "Beaver": Unit.Beaver]
-     */
 }

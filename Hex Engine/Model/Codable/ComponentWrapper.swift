@@ -27,6 +27,7 @@ enum ComponentWrapper: Codable {
     case growthComponent(value: GrowthComponent)
     case autoExploreComponent(value: AutoExploreComponent)
     case buildImprovementComponent(value: BuildImprovementComponent)
+    case progressComponent(value: ProgressComponent)
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -54,6 +55,9 @@ enum ComponentWrapper: Codable {
             try container.encode(value, forKey: .value)
         case .buildImprovementComponent(let value):
             try container.encode("buildImprovementComponent", forKey: .type)
+            try container.encode(value, forKey: .value)
+        case .progressComponent(let value):
+            try container.encode("progressComponent", forKey: .type)
             try container.encode(value, forKey: .value)
         }
     }
@@ -86,6 +90,9 @@ enum ComponentWrapper: Codable {
         case "buildImprovementComponent":
             let value = try values.decode(BuildImprovementComponent.self, forKey: .value)
             self = .buildImprovementComponent(value: value)
+        case "progressComponent":
+            let value = try values.decode(ProgressComponent.self, forKey: .value)
+            self = .progressComponent(value: value)
         default:
             throw ComponentWrapperErrors.cannotConvertComponentError
         }
@@ -108,6 +115,8 @@ enum ComponentWrapper: Codable {
             return .autoExploreComponent(value: c)
         } else if let c = component as? BuildImprovementComponent {
             return .buildImprovementComponent(value: c)
+        } else if let c = component as? ProgressComponent {
+            return .progressComponent(value: c)
         } else {
             throw ComponentWrapperErrors.cannotConvertComponentError
         }
@@ -130,6 +139,8 @@ enum ComponentWrapper: Codable {
         case .autoExploreComponent(let component):
             return component
         case .buildImprovementComponent(let component):
+            return component
+        case .progressComponent(let component):
             return component
         }
     }

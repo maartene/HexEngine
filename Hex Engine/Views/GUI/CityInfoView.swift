@@ -79,7 +79,7 @@ struct CityInfoView: View {
                                 Button(self.possibleUnitBuildCommands[number].title) {
                                     self.executeBuildUnitCommand(number: number)
                                 }.overlay(Capsule().stroke(lineWidth: 1))
-                                    .disabled(self.city?.owningPlayerID != self.hexMapController.guiPlayer || self.boxedWorld.isUpdating)
+                                    .disabled(self.city?.owningPlayerID != self.hexMapController.guiPlayer || self.boxedWorld.isUpdating || self.possibleUnitBuildCommands[number].canExecute(in: self.boxedWorld.world) == false)
                             }
                         }
                         
@@ -88,7 +88,8 @@ struct CityInfoView: View {
                                 Button(self.possibleBuildingBuildCommands[number].title) {
                                     self.executeBuildBuildingCommand(number: number)
                                 }.overlay(Capsule().stroke(lineWidth: 1))
-                                    .disabled(self.city?.owningPlayerID != self.hexMapController.guiPlayer || self.boxedWorld.isUpdating)
+                                    .disabled(self.city?.owningPlayerID != self.hexMapController.guiPlayer || self.boxedWorld.isUpdating ||
+                                        self.possibleBuildingBuildCommands[number].canExecute(in: self.boxedWorld.world) == false)
                             }
                         }
                         
